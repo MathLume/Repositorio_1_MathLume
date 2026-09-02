@@ -1,1 +1,251 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
+body, html {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #510552;
+}
+
+.screen-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-area {
+    /*Fundo tela inicial*/
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #4b0a5f 0%, #2a0341 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Nuvens e Fundos */
+.clouds-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.cloud {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(35px);
+    opacity: 0.85;
+}
+
+.cloud-1 { width: 700px; height: 350px; background: linear-gradient(135deg, #e0aaff, #7b2cbf); top: -100px; left: -10%; border-radius: 40% 60% 70% 30% / 50% 50% 50% 50%; transform: rotate(-10deg); }
+.cloud-2 { width: 800px; height: 400px; background: linear-gradient(225deg, #c77dff, #3c096c); top: -50px; right: -15%; border-radius: 60% 40% 30% 70% / 40% 60% 40% 60%; transform: rotate(15deg); }
+.cloud-3 { width: 750px; height: 350px; background: linear-gradient(45deg, #7b2cbf, #10002b); bottom: -80px; left: 5%; border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; }
+.cloud-4 { width: 850px; height: 380px; background: linear-gradient(315deg, #9d4edd, #240046); bottom: -100px; right: -5%; border-radius: 40% 60% 50% 50% / 50% 50% 60% 40%; }
+.cloud-5 { width: 500px; height: 250px; background: radial-gradient(circle, #e0aaff 0%, #5a189a 80%); top: 35%; left: -5%; filter: blur(45px); opacity: 0.6; }
+
+/* Título Inicial */
+.title-container { z-index: 10; position: absolute; top: 15%; }
+.game-title {
+    font-size: 4.5rem;
+    /*Cores do titulo*/
+    color: #ff9eff;
+    text-shadow: 4px 4px 0px #240046, 0 0 25px rgba(224, 170, 255, 0.8), 0 0 50px rgba(157, 78, 221, 0.6);
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transform: rotate(-4deg);
+    animation: floatTitle 3s ease-in-out infinite;
+}
+
+@keyframes floatTitle {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-12px) rotate(-4deg); }
+}
+
+/* Botão Iniciar Inicial */
+.start-button-wrapper { z-index: 10; position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); }
+.start-button {
+    width: 210px; height: 210px; border-radius: 50%;
+    background: linear-gradient(to bottom, #ffe600, #ffb703);
+    border: 10px solid #fff3b0; cursor: pointer;
+    display: flex; justify-content: center; align-items: center;
+    box-shadow: 0 0 25px rgba(255, 183, 3, 0.8), 0 0 60px rgba(255, 230, 0, 0.5), inset 0 -12px 15px rgba(202, 103, 2, 0.6);
+    transition: all 0.3s ease;
+}
+.start-button:hover { transform: scale(1.06); box-shadow: 0 0 35px rgba(255, 183, 3, 1), 0 0 80px rgba(255, 230, 0, 0.8); }
+.start-button-text { font-size: 2.2rem; color: #1a0033; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
+
+/* Ícones Decorativos */
+.decorations { position: absolute; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+.icon { position: absolute; font-size: 2.2rem; opacity: 0.5; color: #ffd166; filter: drop-shadow(0 0 8px rgba(255, 209, 102, 0.6)); }
+.icon-cap { top: 32%; left: 12%; }
+.icon-atom { top: 55%; left: 18%; font-size: 1.8rem; }
+.icon-sigma { top: 38%; right: 15%; font-size: 2.5rem; }
+.icon-book { bottom: 22%; right: 12%; font-size: 2rem; }
+
+/* Card de Login Personalizado */
+.login-card-custom {
+    background: rgba(30, 10, 55, 0.75);
+    backdrop-filter: blur(12px);
+    padding: 35px 30px;
+    border-radius: 28px;
+    border: 2px solid rgba(160, 90, 220, 0.4);
+    box-shadow: 0 15px 35px rgba(10, 0, 20, 0.6), inset 0 0 20px rgba(180, 110, 255, 0.1);
+    display: flex; flex-direction: column; align-items: center; z-index: 25; width: 360px;
+}
+.login-logo-container { margin-bottom: 25px; }
+.login-card-title { font-size: 2.2rem; color: #e0aaff; text-shadow: 2px 2px 0px #240046, 0 0 15px rgba(224, 170, 255, 0.8); font-family: 'Comic Sans MS', cursive, sans-serif; letter-spacing: 2px; }
+.login-box { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+.input-wrapper { position: relative; width: 100%; }
+.login-input-custom {
+    width: 100%; padding: 14px 18px; border-radius: 14px;
+    border: 1.5px solid rgba(255, 209, 102, 0.5);
+    background: rgba(20, 5, 40, 0.6); color: #fff; outline: none; font-size: 1rem;
+}
+.login-input-custom:focus { border-color: #ffd166; box-shadow: 0 0 10px rgba(255, 209, 102, 0.4); }
+.password-wrapper { display: flex; align-items: center; }
+.toggle-password { position: absolute; right: 15px; cursor: pointer; font-size: 1.1rem; opacity: 0.7; }
+.btn-confirmar {
+    width: 100%; padding: 14px; background: linear-gradient(to bottom, #ffe600, #ffb703);
+    color: #1a0033; border: none; border-radius: 14px; cursor: pointer; font-weight: 900; font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4); transition: transform 0.2s ease; margin-top: 5px;
+}
+.btn-confirmar:hover { transform: scale(1.02); filter: brightness(1.1); }
+.login-divider { display: flex; align-items: center; text-align: center; width: 100%; margin: 8px 0; }
+.login-divider::before, .login-divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+.login-divider span { padding: 0 10px; color: rgba(255, 255, 255, 0.6); font-size: 0.85rem; }
+.btn-google {
+    width: 100%; padding: 12px; background: #ffffff; color: #333333; border: none; border-radius: 14px;
+    cursor: pointer; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: background 0.2s ease;
+}
+.btn-google:hover { background: #f1f1f1; transform: scale(1.02); }
+
+/* --- ESTILOS DA TELA PRINCIPAL (Baseada na imagem enviada) --- */
+.main-top-logo {
+    position: absolute;
+    top: 35px;
+    z-index: 10;
+}
+.main-title-small {
+    font-size: 2.8rem;
+    transform: rotate(0deg);
+    animation: none;
+}
+
+/* Barra de Navegação Superior */
+.main-nav-bar {
+    position: absolute;
+    top: 110px;
+    display: flex;
+    gap: 12px;
+    z-index: 15;
+}
+.nav-btn {
+    padding: 10px 22px;
+    border-radius: 20px;
+    background: rgba(45, 10, 75, 0.8);
+    border: 2px solid rgba(255, 209, 102, 0.4);
+    color: #e0aaff;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+.nav-btn:hover {
+    border-color: #ffd166;
+    background: rgba(65, 15, 105, 0.9);
+    transform: translateY(-2px);
+}
+.nav-btn-jogar {
+    background: linear-gradient(to bottom, #ffe600, #ffb703);
+    color: #1a0033;
+    border: 2px solid #fff3b0;
+    box-shadow: 0 0 15px rgba(255, 183, 3, 0.6);
+    font-size: 1.05rem;
+}
+
+/* Área Central com o Vagalume e Números */
+.main-character-area {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 200px;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.firefly-character {
+    font-size: 5rem;
+    position: relative;
+    z-index: 12;
+    animation: floatCharacter 3s ease-in-out infinite;
+}
+.firefly-glow {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle, rgba(255, 240, 100, 0.9) 0%, rgba(255, 180, 0, 0.2) 70%, transparent 100%);
+    border-radius: 50%;
+    top: 20px;
+    left: 10px;
+    z-index: -1;
+    filter: blur(8px);
+}
+@keyframes floatCharacter {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Números Matemáticos Flutuantes */
+.floating-math-number {
+    position: absolute;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-weight: bold;
+    color: #e0aaff;
+    text-shadow: 0 0 10px rgba(224, 170, 255, 0.8);
+    opacity: 0.9;
+}
+.num-9 { font-size: 3.5rem; top: 10px; left: -30px; transform: rotate(-15deg); color: #c77dff; }
+.num-2-left { font-size: 2.2rem; top: -15px; left: 60px; transform: rotate(10deg); color: #ffd166; }
+.num-2-right { font-size: 3.8rem; top: -5px; right: 20px; transform: rotate(15deg); color: #e0aaff; }
+.num-5 { font-size: 4rem; bottom: -20px; right: -20px; transform: rotate(-10deg); color: #9d4edd; }
+
+/* Controles Inferiores */
+.bottom-left-controls { position: absolute; bottom: 25px; left: 25px; z-index: 15; }
+.gear-btn {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: rgba(45, 10, 75, 0.8); border: 2px solid rgba(255, 209, 102, 0.4);
+    font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+.gear-btn:hover { border-color: #ffd166; transform: rotate(45deg); transition: 0.3s; }
+
+.bottom-right-controls { position: absolute; bottom: 25px; right: 25px; z-index: 15; }
+.btn-logout-custom {
+    padding: 10px 20px; background: rgba(100, 20, 20, 0.8); border: 2px solid rgba(255, 100, 100, 0.5);
+    color: #ffcccc; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 0.95rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: background 0.2s ease;
+}
+.btn-logout-custom:hover { background: rgba(150, 30, 30, 0.9); }
