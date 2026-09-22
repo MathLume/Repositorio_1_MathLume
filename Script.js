@@ -1,74 +1,20 @@
-// 1. Selecionar todas as Telas
-const startScreen = document.getElementById('start-screen');
-const loginScreen = document.getElementById('login-screen');
-const mainScreen = document.getElementById('main-screen');
-const gameScreen = document.getElementById('game-screen');
-const gameOverScreen = document.getElementById('gameover-screen');
-const victoryScreen = document.getElementById('victory-screen');
-
-// 2. Selecionar Botões de Transição
+// 1. Selecionar Botões de Transição e Adicionar Redirecionamento
 const btnIniciar = document.getElementById('btn-iniciar');
 const btnLoginSubmit = document.getElementById('btn-login-submit');
 const btnJogarMenu = document.getElementById('btn-jogar-menu');
 const btnLogout = document.getElementById('btn-logout');
 const btnVoltarMenu = document.getElementById('btn-voltar-menu');
 
-// 3. Função Genérica para Alternar Telas
-function showScreen(screenToShow) {
-    // Esconde todas as telas e modais
-    startScreen.style.display = 'none';
-    loginScreen.style.display = 'none';
-    mainScreen.style.display = 'none';
-    gameScreen.style.display = 'none';
-    gameOverScreen.classList.add('hidden');
-    victoryScreen.classList.add('hidden');
+if (btnIniciar) btnIniciar.addEventListener('click', () => { window.location.href = 'login.html'; });
+if (btnLoginSubmit) btnLoginSubmit.addEventListener('click', () => { window.location.href = 'main.html'; });
+if (btnJogarMenu) btnJogarMenu.addEventListener('click', () => { window.location.href = 'minigame.html'; });
+if (btnLogout) btnLogout.addEventListener('click', () => { window.location.href = 'index.html'; });
+if (btnVoltarMenu) btnVoltarMenu.addEventListener('click', () => { window.location.href = 'main.html'; });
 
-    // Mostra apenas a desejada definindo display como 'flex'
-    screenToShow.style.display = 'flex';
-}
 
-// 4. Configuração dos Eventos de Navegação
+// 2. Lógica do Jogo Matemático (Executa apenas na tela minigame.html)
+const gameScreen = document.getElementById('game-screen');
 
-// Tela Inicial -> Tela de Login
-if (btnIniciar) {
-    btnIniciar.addEventListener('click', () => {
-        showScreen(loginScreen);
-    });
-}
-
-// Tela de Login -> Menu Principal (Tela 3)
-if (btnLoginSubmit) {
-    btnLoginSubmit.addEventListener('click', () => {
-        showScreen(mainScreen);
-    });
-}
-
-// Menu Principal -> Inicia o Jogo (Tela 3.2) ao clicar em "JOGAR"
-if (btnJogarMenu) {
-    btnJogarMenu.addEventListener('click', () => {
-        showScreen(gameScreen);
-        startGame(); // Inicializa o loop e os elementos do jogo matemático
-    });
-}
-
-// Botão Voltar do Jogo para o Menu Principal
-if (btnVoltarMenu) {
-    btnVoltarMenu.addEventListener('click', () => {
-        gameState = "paused";
-        if (spawnInterval) clearInterval(spawnInterval);
-        if (animationFrameId) cancelAnimationFrame(animationFrameId);
-        showScreen(mainScreen);
-    });
-}
-
-// Menu Principal -> Logout (Volta para a Tela Inicial)
-if (btnLogout) {
-    btnLogout.addEventListener('click', () => {
-        showScreen(startScreen);
-    });
-}
-
-// 5. Lógica do Jogo Matemático
 let gameState = "playing";
 let lives = 3;
 let score = 0;
@@ -78,23 +24,8 @@ let debrisIdCounter = 0;
 let animationFrameId = null;
 let spawnInterval = null;
 
-if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-}
-
-// Background stars do jogo
-const starsContainer = document.getElementById("stars-container");
-if (starsContainer) {
-    for (let i = 0; i < 50; i++) {
-        const star = document.createElement("div");
-        star.className = "absolute w-1 h-1 bg-yellow-300 rounded-full animate-pulse";
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.animationDuration = `${2 + Math.random() * 2}s`;
-        starsContainer.appendChild(star);
-    }
-}
-
+const gameOverScreen = document.getElementById('gameover-screen');
+const victoryScreen = document.getElementById('victory-screen');
 const gameAreaContent = document.getElementById("game-area-content");
 const fireflyEl = document.getElementById("firefly");
 const livesContainer = document.getElementById("lives-container");
@@ -102,6 +33,50 @@ const scoreDisplay = document.getElementById("score-display");
 const questionsDisplay = document.getElementById("questions-display");
 const answerForm = document.getElementById("answer-form");
 const answerInput = document.getElementById("answer-input");
+
+if (typeof lucide !== 'undefined' && gameScreen) {
+    lucide.createIcons();
+}
+
+if (gameScreen) {
+    const starsContainer = document.getElementById("stars-container");
+    if (starsContainer) {
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement("div");
+            star.className = "absolute w-1 h-1 bg-yellow-300 rounded-full animate-pulse";
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDuration = `${2 + Math.random() * 2}s`;
+            starsContainer.appendChild(star);
+        }
+    }
+
+    if (answerForm) {
+        answerForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (answerInput.value.trim() === "" || gameState !== "playing") return;
+
+            const numAnswer = parseInt(answerInput.value);
+            const matchingDebrisIndex = debrisList.findIndex(d => d.answer === numAnswer);
+
+            if (matchingDebrisIndex !== -1) {
+                score += 10;
+                questionsAnswered += 1;
+                debrisList.splice(matchingDebrisIndex, 1);
+            } else {
+                lives = Math.max(0, lives - 1);
+            }
+
+            answerInput.value = "";
+            setTimeout(() => answerInput.focus(), 0);
+        });
+    }
+
+    // Inicializar jogo quando a página minigame.html carregar
+    document.addEventListener("DOMContentLoaded", () => {
+        startGame();
+    });
+}
 
 function generateEquation() {
     const num1 = Math.floor(Math.random() * 20) + 1;
@@ -118,6 +93,8 @@ function generateEquation() {
 }
 
 function startGame() {
+    if (!gameScreen) return; // Segurança para não executar em outras telas
+
     gameState = "playing";
     lives = 3;
     score = 0;
@@ -218,27 +195,6 @@ function updateUI() {
     });
 }
 
-if (answerForm) {
-    answerForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (answerInput.value.trim() === "" || gameState !== "playing") return;
-
-        const numAnswer = parseInt(answerInput.value);
-        const matchingDebrisIndex = debrisList.findIndex(d => d.answer === numAnswer);
-
-        if (matchingDebrisIndex !== -1) {
-            score += 10;
-            questionsAnswered += 1;
-            debrisList.splice(matchingDebrisIndex, 1);
-        } else {
-            lives = Math.max(0, lives - 1);
-        }
-
-        answerInput.value = "";
-        setTimeout(() => answerInput.focus(), 0);
-    });
-}
-
 function triggerGameOver() {
     gameState = "gameOver";
     if (spawnInterval) clearInterval(spawnInterval);
@@ -254,6 +210,3 @@ function triggerVictory() {
     document.getElementById("final-lives-vic").innerText = `Vidas Restantes: ${lives} ❤️`;
     victoryScreen.classList.remove("hidden");
 }
-
-// Inicialização: Garante que o aplicativo comece na Tela Inicial
-showScreen(startScreen);
