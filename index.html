@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathlume - Aventura Matemática</title>
-    <!-- Tailwind CSS CDN para o layout do jogo -->
+    <title>Mathlume - Aventura Matemática (Início)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
     <div class="screen-container">
-
         <!-- ================= TELA 1: INICIAL ================= -->
         <div id="start-screen" class="game-area">
             <div class="clouds-container">
@@ -34,168 +30,7 @@
                 </button>
             </div>
         </div>
-
-        <!-- ================= TELA 2: LOGIN ================= -->
-        <div id="login-screen" class="game-area" style="display: none;">
-            <div class="clouds-container">
-                <div class="cloud cloud-1"></div>
-                <div class="cloud cloud-2"></div>
-                <div class="cloud cloud-3"></div>
-                <div class="cloud cloud-4"></div>
-            </div>
-
-            <div class="login-card-custom">
-                <div class="login-logo-container">
-                    <h2 class="login-card-title">MATHLUME</h2>
-                </div>
-
-                <div class="login-box">
-                    <div class="input-wrapper">
-                        <input type="text" placeholder="Usuário" class="login-input-custom">
-                    </div>
-                    
-                    <div class="input-wrapper password-wrapper">
-                        <input type="password" placeholder="Senha" class="login-input-custom">
-                        <span class="toggle-password">👁️‍🗨️</span>
-                    </div>
-
-                    <button id="btn-login-submit" class="btn-confirmar">CONFIRMAR</button>
-                    
-                    <div class="login-divider">
-                        <span>Ou entre com</span>
-                    </div>
-
-                    <button class="btn-google">
-                        <svg class="google-icon" viewBox="0 0 24 24" width="18" height="18">
-                            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
-                            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.2v3.15C3.18 21.35 7.26 24 12 24z"/>
-                            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.2C.43 8.13 0 9.99 0 12s.43 3.87 1.2 5.42l4.08-3.15z"/>
-                            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.26 0 3.18 2.65 1.2 6.58l4.08 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-                        </svg>
-                        Google
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= TELA 3.1: MENU PRINCIPAL ================= -->
-        <div id="main-screen" class="game-area" style="display: none;">
-            <div class="clouds-container">
-                <div class="cloud cloud-1"></div>
-                <div class="cloud cloud-2"></div>
-                <div class="cloud cloud-3"></div>
-                <div class="cloud cloud-4"></div>
-            </div>
-
-            <div class="main-top-logo">
-                <h1 class="game-title main-title-small">MATHLUME</h1>
-            </div>
-
-            <div class="main-nav-bar">
-                <button class="nav-btn">INÍCIO</button>
-                <button class="nav-btn">PASSE DE BATALHA</button>
-                <button id="btn-jogar-menu" class="nav-btn nav-btn-jogar">JOGAR</button>
-                <button class="nav-btn">PERSONALIZAR</button>
-                <button class="nav-btn">RECORDES</button>
-            </div>
-
-            <div class="main-character-area">
-                <div class="floating-math-number num-9">9</div>
-                <div class="floating-math-number num-2-left">2</div>
-                <div class="floating-math-number num-2-right">2</div>
-                <div class="floating-math-number num-5">5</div>
-                
-                <div class="firefly-character">
-                    <div class="firefly-glow"></div>
-                    <div class="firefly-body">✨</div>
-                </div>
-            </div>
-
-            <div class="bottom-left-controls">
-                <button class="gear-btn">⚙️</button>
-            </div>
-            
-            <div class="bottom-right-controls">
-                <button id="btn-logout" class="btn-logout-custom">Sair</button>
-            </div>
-        </div>
-
-        <!-- ================= TELA 3.2: TELA DO JOGO (INTERATIVA) ================= -->
-        <div id="game-screen" class="game-area" style="display: none;">
-            <!-- Fundo de Estrelas do Jogo -->
-            <div id="stars-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
-
-            <!-- HUD -->
-            <div class="absolute top-0 left-0 right-0 z-40 p-6 bg-black/30 backdrop-blur-md border-b-2 border-amber-500/30">
-                <div class="flex items-center justify-between max-w-6xl mx-auto">
-                    <div class="flex items-center gap-3">
-                        <button id="btn-voltar-menu" class="px-3 py-1 bg-purple-800/80 text-white text-sm font-bold rounded-lg border border-amber-400/40 hover:bg-purple-700 mr-2 cursor-pointer">← Menu</button>
-                        <span class="text-white font-semibold text-lg">Vidas:</span>
-                        <div id="lives-container" class="flex gap-2"></div>
-                    </div>
-                    <div class="flex items-center gap-8">
-                        <div class="text-white font-semibold text-lg">
-                            Pontos: <span id="score-display" class="text-amber-400 text-2xl">0</span>
-                        </div>
-                        <div class="text-white font-semibold text-lg">
-                            Questões: <span id="questions-display" class="text-purple-400 text-2xl">0/15</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Game Area -->
-            <div id="game-area-content" class="absolute inset-0 pt-24">
-                <div id="firefly" class="absolute w-12 h-12 pointer-events-none z-30 transition-transform duration-75">
-                    <div class="w-full h-full bg-amber-300 rounded-full shadow-[0_0_25px_#fbbf24,0_0_50px_#fde047]"></div>
-                </div>
-            </div>
-
-            <!-- Answer Input -->
-            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40">
-                <form id="answer-form" class="bg-black/70 backdrop-blur-xl p-6 rounded-2xl border-2 border-amber-500/50 shadow-2xl">
-                    <div class="flex items-center gap-4">
-                        <label class="text-white font-semibold text-lg">Resposta:</label>
-                        <input id="answer-input" type="number" placeholder="?" class="px-6 py-3 bg-white/10 text-white text-2xl font-bold rounded-xl border-2 border-amber-400/50 outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-400/30 w-40 text-center" autocomplete="off" />
-                        <button type="submit" class="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg shadow-green-500/50 cursor-pointer">
-                            Enviar
-                        </button>
-                    </div>
-                    <p class="text-amber-200 text-sm mt-3 text-center">Pressione Enter para enviar</p>
-                </form>
-            </div>
-        </div>
-
-        <!-- Game Over Screen -->
-        <div id="gameover-screen" class="hidden absolute inset-0 flex items-center justify-center z-50 bg-black/70 backdrop-blur-md">
-            <div class="text-center space-y-6 p-12 bg-gradient-to-br from-red-900/80 to-purple-900/80 backdrop-blur-xl rounded-3xl border-2 border-red-500/50 shadow-2xl max-w-xl mx-4">
-                <i data-lucide="flame" class="w-32 h-32 text-red-500 mx-auto animate-pulse"></i>
-                <h2 class="text-6xl font-bold text-white mb-4">Game Over</h2>
-                <p class="text-2xl text-red-200">Os escombros chegaram ao limite!</p>
-                <div class="bg-black/30 p-6 rounded-xl space-y-2">
-                    <p id="final-score-go" class="text-3xl text-amber-400 font-bold">Pontuação Final: 0</p>
-                    <p id="final-q-go" class="text-xl text-purple-300">Questões Respondidas: 0/15</p>
-                </div>
-                <button onclick="startGame()" class="px-10 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl font-bold rounded-full shadow-2xl shadow-purple-500/50 cursor-pointer hover:scale-105 transition-all">Tentar Novamente</button>
-            </div>
-        </div>
-
-        <!-- Victory Screen -->
-        <div id="victory-screen" class="hidden absolute inset-0 flex items-center justify-center z-50 bg-black/70 backdrop-blur-md">
-            <div class="text-center space-y-6 p-12 bg-gradient-to-br from-amber-900/80 to-yellow-900/80 backdrop-blur-xl rounded-3xl border-2 border-amber-500/50 shadow-2xl max-w-xl mx-4">
-                <i data-lucide="trophy" class="w-32 h-32 text-amber-400 mx-auto fill-amber-300 animate-bounce"></i>
-                <h2 class="text-6xl font-bold text-white mb-4">Vitória!</h2>
-                <p class="text-2xl text-amber-200">Parabéns! Você completou todas as 15 questões!</p>
-                <div class="bg-black/30 p-6 rounded-xl space-y-2">
-                    <p id="final-score-vic" class="text-3xl text-amber-400 font-bold">Pontuação Final: 0</p>
-                    <p id="final-lives-vic" class="text-xl text-green-300">Vidas Restantes: 3 ❤️</p>
-                </div>
-                <button onclick="startGame()" class="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xl font-bold rounded-full shadow-2xl shadow-green-500/50 cursor-pointer block w-full hover:scale-105 transition-all">Jogar Novamente</button>
-            </div>
-        </div>
-
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
