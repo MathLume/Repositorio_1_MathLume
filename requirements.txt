@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlalchemy
+pymysql
+alembic
+bcrypt
+pydantic_core
+pydantic[email]
+polyfactory==3.3.0
+pytest==9.1.1
