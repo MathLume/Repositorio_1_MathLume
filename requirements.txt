@@ -1,8 +1,12 @@
 fastapi
 uvicorn
 sqlalchemy
+sqlalchemy[asyncio]
+greenlet
+aiomysql
 pymysql
 alembic
+psutil
 bcrypt
 pydantic_core
 pydantic[email]
