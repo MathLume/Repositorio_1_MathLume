@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="container">
       <a href="#inicio" class="logo">Math<span>Lume</span></a>
@@ -27,7 +26,6 @@
     </div>
   </nav>
 
-  <!-- Hero -->
   <section class="hero" id="inicio">
     <div class="container">
       <div>
@@ -37,7 +35,6 @@
         <a href="#jornada" class="btn-main">Começar Jornada →</a>
       </div>
 
-      <!-- Carrossel -->
       <div class="carousel" id="carousel">
         <div class="carousel-viewport">
           <div class="slide g1 active"><div class="emoji">🎯</div><h3>Aprendizado Gamificado</h3><p>Ganhe pontos, suba de nível e torne o estudo divertido.</p></div>
@@ -52,7 +49,6 @@
     </div>
   </section>
 
-  <!-- Stats -->
   <section class="section alt" style="padding:64px 0">
     <div class="container stats">
       <div class="stat"><div class="ico">👥</div><div class="val">50K+</div><div class="lbl">Estudantes Ativos</div></div>
@@ -62,7 +58,6 @@
     </div>
   </section>
 
-  <!-- Features -->
   <section class="section" id="ranking">
     <div class="container">
       <div class="section-title">
@@ -78,40 +73,21 @@
     </div>
   </section>
 
-  <!-- Matérias -->
   <section class="section alt" id="jornada">
     <div class="container">
       <div class="section-title"><h2>Matérias em Destaque</h2><p>Explore nosso catálogo de conteúdos premium</p></div>
       <div class="grid-3">
-        <div class="card">
-          <div class="cover" style="background:linear-gradient(135deg,#7e22ce,#4c1d95)">💻</div>
-          <div class="body">
-            <div class="row"><span class="pill">Tecnologia</span><span class="star">★ 4.9</span></div>
-            <h3>Desenvolvimento Web</h3><p style="margin-top:8px">Domine HTML, CSS, JavaScript e frameworks modernos</p>
-            <span class="small">42 lições</span>
-          </div>
-        </div>
-        <div class="card" style="background:rgba(30,58,138,.25);border-color:rgba(59,130,246,.2)">
-          <div class="cover" style="background:linear-gradient(135deg,#1d4ed8,#1e3a8a)">📕</div>
-          <div class="body">
-            <div class="row"><span class="pill" style="background:rgba(59,130,246,.2);color:#93c5fd">Humanas</span><span class="star">★ 4.8</span></div>
-            <h3>Literatura Brasileira</h3><p style="margin-top:8px">Análise de obras e movimentos literários</p>
-            <span class="small">38 lições</span>
-          </div>
-        </div>
         <div class="card" style="background:rgba(131,24,67,.25);border-color:rgba(236,72,153,.2)">
           <div class="cover" style="background:linear-gradient(135deg,#be185d,#831843)">➗</div>
           <div class="body">
-            <div class="row"><span class="pill" style="background:rgba(236,72,153,.2);color:#f9a8d4">Exatas</span><span class="star">★ 5.0</span></div>
-            <h3>Matemática Avançada</h3><p style="margin-top:8px">Cálculo, álgebra e geometria analítica</p>
-            <span class="small">56 lições</span>
+            <div class="row"><span class="pill" style="background:rgba(236,72,153,.2);color:#f9a8d4">Exatas</span></div>
+            <h3>Mini-game de Matemática</h3><p style="margin-top:8px">Meteoros descem do céu e cada um traz uma conta. Acerte o resultado para destruí-lo antes que chegue ao chão. Um mini-game rápido e divertido para treinar o cálculo mental.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Loja -->
   <section class="section" id="loja">
     <div class="container">
       <div class="section-title">
@@ -151,7 +127,6 @@
     </div>
   </section>
 
-  <!-- CTA -->
   <section class="section" id="conquistas">
     <div class="container">
       <div class="cta-box">
@@ -162,7 +137,6 @@
     </div>
   </section>
 
-  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="foot-grid">
@@ -178,7 +152,6 @@
     </div>
   </footer>
 
-  <!-- Painel de configurações -->
   <aside class="panel" id="panel" aria-hidden="true">
     <div class="panel-head">
       <strong>⚙️ Configurações</strong>
@@ -213,31 +186,61 @@
     </div>
   </aside>
 
-  <!-- Modal de login -->
   <div class="overlay" id="loginModal" aria-hidden="true">
     <div class="modal">
       <button class="close" data-close="login" type="button" aria-label="Fechar">✕</button>
       <div class="logo" style="margin-bottom:6px">Math<span>Lume</span></div>
-      <p class="muted" style="margin-bottom:20px">Entre para continuar sua jornada</p>
-      <form id="loginForm">
-        <label for="lgEmail">E-mail</label>
-        <input id="lgEmail" type="email" placeholder="seu@email.com" required>
-        <label for="lgPass">Senha</label>
-        <input id="lgPass" type="password" placeholder="Sua senha" required>
-        <button class="btn-main" type="submit" style="width:100%;margin-top:8px">Entrar</button>
-      </form>
+
+      <div class="auth-view active" id="view-login">
+        <p class="muted" style="margin-bottom:20px">Entre para continuar sua jornada</p>
+        <form id="loginForm">
+          <label for="lgEmail">E-mail</label>
+          <input id="lgEmail" type="email" placeholder="seu@email.com" required>
+          <label for="lgPass">Senha</label>
+          <input id="lgPass" type="password" placeholder="Sua senha" required>
+          <button class="btn-main" type="submit" style="width:100%;margin-top:8px">Entrar</button>
+        </form>
+        <div class="auth-links">
+          <button type="button" class="link-btn" data-view="recuperar">Recuperar senha</button>
+          <button type="button" class="link-btn" data-view="criar">Criar usuário</button>
+        </div>
+      </div>
+
+      <div class="auth-view" id="view-criar">
+        <p class="muted" style="margin-bottom:20px">Crie sua conta gratuita</p>
+        <form id="signupForm">
+          <label for="suEmail">E-mail</label>
+          <input id="suEmail" type="email" placeholder="seu@email.com" required>
+          <label for="suPass">Senha</label>
+          <input id="suPass" type="password" placeholder="Crie uma senha" minlength="6" required>
+          <button class="btn-main" type="submit" style="width:100%;margin-top:8px">Criar usuário</button>
+        </form>
+        <div class="auth-links">
+          <button type="button" class="link-btn" data-view="login">← Voltar ao login</button>
+        </div>
+      </div>
+
+      <div class="auth-view" id="view-recuperar">
+        <p class="muted" style="margin-bottom:20px">Informe seu e-mail para receber o link de recuperação</p>
+        <form id="recoverForm">
+          <label for="rcEmail">E-mail</label>
+          <input id="rcEmail" type="email" placeholder="seu@email.com" required>
+          <button class="btn-main" type="submit" style="width:100%;margin-top:8px">Enviar link</button>
+        </form>
+        <div class="auth-links">
+          <button type="button" class="link-btn" data-view="login">← Voltar ao login</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    // Menu mobile
     var menu = document.getElementById('menu');
     document.getElementById('burger').addEventListener('click', function () { menu.classList.toggle('open'); });
     menu.addEventListener('click', function () { menu.classList.remove('open'); });
 
-    // Carrossel
     (function () {
-      var INTERVAL = 4000; // tempo do automático (ms)
+      var INTERVAL = 4000;
       var root = document.getElementById('carousel');
       var slides = root.querySelectorAll('.slide');
       var dotsBox = root.querySelector('.dots');
@@ -272,7 +275,7 @@
       root.addEventListener('mouseleave', start);
       start();
     })();
-    // ===== Painel, login, som =====
+
     var panelEl = document.getElementById('panel');
     var gear = document.getElementById('btnGear');
     var loginModal = document.getElementById('loginModal');
@@ -297,7 +300,26 @@
     });
 
     function showLogin(open) { loginModal.classList.toggle('open', open); }
-    document.getElementById('btnLogin').addEventListener('click', function () { togglePanel(false); showLogin(true); });
+
+    function showView(name) {
+      document.querySelectorAll('.auth-view').forEach(function (v) { v.classList.remove('active'); });
+      document.getElementById('view-' + name).classList.add('active');
+    }
+    document.querySelectorAll('[data-view]').forEach(function (b) {
+      b.addEventListener('click', function () { showView(b.dataset.view); });
+    });
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Usuário criado! Agora é só entrar.');
+      showView('login');
+    });
+    document.getElementById('recoverForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Se o e-mail existir, você receberá um link de recuperação.');
+      showView('login');
+    });
+
+    document.getElementById('btnLogin').addEventListener('click', function () { togglePanel(false); showView('login'); showLogin(true); });
     document.querySelector('[data-close="login"]').addEventListener('click', function () { showLogin(false); });
     loginModal.addEventListener('click', function (e) { if (e.target === loginModal) showLogin(false); });
     document.getElementById('loginForm').addEventListener('submit', function (e) {
@@ -307,10 +329,9 @@
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { togglePanel(false); showLogin(false); } });
 
-    // Áudio (gerado pelo navegador, sem arquivos)
     var AC = window.AudioContext || window.webkitAudioContext;
     var ctx = null, master = null, musicTimer = null, sfxOn = true;
-    var notes = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 392.0, 329.63]; // escala pentatônica
+    var notes = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 392.0, 329.63];
 
     function initAudio() {
       if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
