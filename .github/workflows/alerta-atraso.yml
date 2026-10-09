@@ -1,0 +1,47 @@
+name: Alerta de atividades atrasadas
+
+on:
+  schedule:
+    # Roda todo dia as 08:00 (Brasilia = 11:00 UTC); o script decide se e dia de envio (a cada 48h)
+    - cron: "0 11 * * *"
+  workflow_dispatch: # permite rodar manualmente pela aba Actions
+    inputs:
+      issue_teste:
+        description: "Teste: numero da issue para enviar agora, ignorando as 48h (deixe vazio para rodar normal)"
+        required: false
+        default: ""
+
+jobs:
+  verificar-atrasos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verificar issues atrasadas e enviar e-mails
+        env:
+          # Token pessoal com acesso ao Project da organizacao (veja instrucoes)
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          ORG: MathLume
+          PROJECT_NUMBER: "1"
+          STATUS_FIELD: Status
+          STATUS_ALVO: "In Progress,Test"
+          DATE_FIELD: Target date
+          # Reenvia o aviso a cada N dias enquanto a atividade estiver atrasada
+          INTERVALO_DIAS: "2"
+          ISSUE_TESTE: ${{ github.event.inputs.issue_teste }}
+          # Conta de e-mail que envia os avisos (ex.: Gmail com senha de app)
+          SMTP_HOST: smtp.gmail.com
+          SMTP_PORT: "587"
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          # JSON opcional: {"loginGitHub": "email@dominio.com", ...}
+          EMAIL_MAP: ${{ secrets.EMAIL_MAP }}
+          # E-mail que recebe copia de todos os avisos (opcional)
+          EMAIL_CC: ${{ secrets.EMAIL_CC }}
+        run: python .github/scripts/alerta_atraso.py
