@@ -140,15 +140,14 @@ def montar_mensagem(n_aviso, assignees, status, prazo, dias, projeto):
                     "Atribua um assignee para que ele seja avisado.")
     return (
         f"{MARCADOR}\n"
-        f"## ⚠️ {ordinal(n_aviso)} aviso de atraso\n\n"
+        f"## {ordinal(n_aviso)} aviso de atraso\n\n"
         f"{abertura}\n\n"
-        f"| | |\n|---|---|\n"
-        f"| **Status atual** | {status} |\n"
-        f"| **Target date** | {prazo.strftime('%d/%m/%Y')} |\n"
-        f"| **Atraso** | {dias} {plural} |\n\n"
-        f"Por favor, atualize o andamento da atividade ou combine um novo prazo com o grupo.\n\n"
-        f"_Mensagem automática ({projeto}). Enquanto a issue continuar atrasada, "
-        f"um novo aviso será publicado a cada {INTERVALO_DIAS} dias._"
+        f"| Status atual | Target date | Atraso |\n|---|---|---|\n"
+        f"| {status} | {prazo.strftime('%d/%m/%Y')} | {dias} {plural} |\n\n"
+        f"Combine um novo prazo de entrega com o seu orientador, **Arthur Mariano**, "
+        f"e com a sua equipe, ou conclua esta issue o quanto antes. Lembre-se: "
+        f"**a data não deve ser alterada sem a aprovação prévia do seu orientador.**\n\n"
+        f"_Vou lembrar você disso a cada {INTERVALO_DIAS} dias até que essa situação seja resolvida._"
     )
 
 
