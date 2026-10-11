@@ -1,30 +1,34 @@
 """
-Verifica o GitHub Project da organizacao e envia e-mail aos assignees
-das issues que estao em "In Progress" ou "Test" com o Target date vencido.
+Verifica o GitHub Project da organizacao e comenta nas issues que estao em
+"In Progress" ou "Test" com o Target date vencido, marcando os assignees.
+Cada comentario e numerado: primeiro aviso, segundo aviso, terceiro aviso...
 Sem dependencias externas: usa apenas a biblioteca padrao do Python.
 """
 import json
 import os
-import smtplib
 import sys
 import urllib.request
 from datetime import datetime, date
-from email.message import EmailMessage
 from zoneinfo import ZoneInfo
 
-TOKEN = os.environ["GH_TOKEN"]
+TOKEN = os.environ["GH_TOKEN"]  # token com acesso ao Project da organizacao
+# Token do proprio workflow: comenta como github-actions[bot] neste repositorio
+COMMENT_TOKEN = os.environ.get("COMMENT_TOKEN") or TOKEN
+REPO_ATUAL = os.environ.get("GITHUB_REPOSITORY", "")
 ORG = os.environ["ORG"]
 PROJECT_NUMBER = int(os.environ["PROJECT_NUMBER"])
 STATUS_FIELD = os.environ.get("STATUS_FIELD", "Status")
 STATUS_ALVO = {s.strip().lower() for s in os.environ["STATUS_ALVO"].split(",")}
 DATE_FIELD = os.environ.get("DATE_FIELD", "Target date")
-EMAIL_MAP = json.loads(os.environ.get("EMAIL_MAP") or "{}")
-EMAIL_CC = (os.environ.get("EMAIL_CC") or "").strip()
-INTERVALO_DIAS = int(os.environ.get("INTERVALO_DIAS", "2"))  # 2 dias = 48h
-# Modo teste: numero de uma issue para enviar hoje, ignorando o intervalo de 48h
+INTERVALO_DIAS = int(os.environ.get("INTERVALO_DIAS", "2"))  # novo aviso a cada N dias
+# Modo teste: numero de uma issue para comentar agora, ignorando o intervalo
 ISSUE_TESTE = (os.environ.get("ISSUE_TESTE") or "").strip()
 
+MARCADOR = "<!-- alerta-atraso-bot -->"
 HOJE = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
+
+ORDINAIS = ["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto",
+            "Sexto", "Sétimo", "Oitavo", "Nono", "Décimo"]
 
 QUERY = """
 query($org: String!, $number: Int!, $cursor: String, $status: String!, $data: String!) {
@@ -47,7 +51,7 @@ query($org: String!, $number: Int!, $cursor: String, $status: String!, $data: St
               url
               state
               repository { nameWithOwner }
-              assignees(first: 20) { nodes { login name email } }
+              assignees(first: 20) { nodes { login } }
               issueFieldValues(first: 20) {
                 nodes {
                   ... on IssueFieldDateValue {
@@ -66,66 +70,91 @@ query($org: String!, $number: Int!, $cursor: String, $status: String!, $data: St
 """
 
 
-def graphql(variables):
-    req = urllib.request.Request(
-        "https://api.github.com/graphql",
-        data=json.dumps({"query": QUERY, "variables": variables}).encode(),
-        headers={
-            "Authorization": f"Bearer {TOKEN}",
-            "Content-Type": "application/json",
-            # Necessario para ler os campos da issue (Start date, Target date...)
-            "GraphQL-Features": "issue_fields",
-        },
-    )
+def api(url, token, metodo="GET", corpo=None, extra_headers=None):
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json",
+    }
+    headers.update(extra_headers or {})
+    dados = json.dumps(corpo).encode() if corpo is not None else None
+    req = urllib.request.Request(url, data=dados, headers=headers, method=metodo)
     with urllib.request.urlopen(req) as resp:
-        payload = json.load(resp)
+        return json.load(resp)
+
+
+def graphql(variables):
+    payload = api("https://api.github.com/graphql", TOKEN, "POST",
+                  {"query": QUERY, "variables": variables},
+                  # Necessario para ler os campos da issue (Start date, Target date...)
+                  {"GraphQL-Features": "issue_fields"})
     if payload.get("errors"):
         sys.exit(f"Erro na API do GitHub: {payload['errors']}")
     return payload["data"]["organization"]["projectV2"]
 
 
 def buscar_itens():
-    cursor, itens, titulo = None, [], ""
+    cursor, itens = None, []
     while True:
         projeto = graphql({"org": ORG, "number": PROJECT_NUMBER, "cursor": cursor,
                            "status": STATUS_FIELD, "data": DATE_FIELD})
-        titulo = projeto["title"]
         pagina = projeto["items"]
         itens.extend(pagina["nodes"])
         if not pagina["pageInfo"]["hasNextPage"]:
-            return titulo, itens
+            return projeto["title"], itens
         cursor = pagina["pageInfo"]["endCursor"]
 
 
-def enviar_email(destino, nome, issue, prazo, status, dias, projeto):
-    msg = EmailMessage()
-    repo = issue["repository"]["nameWithOwner"]
-    msg["Subject"] = f"[{projeto}] Atividade atrasada: #{issue['number']} {issue['title']}"
-    msg["From"] = os.environ["SMTP_USER"]
-    msg["To"] = destino
-    if EMAIL_CC:
-        msg["Cc"] = EMAIL_CC
+def token_para(repo):
+    # O GITHUB_TOKEN so vale para o repositorio do workflow
+    return COMMENT_TOKEN if repo == REPO_ATUAL else TOKEN
+
+
+def avisos_anteriores(repo, numero):
+    """Retorna a lista de datas dos avisos ja publicados pelo bot na issue."""
+    datas, pagina = [], 1
+    while True:
+        url = (f"https://api.github.com/repos/{repo}/issues/{numero}/comments"
+               f"?per_page=100&page={pagina}")
+        comentarios = api(url, token_para(repo))
+        for c in comentarios:
+            if MARCADOR in (c.get("body") or ""):
+                criado = datetime.fromisoformat(c["created_at"].replace("Z", "+00:00"))
+                datas.append(criado.astimezone(ZoneInfo("America/Sao_Paulo")).date())
+        if len(comentarios) < 100:
+            return datas
+        pagina += 1
+
+
+def ordinal(n):
+    return ORDINAIS[n - 1] if n <= len(ORDINAIS) else f"{n}º"
+
+
+def montar_mensagem(n_aviso, assignees, status, prazo, dias, projeto):
     plural = "dia" if dias == 1 else "dias"
-    msg.set_content(
-        f"Ola, {nome}!\n\n"
-        f"A atividade abaixo, atribuida a voce, esta com o prazo vencido:\n\n"
-        f"Issue: #{issue['number']} {issue['title']}\n"
-        f"Repositorio: {repo}\n"
-        f"Status atual: {status}\n"
-        f"Target date: {prazo.strftime('%d/%m/%Y')} ({dias} {plural} de atraso)\n"
-        f"Link: {issue['url']}\n\n"
+    if assignees:
+        mencoes = " ".join(f"@{login}" for login in assignees)
+        abertura = f"{mencoes}, esta issue está com o prazo vencido."
+    else:
+        abertura = ("Esta issue está com o prazo vencido e **não tem responsável atribuído**. "
+                    "Atribua um assignee para que ele seja avisado.")
+    return (
+        f"{MARCADOR}\n"
+        f"## ⚠️ {ordinal(n_aviso)} aviso de atraso\n\n"
+        f"{abertura}\n\n"
+        f"| | |\n|---|---|\n"
+        f"| **Status atual** | {status} |\n"
+        f"| **Target date** | {prazo.strftime('%d/%m/%Y')} |\n"
+        f"| **Atraso** | {dias} {plural} |\n\n"
         f"Por favor, atualize o andamento da atividade ou combine um novo prazo com o grupo.\n\n"
-        f"Mensagem automatica enviada pelo GitHub Actions do projeto {projeto}."
+        f"_Mensagem automática ({projeto}). Enquanto a issue continuar atrasada, "
+        f"um novo aviso será publicado a cada {INTERVALO_DIAS} dias._"
     )
-    with smtplib.SMTP(os.environ["SMTP_HOST"], int(os.environ["SMTP_PORT"])) as smtp:
-        smtp.starttls()
-        smtp.login(os.environ["SMTP_USER"], os.environ["SMTP_PASSWORD"])
-        smtp.send_message(msg)
 
 
 def main():
     projeto, itens = buscar_itens()
-    enviados, sem_email = 0, []
+    publicados = 0
 
     for item in itens:
         issue = item.get("content") or {}
@@ -150,26 +179,28 @@ def main():
                 print(f"Teste: #{ISSUE_TESTE} ainda no prazo ({prazo_txt})")
             continue
 
+        repo = issue["repository"]["nameWithOwner"]
+        numero = issue["number"]
         dias = (HOJE - prazo).days
-        # Envia no 1o dia de atraso e depois a cada 48h (dias 1, 3, 5, 7...)
-        if not ISSUE_TESTE and (dias - 1) % INTERVALO_DIAS != 0:
-            print(f"Atrasada, sem envio hoje: #{issue['number']} ({dias} dias de atraso)")
-            continue
-        print(f"Atrasada: #{issue['number']} {issue['title']} ({status}, prazo {prazo_txt})")
-        for pessoa in issue["assignees"]["nodes"]:
-            login = pessoa["login"]
-            email = EMAIL_MAP.get(login) or pessoa.get("email")
-            if not email:
-                sem_email.append(f"{login} (issue #{issue['number']})")
-                continue
-            enviar_email(email, pessoa.get("name") or login, issue, prazo, status, dias, projeto)
-            enviados += 1
-            print(f"  e-mail enviado para {login}")
+        anteriores = avisos_anteriores(repo, numero)
 
-    print(f"\nTotal de e-mails enviados: {enviados}")
-    if sem_email:
-        print("::warning::Sem e-mail cadastrado para: " + ", ".join(sem_email)
-              + ". Adicione no secret EMAIL_MAP.")
+        # Primeiro aviso logo no 1o dia de atraso; depois, a cada INTERVALO_DIAS
+        if anteriores and not ISSUE_TESTE:
+            desde_ultimo = (HOJE - max(anteriores)).days
+            if desde_ultimo < INTERVALO_DIAS:
+                print(f"#{numero} atrasada ({dias} dias), ultimo aviso ha {desde_ultimo} dia(s): sem aviso hoje")
+                continue
+
+        n_aviso = len(anteriores) + 1
+        assignees = [p["login"] for p in issue["assignees"]["nodes"]]
+        corpo = montar_mensagem(n_aviso, assignees, status, prazo, dias, projeto)
+        api(f"https://api.github.com/repos/{repo}/issues/{numero}/comments",
+            token_para(repo), "POST", {"body": corpo})
+        publicados += 1
+        print(f"#{numero} {issue['title']}: {ordinal(n_aviso).lower()} aviso publicado "
+              f"({dias} dias de atraso, assignees: {', '.join(assignees) or 'nenhum'})")
+
+    print(f"\nTotal de avisos publicados: {publicados}")
 
 
 if __name__ == "__main__":
