@@ -20,6 +20,7 @@
       </div>
       <div class="nav-right">
         <button class="btn-login" id="btnLogin" type="button">Login</button>
+        <button class="btn-login" id="btnLogout" type="button" hidden>Sair</button>
         <button class="gear" id="btnGear" type="button" aria-label="Configurações" aria-expanded="false">⚙️</button>
         <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
       </div>
@@ -30,7 +31,7 @@
     <div class="container">
       <div>
         <span class="badge">Bem-vindo à sua jornada!</span>
-        <h1>Aprenda, evolua<br><span class="grad">e brilhe.</span></h1>
+        <h1>Aprenda, jogue,<br><span class="grad">evolua.</span></h1>
         <p>Transforme seu aprendizado com a plataforma mais inovadora do mercado. Gamificação, certificação e resultados reais.</p>
         <a href="#jornada" class="btn-main">Começar Jornada →</a>
       </div>
@@ -39,7 +40,7 @@
         <div class="carousel-viewport">
           <div class="slide g1 active"><div class="emoji">🎯</div><h3>Aprendizado Gamificado</h3><p>Ganhe pontos, suba de nível e torne o estudo divertido.</p></div>
           <div class="slide g2"><div class="emoji">🏆</div><h3>Ranking e Conquistas</h3><p>Compare seu desempenho e desbloqueie medalhas.</p></div>
-          <div class="slide g3"><div class="emoji">📚</div><h3>Trilhas Personalizadas</h3><p>Conteúdos no seu ritmo, de Matemática a Ciências.</p></div>
+          <div class="slide g3"><div class="emoji">📚</div><h3>Trilhas Personalizadas</h3><p>Conteúdos de Matemática no seu ritmo.</p></div>
           <div class="slide g4"><div class="emoji">⚡</div><h3>Prática Interativa</h3><p>Desafios em tempo real para testar o que você aprendeu.</p></div>
           <button class="arrow prev" type="button" aria-label="Slide anterior">‹</button>
           <button class="arrow next" type="button" aria-label="Próximo slide">›</button>
@@ -58,25 +59,20 @@
     </div>
   </section>
 
-  <section class="section" id="ranking">
+  <section class="section" id="conquistas">
     <div class="container">
-      <div class="section-title">
-        <h2>Por que escolher a <span class="grad">MathLume</span>?</h2>
-        <p>A plataforma que combina tecnologia de ponta com metodologias comprovadas de ensino.</p>
-      </div>
-      <div class="grid-2">
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#a855f7,#ec4899)">🎯</div><h3>Aprendizado Gamificado</h3><p>Sistema de pontos, conquistas e rankings para tornar o estudo mais divertido e engajante.</p></div>
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">📈</div><h3>Progresso Personalizado</h3><p>Trilhas de conhecimento adaptadas ao seu ritmo e nível de aprendizado.</p></div>
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#f97316,#ef4444)">🛡️</div><h3>Certificação Reconhecida</h3><p>Certificados validados e aceitos pelas principais instituições acadêmicas.</p></div>
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#22c55e,#10b981)">⚡</div><h3>Prática Interativa</h3><p>Exercícios dinâmicos e desafios que testam seu conhecimento em tempo real.</p></div>
+      <div class="cta-box">
+        <h2>Pronto para começar sua jornada?</h2>
+        <p>Junte-se a milhares de estudantes que já transformaram seu aprendizado com a MathLume</p>
+        <button class="btn-main" id="btnCriarConta" type="button">Criar Conta Grátis →</button>
       </div>
     </div>
   </section>
 
   <section class="section alt" id="jornada">
     <div class="container">
-      <div class="section-title"><h2>Matérias em Destaque</h2><p>Explore nosso catálogo de conteúdos premium</p></div>
-      <div class="grid-3">
+      <div class="section-title"><h2>Mini jogos disponíveis</h2><p>Explore nosso catálogo de conteúdos premium</p></div>
+      <div class="grid-3" style="grid-template-columns:minmax(0,380px);justify-content:center">
         <div class="card" style="background:rgba(131,24,67,.25);border-color:rgba(236,72,153,.2)">
           <div class="cover" style="background:linear-gradient(135deg,#be185d,#831843)">➗</div>
           <div class="body">
@@ -127,12 +123,17 @@
     </div>
   </section>
 
-  <section class="section" id="conquistas">
+  <section class="section" id="ranking">
     <div class="container">
-      <div class="cta-box">
-        <h2>Pronto para começar sua jornada?</h2>
-        <p>Junte-se a milhares de estudantes que já transformaram seu aprendizado com a MathLume</p>
-        <button class="btn-main" type="button">Criar Conta Grátis →</button>
+      <div class="section-title">
+        <h2>Por que escolher a <span class="grad">MathLume</span>?</h2>
+        <p>A plataforma que combina tecnologia de ponta com metodologias comprovadas de ensino.</p>
+      </div>
+      <div class="grid-2">
+        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#a855f7,#ec4899)">🎯</div><h3>Aprendizado Gamificado</h3><p>Sistema de pontos, conquistas e rankings para tornar o estudo mais divertido e engajante.</p></div>
+        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">📈</div><h3>Progresso Personalizado</h3><p>Trilhas de conhecimento adaptadas ao seu ritmo e nível de aprendizado.</p></div>
+        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#f97316,#ef4444)">🛡️</div><h3>Certificação Reconhecida</h3><p>Certificados validados e aceitos pelas principais instituições acadêmicas.</p></div>
+        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#22c55e,#10b981)">⚡</div><h3>Prática Interativa</h3><p>Exercícios dinâmicos e desafios que testam seu conhecimento em tempo real.</p></div>
       </div>
     </div>
   </section>
@@ -209,6 +210,8 @@
       <div class="auth-view" id="view-criar">
         <p class="muted" style="margin-bottom:20px">Crie sua conta gratuita</p>
         <form id="signupForm">
+          <label for="suUser">Usuário</label>
+          <input id="suUser" type="text" placeholder="Seu nome de usuário" required>
           <label for="suEmail">E-mail</label>
           <input id="suEmail" type="email" placeholder="seu@email.com" required>
           <label for="suPass">Senha</label>
@@ -232,6 +235,18 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="user-menu" id="userMenu" aria-hidden="true">
+    <div class="user-card">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <strong id="userNameShow">usuário</strong>
+    </div>
+    <button class="user-item" id="btnChangePhoto" type="button">🖼️ Alterar foto de usuário</button>
+    <input type="file" id="photoInput" accept="image/*" hidden>
+    <label for="userNameInput">Nome de usuário</label>
+    <input id="userNameInput" type="text" maxlength="24" placeholder="Seu nome de usuário">
+    <button class="btn-main" id="btnSaveName" type="button" style="width:100%;margin-top:8px;padding:12px">Salvar</button>
   </div>
 
   <script>
@@ -284,6 +299,7 @@
       panelEl.classList.toggle('open', open);
       panelEl.setAttribute('aria-hidden', String(!open));
       gear.setAttribute('aria-expanded', String(open));
+      if (open) toggleUserMenu(false);
     }
     gear.addEventListener('click', function (e) { e.stopPropagation(); togglePanel(!panelEl.classList.contains('open')); });
     document.addEventListener('click', function (e) {
@@ -308,8 +324,45 @@
     document.querySelectorAll('[data-view]').forEach(function (b) {
       b.addEventListener('click', function () { showView(b.dataset.view); });
     });
+    var logado = false, usuario = '', fotoUrl = '', cadastros = {};
+    var userMenu = document.getElementById('userMenu');
+    var btnLoginEl = document.getElementById('btnLogin');
+
+    function toggleUserMenu(open) {
+      userMenu.classList.toggle('open', open);
+      userMenu.setAttribute('aria-hidden', String(!open));
+    }
+    function atualizarPerfil() {
+      var av = document.getElementById('userAvatar');
+      document.getElementById('userNameShow').textContent = usuario;
+      document.getElementById('userNameInput').value = usuario;
+      if (fotoUrl) { av.style.backgroundImage = 'url("' + fotoUrl + '")'; av.textContent = ''; }
+      else { av.style.backgroundImage = ''; av.textContent = usuario.charAt(0).toUpperCase(); }
+    }
+    function salvarNome() {
+      var v = document.getElementById('userNameInput').value.trim();
+      if (!v) return;
+      usuario = v;
+      atualizarPerfil();
+    }
+    document.getElementById('btnChangePhoto').addEventListener('click', function () { document.getElementById('photoInput').click(); });
+    document.getElementById('photoInput').addEventListener('change', function (e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      if (fotoUrl) URL.revokeObjectURL(fotoUrl);
+      fotoUrl = URL.createObjectURL(f);
+      atualizarPerfil();
+      e.target.value = '';
+    });
+    document.getElementById('btnSaveName').addEventListener('click', salvarNome);
+    document.getElementById('userNameInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') salvarNome(); });
+    document.addEventListener('click', function (e) {
+      if (!userMenu.contains(e.target) && e.target !== btnLoginEl) toggleUserMenu(false);
+    });
+
     document.getElementById('signupForm').addEventListener('submit', function (e) {
       e.preventDefault();
+      cadastros[document.getElementById('suEmail').value.trim().toLowerCase()] = document.getElementById('suUser').value.trim();
       alert('Usuário criado! Agora é só entrar.');
       showView('login');
     });
@@ -319,15 +372,43 @@
       showView('login');
     });
 
-    document.getElementById('btnLogin').addEventListener('click', function () { togglePanel(false); showView('login'); showLogin(true); });
+    btnLoginEl.addEventListener('click', function () {
+      togglePanel(false);
+      if (logado) { toggleUserMenu(!userMenu.classList.contains('open')); return; }
+      showView('login');
+      showLogin(true);
+    });
+    document.getElementById('btnCriarConta').addEventListener('click', function () { togglePanel(false); showView('criar'); showLogin(true); });
     document.querySelector('[data-close="login"]').addEventListener('click', function () { showLogin(false); });
     loginModal.addEventListener('click', function (e) { if (e.target === loginModal) showLogin(false); });
+    function aplicarLogin() {
+      document.getElementById('conquistas').style.display = 'none';
+      document.getElementById('jornada').before(document.getElementById('ranking'));
+      document.getElementById('btnLogout').hidden = false;
+    }
+    function aplicarLogout() {
+      document.getElementById('conquistas').style.display = '';
+      document.getElementById('loja').after(document.getElementById('ranking'));
+      document.getElementById('btnLogout').hidden = true;
+      document.getElementById('btnLogin').textContent = 'Login';
+      document.getElementById('loginForm').reset();
+      logado = false;
+      toggleUserMenu(false);
+      if (fotoUrl) URL.revokeObjectURL(fotoUrl);
+      fotoUrl = '';
+    }
+    document.getElementById('btnLogout').addEventListener('click', aplicarLogout);
     document.getElementById('loginForm').addEventListener('submit', function (e) {
       e.preventDefault();
+      var email = document.getElementById('lgEmail').value.trim().toLowerCase();
+      logado = true;
+      usuario = cadastros[email] || email.split('@')[0];
+      atualizarPerfil();
       document.getElementById('btnLogin').textContent = 'Olá! 👋';
+      aplicarLogin();
       showLogin(false);
     });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { togglePanel(false); showLogin(false); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { togglePanel(false); showLogin(false); toggleUserMenu(false); } });
 
     var AC = window.AudioContext || window.webkitAudioContext;
     var ctx = null, master = null, musicTimer = null, sfxOn = true;
