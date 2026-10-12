@@ -147,7 +147,7 @@ def montar_mensagem(n_aviso, assignees, status, prazo, dias, projeto):
         f"Combine um novo prazo de entrega com o seu orientador, **Arthur Mariano**, "
         f"e com a sua equipe, ou conclua esta issue o quanto antes. Lembre-se: "
         f"**a data não deve ser alterada sem a aprovação prévia do seu orientador.**\n\n"
-        f"_Vou lembrar você disso a cada {INTERVALO_DIAS} dias até que essa situação seja resolvida._"
+        "_Irei emitir esta mensagem periodicamente até que a situação desta issue seja resolvida._"
     )
 
 
