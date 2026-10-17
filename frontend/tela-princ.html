@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MathLume</title>
+  <link rel="stylesheet" href="tela-princ.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="#inicio" class="logo">Math<span>Lume</span></a>
+      <div class="menu" id="menu">
+        <a href="#inicio">Início</a>
+        <a href="#ranking">Ranking</a>
+        <a href="loja.html">Loja</a>
+        <a href="#conquistas">Conquistas</a>
+        <a href="personalizacao.html">Personalização</a>
+      </div>
+      <div class="nav-right">
+        <button class="btn-login" id="btnLogin" type="button">Login</button>
+        <button class="btn-login" id="btnLogout" type="button" hidden>Sair</button>
+        <button class="gear" id="btnGear" type="button" aria-label="Configurações" aria-expanded="false">⚙️</button>
+        <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="inicio">
+    <div class="container">
+      <div>
+        <span class="badge">Bem-vindo à sua jornada!</span>
+        <h1>Aprenda, jogue,<br><span class="grad">evolua.</span></h1>
+        <p>Transforme seu aprendizado com a plataforma mais inovadora do mercado. Gamificação, certificação e resultados reais.</p>
+        <a href="#jornada" class="btn-main">Começar Jornada →</a>
+      </div>
+
+      <div class="carousel" id="carousel">
+        <div class="carousel-viewport">
+          <div class="slide g1 active"><div class="emoji">🎯</div><h3>Aprendizado Gamificado</h3><p>Ganhe pontos, suba de nível e torne o estudo divertido.</p></div>
+          <div class="slide g2"><div class="emoji">🏆</div><h3>Ranking e Conquistas</h3><p>Compare seu desempenho e desbloqueie medalhas.</p></div>
+          <div class="slide g3"><div class="emoji">📚</div><h3>Trilhas Personalizadas</h3><p>Conteúdos de Matemática no seu ritmo.</p></div>
+          <div class="slide g4"><div class="emoji">⚡</div><h3>Prática Interativa</h3><p>Desafios em tempo real para testar o que você aprendeu.</p></div>
+          <button class="arrow prev" type="button" aria-label="Slide anterior">‹</button>
+          <button class="arrow next" type="button" aria-label="Próximo slide">›</button>
+        </div>
+        <div class="dots"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="conquistas">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Pronto para começar sua jornada?</h2>
+        <p>Junte-se a milhares de estudantes que já transformaram seu aprendizado com a MathLume</p>
+        <button class="btn-main" id="btnCriarConta" type="button">Criar Conta Grátis →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="jornada">
+    <div class="container">
+      <div class="section-title"><h2>Mini jogos disponíveis</h2><p>Explore nosso catálogo de conteúdos premium</p></div>
+      <div class="grid-3" style="grid-template-columns:minmax(0,380px);justify-content:center">
+        <a class="card" href="minigamemat.html" aria-label="Jogar Mini-game de Matemática" style="background:rgba(131,24,67,.25);border-color:rgba(236,72,153,.2)">
+          <div class="cover" style="background:linear-gradient(135deg,#be185d,#831843)">➗</div>
+          <div class="body">
+            <div class="row"><span class="pill" style="background:rgba(236,72,153,.2);color:#f9a8d4">Exatas</span></div>
+            <h3>Mini-game de Matemática</h3><p style="margin-top:8px">Meteoros descem do céu e cada um traz uma conta. Acerte o resultado para destruí-lo antes que chegue ao chão. Um mini-game rápido e divertido para treinar o cálculo mental.</p>
+            <span class="play-cta">▶ Jogar agora</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="loja">
+    <div class="container">
+      <div class="section-title">
+        <h2>Troque seus <span style="background:linear-gradient(90deg,#facc15,#fb923c);-webkit-background-clip:text;background-clip:text;color:transparent">XP na Loja</span></h2>
+        <p>Use seus pontos de experiência para desbloquear avatares exclusivos, temas personalizados e power-ups incríveis!</p>
+      </div>
+      <div class="grid-3" style="margin-bottom:40px">
+        <div class="card">
+          <div class="cover" style="background:linear-gradient(135deg,#7e22ce,#312e81)">🚀<span class="tag">Novo</span></div>
+          <div class="body">
+            <div class="row"><h3>Avatar Galáctico</h3><span class="xp">⚡ 500 XP</span></div>
+            <p>Avatar exclusivo com animações premium e efeitos especiais</p>
+            <span class="small">1.2k adquiridos</span>
+          </div>
+        </div>
+        <div class="card" style="background:rgba(131,24,67,.25);border-color:rgba(236,72,153,.2)">
+          <div class="cover" style="background:linear-gradient(135deg,#be185d,#4c1d95)">🌆<span class="tag" style="background:#ec4899;color:#fff">Popular</span></div>
+          <div class="body">
+            <div class="row"><h3>Tema Cyberpunk</h3><span class="xp">⚡ 750 XP</span></div>
+            <p>Interface futurista com neon e animações cyberpunk</p>
+            <span class="small">3.5k adquiridos</span>
+          </div>
+        </div>
+        <div class="card" style="background:rgba(8,51,68,.35);border-color:rgba(6,182,212,.2)">
+          <div class="cover" style="background:linear-gradient(135deg,#0e7490,#1e3a8a)">🔋<span class="tag" style="background:#06b6d4;color:#fff">Limitado</span></div>
+          <div class="body">
+            <div class="row"><h3>XP Boost 2x</h3><span class="xp">⚡ 300 XP</span></div>
+            <p>Ganhe XP em dobro por 24 horas em todas as atividades</p>
+            <span class="small">8.9k adquiridos</span>
+          </div>
+        </div>
+      </div>
+      <div class="center">
+        <a href="loja.html" class="btn-main btn-gold">🛍️ Visitar Loja Completa</a>
+        <p class="muted" style="margin-top:16px;font-size:.9rem">💰 Você possui <span class="star">0 XP</span> disponível • Faça login para começar a acumular!</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ranking">
+    <div class="container">
+      <div class="section-title">
+        <h2>Por que escolher a <span class="grad">MathLume</span>?</h2>
+        <p>A plataforma que combina tecnologia de ponta com metodologias comprovadas de ensino.</p>
+      </div>
+      <div class="grid-2">
+        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#a855f7,#ec4899)">🎯</div><h3>Aprendizado Gamificado</h3><p>Sistema de pontos, conquistas e rankings para tornar o estudo mais divertido e engajante.</p></div>
+        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">📈</div><h3>Progresso Personalizado</h3><p>Trilhas de conhecimento adaptadas ao seu ritmo e nível de aprendizado.</p></div>
+        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#f97316,#ef4444)">🛡️</div><h3>Certificação Reconhecida</h3><p>Certificados validados e aceitos pelas principais instituições acadêmicas.</p></div>
+        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#22c55e,#10b981)">⚡</div><h3>Prática Interativa</h3><p>Exercícios dinâmicos e desafios que testam seu conhecimento em tempo real.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="foot-grid">
+        <div><div class="logo" style="margin-bottom:16px">Math<span>Lume</span></div><p class="muted" style="font-size:.9rem">Transformando educação através da tecnologia.</p></div>
+        <div><h4>Plataforma</h4><ul><li><a href="loja.html">Loja</a></li></ul></div>
+        <div><h4>Comunidade</h4><ul><li><a href="#ranking">Ranking</a></li><li><a href="#conquistas">Conquistas</a></li><li><a href="personalizacao.html">Personalização</a></li></ul></div>
+        <div><h4>Suporte</h4><ul><li><a href="#">Central de Ajuda</a></li><li><a href="#">Contato</a></li><li><a href="#">FAQ</a></li></ul></div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 MathLume. Todos os direitos reservados.</span>
+        <span>Privacidade • Termos • Cookies</span>
+      </div>
+    </div>
+  </footer>
+
+  <aside class="panel" id="panel" aria-hidden="true">
+    <div class="panel-head">
+      <strong>⚙️ Configurações</strong>
+      <button class="close" data-close="panel" type="button" aria-label="Fechar">✕</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="sobre" type="button">Sobre Nós</button>
+      <button class="tab" data-tab="som" type="button">Som</button>
+    </div>
+
+    <div class="tab-body active" id="tab-sobre">
+      <p class="muted" style="margin-bottom:16px;font-size:.9rem">A MathLume nasceu para tornar o aprendizado mais divertido e acessível. Conheça quem participa do projeto:</p>
+      <div class="member"><div class="avatar">A</div><div><strong>Nome do Integrante 1</strong><span>Função / Cargo</span></div></div>
+      <div class="member"><div class="avatar">B</div><div><strong>Nome do Integrante 2</strong><span>Função / Cargo</span></div></div>
+      <div class="member"><div class="avatar">C</div><div><strong>Nome do Integrante 3</strong><span>Função / Cargo</span></div></div>
+      <div class="member"><div class="avatar">D</div><div><strong>Nome do Integrante 4</strong><span>Função / Cargo</span></div></div>
+    </div>
+
+    <div class="tab-body" id="tab-som">
+      <div class="opt">
+        <div><strong>🎵 Música de fundo</strong><span>Melodia ambiente suave</span></div>
+        <label class="switch"><input type="checkbox" id="musicToggle"><i></i></label>
+      </div>
+      <div class="opt col">
+        <div><strong>🔊 Volume da música</strong></div>
+        <input type="range" id="volume" min="0" max="100" value="40">
+      </div>
+      <div class="opt">
+        <div><strong>🔔 Sons de clique</strong><span>Efeito ao apertar botões</span></div>
+        <label class="switch"><input type="checkbox" id="sfxToggle" checked><i></i></label>
+      </div>
+    </div>
+  </aside>
+
+  <div class="overlay" id="loginModal" aria-hidden="true">
+    <div class="modal">
+      <button class="close" data-close="login" type="button" aria-label="Fechar">✕</button>
+      <div class="logo" style="margin-bottom:6px">Math<span>Lume</span></div>
+
+      <div class="auth-view active" id="view-login">
+        <p class="muted" style="margin-bottom:20px">Entre para continuar sua jornada</p>
+        <form id="loginForm">
+          <label for="lgEmail">E-mail</label>
+          <input id="lgEmail" type="email" placeholder="seu@email.com" required>
+          <label for="lgPass">Senha</label>
+          <input id="lgPass" type="password" placeholder="Sua senha" required>
+          <button class="btn-main" type="submit" style="width:100%;margin-top:8px">Entrar</button>
+        </form>
+        <div class="auth-links">
+          <button type="button" class="link-btn" data-view="recuperar">Recuperar senha</button>
+          <button type="button" class="link-btn" data-view="criar">Criar usuário</button>
+        </div>
+      </div>
+
+      <div class="auth-view" id="view-criar">
+        <p class="muted" style="margin-bottom:20px">Crie sua conta gratuita</p>
+        <form id="signupForm">
+          <label for="suUser">Usuário</label>
+          <input id="suUser" type="text" placeholder="Seu nome de usuário" required>
+          <label for="suEmail">E-mail</label>
+          <input id="suEmail" type="email" placeholder="seu@email.com" required>
+          <label for="suPass">Senha</label>
+          <input id="suPass" type="password" placeholder="Crie uma senha" minlength="6" required>
+          <button class="btn-main" type="submit" style="width:100%;margin-top:8px">Criar usuário</button>
+        </form>
+        <div class="auth-links">
+          <button type="button" class="link-btn" data-view="login">← Voltar ao login</button>
+        </div>
+      </div>
+
+      <div class="auth-view" id="view-recuperar">
+        <p class="muted" style="margin-bottom:20px">Informe seu e-mail para receber o link de recuperação</p>
+        <form id="recoverForm">
+          <label for="rcEmail">E-mail</label>
+          <input id="rcEmail" type="email" placeholder="seu@email.com" required>
+          <button class="btn-main" type="submit" style="width:100%;margin-top:8px">Enviar link</button>
+        </form>
+        <div class="auth-links">
+          <button type="button" class="link-btn" data-view="login">← Voltar ao login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-menu" id="userMenu" aria-hidden="true">
+    <div class="user-card">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <strong id="userNameShow">usuário</strong>
+    </div>
+    <button class="user-item" id="btnChangePhoto" type="button">🖼️ Alterar foto de usuário</button>
+    <input type="file" id="photoInput" accept="image/*" hidden>
+    <label for="userNameInput">Nome de usuário</label>
+    <input id="userNameInput" type="text" maxlength="24" placeholder="Seu nome de usuário">
+    <button class="btn-main" id="btnSaveName" type="button" style="width:100%;margin-top:8px;padding:12px">Salvar</button>
+  </div>
+
+  <script>
+    var menu = document.getElementById('menu');
+    document.getElementById('burger').addEventListener('click', function () { menu.classList.toggle('open'); });
+    menu.addEventListener('click', function () { menu.classList.remove('open'); });
+
+    (function () {
+      var INTERVAL = 4000;
+      var root = document.getElementById('carousel');
+      var slides = root.querySelectorAll('.slide');
+      var dotsBox = root.querySelector('.dots');
+      var current = 0, timer = null;
+
+      slides.forEach(function (_, i) {
+        var d = document.createElement('button');
+        d.type = 'button';
+        d.className = 'dot' + (i === 0 ? ' active' : '');
+        d.setAttribute('aria-label', 'Ir para o slide ' + (i + 1));
+        d.addEventListener('click', function () { goTo(i); start(); });
+        dotsBox.appendChild(d);
+      });
+      var dots = dotsBox.querySelectorAll('.dot');
+
+      function goTo(index) {
+        index = (index + slides.length) % slides.length;
+        slides.forEach(function (s, i) {
+          s.classList.remove('active', 'left');
+          if (i < index) s.classList.add('left');
+        });
+        slides[index].classList.add('active');
+        dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
+        current = index;
+      }
+      function stop() { if (timer) clearInterval(timer); timer = null; }
+      function start() { stop(); timer = setInterval(function () { goTo(current + 1); }, INTERVAL); }
+
+      root.querySelector('.prev').addEventListener('click', function () { goTo(current - 1); start(); });
+      root.querySelector('.next').addEventListener('click', function () { goTo(current + 1); start(); });
+      root.addEventListener('mouseenter', stop);
+      root.addEventListener('mouseleave', start);
+      start();
+    })();
+
+    var panelEl = document.getElementById('panel');
+    var gear = document.getElementById('btnGear');
+    var loginModal = document.getElementById('loginModal');
+
+    function togglePanel(open) {
+      panelEl.classList.toggle('open', open);
+      panelEl.setAttribute('aria-hidden', String(!open));
+      gear.setAttribute('aria-expanded', String(open));
+      if (open) toggleUserMenu(false);
+    }
+    gear.addEventListener('click', function (e) { e.stopPropagation(); togglePanel(!panelEl.classList.contains('open')); });
+    document.addEventListener('click', function (e) {
+      if (!panelEl.contains(e.target) && e.target !== gear) togglePanel(false);
+    });
+    document.querySelector('[data-close="panel"]').addEventListener('click', function () { togglePanel(false); });
+
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('.tab, .tab-body').forEach(function (el) { el.classList.remove('active'); });
+        t.classList.add('active');
+        document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+      });
+    });
+
+    function showLogin(open) { loginModal.classList.toggle('open', open); }
+
+    function showView(name) {
+      document.querySelectorAll('.auth-view').forEach(function (v) { v.classList.remove('active'); });
+      document.getElementById('view-' + name).classList.add('active');
+    }
+    document.querySelectorAll('[data-view]').forEach(function (b) {
+      b.addEventListener('click', function () { showView(b.dataset.view); });
+    });
+    var logado = false, usuario = '', fotoUrl = '', cadastros = {};
+    var userMenu = document.getElementById('userMenu');
+    var btnLoginEl = document.getElementById('btnLogin');
+
+    function toggleUserMenu(open) {
+      userMenu.classList.toggle('open', open);
+      userMenu.setAttribute('aria-hidden', String(!open));
+    }
+    function atualizarPerfil() {
+      var av = document.getElementById('userAvatar');
+      document.getElementById('userNameShow').textContent = usuario;
+      document.getElementById('userNameInput').value = usuario;
+      if (fotoUrl) { av.style.backgroundImage = 'url("' + fotoUrl + '")'; av.textContent = ''; }
+      else { av.style.backgroundImage = ''; av.textContent = usuario.charAt(0).toUpperCase(); }
+    }
+    function salvarNome() {
+      var v = document.getElementById('userNameInput').value.trim();
+      if (!v) return;
+      usuario = v;
+      atualizarPerfil();
+    }
+    document.getElementById('btnChangePhoto').addEventListener('click', function () { document.getElementById('photoInput').click(); });
+    document.getElementById('photoInput').addEventListener('change', function (e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      if (fotoUrl) URL.revokeObjectURL(fotoUrl);
+      fotoUrl = URL.createObjectURL(f);
+      atualizarPerfil();
+      e.target.value = '';
+    });
+    document.getElementById('btnSaveName').addEventListener('click', salvarNome);
+    document.getElementById('userNameInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') salvarNome(); });
+    document.addEventListener('click', function (e) {
+      if (!userMenu.contains(e.target) && e.target !== btnLoginEl) toggleUserMenu(false);
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      cadastros[document.getElementById('suEmail').value.trim().toLowerCase()] = document.getElementById('suUser').value.trim();
+      alert('Usuário criado! Agora é só entrar.');
+      showView('login');
+    });
+    document.getElementById('recoverForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Se o e-mail existir, você receberá um link de recuperação.');
+      showView('login');
+    });
+
+    btnLoginEl.addEventListener('click', function () {
+      togglePanel(false);
+      if (logado) { toggleUserMenu(!userMenu.classList.contains('open')); return; }
+      showView('login');
+      showLogin(true);
+    });
+    document.getElementById('btnCriarConta').addEventListener('click', function () { togglePanel(false); showView('criar'); showLogin(true); });
+    document.querySelector('[data-close="login"]').addEventListener('click', function () { showLogin(false); });
+    loginModal.addEventListener('click', function (e) { if (e.target === loginModal) showLogin(false); });
+    function aplicarLogin() {
+      document.getElementById('conquistas').style.display = 'none';
+      document.getElementById('jornada').before(document.getElementById('ranking'));
+      document.getElementById('btnLogout').hidden = false;
+    }
+    function aplicarLogout() {
+      document.getElementById('conquistas').style.display = '';
+      document.getElementById('loja').after(document.getElementById('ranking'));
+      document.getElementById('btnLogout').hidden = true;
+      document.getElementById('btnLogin').textContent = 'Login';
+      document.getElementById('loginForm').reset();
+      logado = false;
+      toggleUserMenu(false);
+      if (fotoUrl) URL.revokeObjectURL(fotoUrl);
+      fotoUrl = '';
+    }
+    document.getElementById('btnLogout').addEventListener('click', aplicarLogout);
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = document.getElementById('lgEmail').value.trim().toLowerCase();
+      logado = true;
+      usuario = cadastros[email] || email.split('@')[0];
+      atualizarPerfil();
+      document.getElementById('btnLogin').textContent = 'Olá! 👋';
+      aplicarLogin();
+      showLogin(false);
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { togglePanel(false); showLogin(false); toggleUserMenu(false); } });
+
+    var AC = window.AudioContext || window.webkitAudioContext;
+    var ctx = null, master = null, musicTimer = null, sfxOn = true;
+    var notes = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 392.0, 329.63];
+
+    function initAudio() {
+      if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
+      ctx = new AC();
+      master = ctx.createGain();
+      master.gain.value = document.getElementById('volume').value / 100 * 0.25;
+      master.connect(ctx.destination);
+    }
+    function tone(freq, dur, vol, dest) {
+      var o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + 0.05);
+    }
+    function startMusic() {
+      initAudio(); stopMusic();
+      var i = 0;
+      musicTimer = setInterval(function () {
+        var n = notes[Math.floor(Math.random() * notes.length)];
+        tone(n, 1.8, 0.5, master);
+        if (i++ % 4 === 0) tone(n / 2, 3, 0.4, master);
+      }, 700);
+    }
+    function stopMusic() { if (musicTimer) clearInterval(musicTimer); musicTimer = null; }
+
+    document.getElementById('musicToggle').addEventListener('change', function (e) { e.target.checked ? startMusic() : stopMusic(); });
+    document.getElementById('volume').addEventListener('input', function (e) { if (master) master.gain.value = e.target.value / 100 * 0.25; });
+    document.getElementById('sfxToggle').addEventListener('change', function (e) { sfxOn = e.target.checked; });
+    document.addEventListener('click', function (e) {
+      if (!sfxOn || !AC || !e.target.closest('button, .btn-main')) return;
+      initAudio();
+      var s = ctx.createGain(); s.gain.value = 0.15; s.connect(ctx.destination);
+      tone(880, 0.12, 0.6, s);
+    });
+  </script>
+</body>
+</html>
