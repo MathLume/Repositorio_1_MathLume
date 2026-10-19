@@ -2,8 +2,8 @@ name: Verificar Assignee, Branch e Datas (In Progress)
 
 on:
   schedule:
-    - cron: '*/15 * * * *'   # a cada 15 minutos
-  workflow_dispatch:          # permite rodar manualmente pela aba Actions
+    - cron: '*/15 * * * *' # a cada 15 minutos
+  workflow_dispatch: # permite rodar manualmente pela aba Actions
 
 permissions:
   issues: write
@@ -23,20 +23,25 @@ jobs:
             const STATUS_ALVO = 'In Progress';
             const START_FIELD = 'Start date';
             const TARGET_FIELD = 'Target date';
-            const LABEL = 'aguardando-assignee-branch';
             const MARKER = '<!-- check-assignee-branch-bot -->';
+            const LABEL_ANTIGA = 'aguardando-assignee-branch'; // label da versao anterior, removida se existir
 
-            // Garante que a label existe (e atualiza a descricao)
-            const labelInfo = {
-              owner: context.repo.owner, repo: context.repo.repo, name: LABEL,
-              color: 'D93F0B',
-              description: 'Faltando assignee, branch vinculada, Start date e/ou Target date'
+            // Uma label para cada pendencia
+            const LABELS = {
+              assignee: { name: 'sem-assignees',   color: 'D93F0B', description: 'Issue em In Progress sem assignee' },
+              branch:   { name: 'sem-branch',      color: 'B60205', description: 'Issue em In Progress sem branch vinculada' },
+              start:    { name: 'sem-start-date',  color: 'FBCA04', description: 'Issue em In Progress sem Start date' },
+              target:   { name: 'sem-target-date', color: 'E99695', description: 'Issue em In Progress sem Target date' },
             };
-            try {
-              await github.rest.issues.getLabel({ owner: labelInfo.owner, repo: labelInfo.repo, name: LABEL });
-              await github.rest.issues.updateLabel(labelInfo).catch(() => {});
-            } catch (e) {
-              await github.rest.issues.createLabel(labelInfo);
+            const NOMES_LABELS = Object.values(LABELS).map(l => l.name);
+
+            // Garante que as labels existem neste repositorio
+            for (const l of Object.values(LABELS)) {
+              try {
+                await github.rest.issues.getLabel({ owner: context.repo.owner, repo: context.repo.repo, name: l.name });
+              } catch (e) {
+                await github.rest.issues.createLabel({ owner: context.repo.owner, repo: context.repo.repo, ...l });
+              }
             }
 
             // Busca itens do Project. As datas podem estar no Project ou como campo da propria issue
@@ -62,7 +67,7 @@ jobs:
                             repository { name owner { login } }
                             assignees(first: 20) { totalCount nodes { login } }
                             linkedBranches(first: 5) { totalCount }
-                            labels(first: 30) { nodes { name } }
+                            labels(first: 50) { nodes { name } }
                             issueFieldValues(first: 20) {
                               nodes {
                                 ... on IssueFieldDateValue {
@@ -103,7 +108,11 @@ jobs:
               }
               return null;
             };
-            const br = d => d.split('-').reverse().join('/');
+
+            const buscarAviso = async (owner, repo, issue_number) => {
+              const comentarios = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number, per_page: 100 });
+              return comentarios.filter(c => (c.body || '').includes(MARKER)).pop();
+            };
 
             for (const item of items) {
               const status = item.fieldValueByName?.name;
@@ -113,34 +122,43 @@ jobs:
               const owner = issue.repository.owner.login;
               const repo = issue.repository.name;
               const issue_number = issue.number;
-              const startDate = lerData(item.inicio, issue, START_FIELD);
-              const targetDate = lerData(item.prazo, issue, TARGET_FIELD);
+              const labelsAtuais = issue.labels.nodes.map(l => l.name);
 
               const checks = [
-                { ok: issue.assignees.totalCount > 0, texto: '**Assignee** (responsável pela issue)' },
-                { ok: issue.linkedBranches.totalCount > 0, texto: '**Branch vinculada** (seção "Development" da issue)' },
-                { ok: !!startDate, texto: `**${START_FIELD}** (data de início)` },
-                { ok: !!targetDate, texto: `**${TARGET_FIELD}** (data prevista de entrega)` },
+                { key: 'assignee', ok: issue.assignees.totalCount > 0, texto: '**Assignee** (responsável pela issue)' },
+                { key: 'branch',   ok: issue.linkedBranches.totalCount > 0, texto: '**Branch vinculada** (seção "Development" da issue)' },
+                { key: 'start',    ok: !!lerData(item.inicio, issue, START_FIELD), texto: `**${START_FIELD}** (data de início)` },
+                { key: 'target',   ok: !!lerData(item.prazo, issue, TARGET_FIELD), texto: `**${TARGET_FIELD}** (data prevista de entrega)` },
               ];
-              if (startDate && targetDate && startDate > targetDate) {
-                checks.push({ ok: false, texto: `**Datas coerentes**: o ${START_FIELD} (${br(startDate)}) está depois do ${TARGET_FIELD} (${br(targetDate)})` });
-              }
               const pendente = checks.some(c => !c.ok);
-              const hasLabel = issue.labels.nodes.some(l => l.name === LABEL);
+              const jaAvisada = labelsAtuais.some(n => NOMES_LABELS.includes(n) || n === LABEL_ANTIGA);
 
-              // Tudo certo: remove a label e marca o aviso anterior como resolvido
+              // Remove a label da versao anterior
+              if (labelsAtuais.includes(LABEL_ANTIGA)) {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name: LABEL_ANTIGA }).catch(() => {});
+              }
+
+              // Sincroniza as labels: adiciona as que faltam, remove as ja resolvidas
+              const adicionar = checks.filter(c => !c.ok && !labelsAtuais.includes(LABELS[c.key].name)).map(c => LABELS[c.key].name);
+              const remover = checks.filter(c => c.ok && labelsAtuais.includes(LABELS[c.key].name)).map(c => LABELS[c.key].name);
+              if (adicionar.length) {
+                await github.rest.issues.addLabels({ owner, repo, issue_number, labels: adicionar });
+              }
+              for (const name of remover) {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name }).catch(() => {});
+              }
+
+              // Tudo certo: marca o aviso anterior como resolvido
               if (!pendente) {
-                if (hasLabel) {
-                  await github.rest.issues.removeLabel({ owner, repo, issue_number, name: LABEL }).catch(() => {});
-                  const comentarios = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number, per_page: 100 });
-                  const aviso = comentarios.filter(c => (c.body || '').includes(MARKER)).pop();
+                if (jaAvisada) {
+                  const aviso = await buscarAviso(owner, repo, issue_number);
                   if (aviso) {
                     await github.rest.issues.updateComment({
                       owner, repo, comment_id: aviso.id,
                       body: `${MARKER}\n✅ Pendências resolvidas: esta issue já tem assignee, branch vinculada, ${START_FIELD} e ${TARGET_FIELD}. Obrigado!`
                     });
                   }
-                  console.log(`#${issue_number}: tudo ok, label removida`);
+                  console.log(`#${issue_number}: tudo ok, labels removidas`);
                 }
                 continue;
               }
@@ -154,10 +172,9 @@ jobs:
                 `Atribua um responsável, vincule uma branch e preencha os campos **${START_FIELD}** e **${TARGET_FIELD}** ` +
                 `(na barra lateral da issue ou no Project). Este aviso é atualizado automaticamente.`;
 
-              if (hasLabel) {
-                // Ja avisado: so atualiza o comentario existente se as pendencias mudaram (evita spam)
-                const comentarios = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number, per_page: 100 });
-                const aviso = comentarios.filter(c => (c.body || '').includes(MARKER)).pop();
+              if (jaAvisada) {
+                // Ja avisada: so atualiza o comentario existente se as pendencias mudaram (evita spam)
+                const aviso = await buscarAviso(owner, repo, issue_number);
                 if (aviso && aviso.body !== body) {
                   await github.rest.issues.updateComment({ owner, repo, comment_id: aviso.id, body });
                   console.log(`#${issue_number}: aviso atualizado`);
@@ -167,7 +184,6 @@ jobs:
                 continue;
               }
 
-              await github.rest.issues.addLabels({ owner, repo, issue_number, labels: [LABEL] });
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
-              console.log(`#${issue_number}: novo aviso publicado`);
+              console.log(`#${issue_number}: novo aviso publicado (${adicionar.join(', ')})`);
             }
