@@ -49,6 +49,10 @@
       <h2 class="sec-title">Explosões de acerto</h2>
       <p class="sec-sub">Escolha como o bloco explode quando você acerta a resposta.</p>
       <div class="grid" id="grid-explosoes"></div>
+
+      <h2 class="sec-title">Temas de jogo</h2>
+      <p class="sec-sub">Mini-games completos com visual próprio. Ficam disponíveis para jogar só depois da compra.</p>
+      <div class="grid" id="grid-temas"></div>
     </section>
 
     <section class="aba" id="aba-boosters" role="tabpanel">
@@ -141,7 +145,7 @@
         var tem = ML.possui(cat, it.id);
         var estilo = cat === 'fundos' ? ' style="background:' + it.preview + '"' : '';
         var btn = tem
-          ? '<button class="btn" type="button" disabled>✓ ' + (it.preco === 0 ? 'Já é seu' : 'Adquirido') + '</button>'
+          ? (cat === 'temas' ? '<a class="btn" href="' + it.url + '">▶ Jogar</a>' : '<button class="btn" type="button" disabled>✓ ' + (it.preco === 0 ? 'Já é seu' : 'Adquirido') + '</button>')
           : '<button class="btn ouro" type="button" data-comprar="' + cat + '" data-id="' + it.id + '">' + precoTxt(it.preco) + '</button>';
         return '<article class="item"><div class="prev"' + estilo + '>' + it.emoji + '</div>' +
                '<div class="corpo"><h3>' + it.nome + '</h3><p>' + it.desc + '</p>' + btn + '</div></article>';
@@ -164,7 +168,7 @@
 
       function render() {
         $('saldo').textContent = ML.fmt(ML.estado().lumes);
-        ['fundos', 'blocos', 'explosoes'].forEach(function (cat) {
+        ['fundos', 'blocos', 'explosoes', 'temas'].forEach(function (cat) {
           $('grid-' + cat).innerHTML = ML.catalogo[cat].map(function (it) { return cardItem(cat, it); }).join('');
         });
         $('grid-boosters').innerHTML = ML.catalogo.boosters.map(cardBooster).join('');
@@ -195,7 +199,7 @@
           confirmarCompra(it.nome, it.preco, function () {
             var r = ML.comprar(cat, it.id);
             render();
-            if (r.ok) toast('✓ ' + it.nome + ' adquirido! <a href="personalizacao.html">Equipar</a>');
+            if (r.ok) toast('✓ ' + it.nome + ' adquirido! ' + (cat === 'temas' ? '<a href="' + it.url + '">Jogar</a>' : '<a href="personalizacao.html">Equipar</a>'));
           });
         } else if ((b = e.target.closest('[data-booster]'))) {
           var bo = ML.item('boosters', b.dataset.booster);

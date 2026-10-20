@@ -19,7 +19,7 @@
         <a href="personalizacao.html">Personalização</a>
       </div>
       <div class="nav-right">
-        <button class="btn-login" id="btnLogin" type="button">Login</button>
+        <button class="btn-login" id="btnLogin" type="button" style="display: flex; align-items: center; gap: 8px;">Login</button>
         <button class="btn-login" id="btnLogout" type="button" hidden>Sair</button>
         <button class="gear" id="btnGear" type="button" aria-label="Configurações" aria-expanded="false">⚙️</button>
         <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
@@ -329,8 +329,21 @@
       var av = document.getElementById('userAvatar');
       document.getElementById('userNameShow').textContent = usuario;
       document.getElementById('userNameInput').value = usuario;
-      if (fotoUrl) { av.style.backgroundImage = 'url("' + fotoUrl + '")'; av.textContent = ''; }
-      else { av.style.backgroundImage = ''; av.textContent = usuario.charAt(0).toUpperCase(); }
+      
+      // Atualiza o menu flutuante do usuário
+      if (fotoUrl) { 
+        av.style.backgroundImage = 'url("' + fotoUrl + '")'; 
+        av.textContent = ''; 
+      } else { 
+        av.style.backgroundImage = ''; 
+        av.textContent = usuario.charAt(0).toUpperCase(); 
+      }
+
+      // Atualiza o botão de login para mostrar a foto/iniciais e o nome ao lado
+      if (logado) {
+        var imgHtml = fotoUrl ? '<div style="width:24px;height:24px;border-radius:50%;background-image:url(\'' + fotoUrl + '\');background-size:cover;background-position:center;display:inline-block;"></div>' : '<div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;">' + usuario.charAt(0).toUpperCase() + '</div>';
+        btnLoginEl.innerHTML = imgHtml + ' <span>' + usuario + '</span>';
+      }
     }
     function salvarNome() {
       var v = document.getElementById('userNameInput').value.trim();
@@ -383,7 +396,7 @@
       document.getElementById('conquistas').style.display = '';
       document.getElementById('loja').after(document.getElementById('ranking'));
       document.getElementById('btnLogout').hidden = true;
-      document.getElementById('btnLogin').textContent = 'Login';
+      btnLoginEl.textContent = 'Login';
       document.getElementById('loginForm').reset();
       logado = false;
       toggleUserMenu(false);
@@ -397,7 +410,6 @@
       logado = true;
       usuario = cadastros[email] || email.split('@')[0];
       atualizarPerfil();
-      document.getElementById('btnLogin').textContent = 'Olá! 👋';
       aplicarLogin();
       showLogin(false);
     });

@@ -39,6 +39,7 @@
       { id: 'naves',     nome: 'Naves Alienígenas', emoji: '🛸', preco: 300, desc: 'Ao explodir, naves alienígenas saem voando.' },
       { id: 'moedas',    nome: 'Chuva de Moedas',  emoji: '🪙', preco: 200, desc: 'O bloco explode e solta moedas douradas.' }
     ],
+    temas: [],
     boosters: [
       { id: 'vidas',  nome: 'Comece com mais vidas', emoji: '❤️', preco: 120, desc: 'Comece a partida com o dobro de vidas (6 em vez de 3).' },
       { id: 'pontos', nome: 'Double Point',          emoji: '✨', preco: 150, desc: 'Pontos em dobro durante os primeiros 60 segundos da partida.' },
@@ -54,14 +55,14 @@
     ]
   };
 
-  var CATEGORIAS = ['fundos', 'blocos', 'explosoes'];
+  var CATEGORIAS = ['fundos', 'blocos', 'explosoes', 'temas'];
 
   /* ---------- ESTADO ---------- */
   function padrao() {
     return {
       lumes: SALDO_INICIAL_DEMO,
-      possui:   { fundos: ['espaco'], blocos: ['meteoro'], explosoes: ['confete'] },
-      equipado: { fundos: 'espaco',   blocos: 'meteoro',   explosoes: 'confete' },
+      possui:   { fundos: ['espaco'], blocos: ['meteoro'], explosoes: ['confete'], temas: [] },
+      equipado: { fundos: 'espaco',   blocos: 'meteoro',   explosoes: 'confete', temas: '' },
       boosters: { vidas: 0, pontos: 0, chance: 0 }
     };
   }
