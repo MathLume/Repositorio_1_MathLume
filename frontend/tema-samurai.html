@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tema Samurai — MathLume</title>
+  <link rel="stylesheet" href="tema-samurai.css">
+</head>
+<body>
+  <div class="topo">
+    <a href="personalizacao.html">← Personalização</a>
+    <a href="loja.html#personalizacao">🛍️ Loja</a>
+  </div>
+
+  <main class="palco">
+    <canvas id="c" aria-label="Jogo Tema Samurai"></canvas>
+
+    <div class="hud" id="hud">
+      <div><small>PONTUAÇÃO</small><span id="pts">0</span></div>
+      <div><small>VIDAS</small><span id="vidas">❤️❤️❤️</span></div>
+    </div>
+
+    <form id="form" autocomplete="off">
+      <input id="resp" type="number" placeholder="?" aria-label="Sua resposta" required>
+      <button class="btn" type="submit">⚔️ CORTAR</button>
+    </form>
+
+    <section class="tela" id="bloqueio">
+      <h1>🔒</h1>
+      <p>O Tema Samurai ainda não é seu.<br>Compre na loja para jogar.</p>
+      <a class="btn" href="loja.html#personalizacao">🛍️ Ir para a Loja</a>
+    </section>
+
+    <section class="tela" id="menu">
+      <p>⚔️ 侍の数学 ⚔️</p>
+      <h1>MATHLUME</h1>
+      <p>Corte os sushis com a resposta certa</p>
+      <div class="dificuldades" id="difs">
+        <button class="dif" type="button" data-d="facil">🌱 Fácil</button>
+        <button class="dif sel" type="button" data-d="medio">🔥 Médio</button>
+        <button class="dif" type="button" data-d="dificil">💀 Difícil</button>
+      </div>
+      <button class="btn" id="iniciar" type="button">⚔️ INICIAR</button>
+    </section>
+
+    <section class="tela" id="contagem"><div id="numero">3</div></section>
+
+    <section class="tela" id="fim">
+      <p>── FIM DE JOGO ──</p>
+      <h1 id="rank">Iniciante</h1>
+      <div class="placar" id="final">0</div>
+      <div class="acoes">
+        <button class="btn" id="again" type="button">⚔️ JOGAR DE NOVO</button>
+        <button class="btn sec" id="voltar" type="button">🏠 MENU</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="mathlume-dados.js"></script>
+  <script src="tema-samurai.js"></script>
+</body>
+</html>
