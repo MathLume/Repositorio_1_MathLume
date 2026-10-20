@@ -1,0 +1,10 @@
+{
+  "versao": 1,
+  "usuarios": [
+    {"id":"2176d791","usuario":"admin","email":"admin@mathlume.com","senha_hash":"3ed06db15692471781410c3e5a474480:25c4e3a630fa49206c3d96c8aedc0a3f18918cad30f3a2fe1bd887b14a14aa862653fa37ee06017e8fd640e5e30c6804d90b30c770f7caecc1f613a1557ca1e0","papel":"admin","criado_em":"2026-10-20 21:00:49"},
+    {"id":"f3ebbe8e","usuario":"Patyn77","email":"yassersegati0706@gmail.com","senha_hash":"7f81decf641938be9c0125b4529d73e6:838eeb0df3a09354e61f6f35e274c3d3ed2fefc9762e578c6fab025270b9d47c84fc3d01b336ac9d62d56c5fd0728c24921f9fc74a7045920f476848633e687b","papel":"usuario","criado_em":"2026-10-20 21:01:50"}
+  ],
+  "pontuacoes": [
+    {"id":"5c97dc01","usuario_id":"f3ebbe8e","pontos":230,"nivel":3,"combo_max":8,"acertos":11,"modo":"finito","dificuldade":"facil","venceu":1,"criado_em":"2026-10-20 21:03:11"}
+  ]
+}

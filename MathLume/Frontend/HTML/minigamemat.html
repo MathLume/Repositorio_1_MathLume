@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathLume — Meteoros Matemáticos</title>
+  <link rel="stylesheet" href="../CSS/minigamemat.css">
+</head>
+<body>
+  <main id="game" class="game-shell">
+    <div class="stars" aria-hidden="true"></div>
+    <header class="hud hidden" id="hud">
+      <div class="hud-pill">⭐ <span id="score">0</span> pts</div>
+      <div class="hud-pill">❤️ <span id="lives">3</span></div>
+      <div class="hud-pill">🔥 Combo <span id="combo">0</span></div>
+      <div class="hud-pill">Nível <span id="level">1</span></div>
+      <div class="hud-pill boost hidden" id="pillDobro">✨ ×2 <span id="dobroTempo">60</span>s</div>
+      <div class="hud-pill boost hidden" id="pillChance">🛟 Segunda chance</div>
+      <button class="icon-btn" id="settingsGame" aria-label="Configurações">⚙</button>
+    </header>
+
+    <section class="screen menu-screen" id="menuScreen">
+      <div class="brand">
+        <div class="brand-meteor">☄️</div>
+        <h1>MATHLUME</h1>
+        <p>DESTRUA OS METEOROS COM MATEMÁTICA!</p>
+      </div>
+      <div class="selector-block">
+        <span class="eyebrow">MODO DE JOGO</span>
+        <div class="mode-options">
+          <button class="mode-card" data-mode="finito"><span>⏳</span><strong>FINITO</strong><small id="finiteCount">20 meteoros<br>Destrua todos!</small></button>
+          <button class="mode-card selected" data-mode="infinito"><span>♾️</span><strong>INFINITO</strong><small>Sem fim<br>Sobreviva!</small></button>
+        </div>
+      </div>
+      <div class="selector-block">
+        <span class="eyebrow">ESCOLHA A DIFICULDADE</span>
+        <div class="difficulty-options">
+          <button class="difficulty-card easy" data-difficulty="facil"><span>🌱</span><strong>Fácil</strong><small>Soma e subtração<br>Meteoros lentos</small></button>
+          <button class="difficulty-card medium selected" data-difficulty="medio"><span>🔥</span><strong>Médio</strong><small>Todas as operações<br>Velocidade normal</small></button>
+          <button class="difficulty-card hard" data-difficulty="dificil"><span>💀</span><strong>Difícil</strong><small>Contas difíceis<br>Meteoros rápidos</small></button>
+        </div>
+      </div>
+      <div class="selector-block" id="boosterBlock">
+        <span class="eyebrow">BOOSTERS DA PARTIDA</span>
+        <div class="booster-options" id="boosterOptions"></div>
+        <div class="menu-links"><a href="loja.html#boosters">🛍️ Loja</a><a href="personalizacao.html">🎨 Personalização</a><a href="TelaDeRank.html">🏆 Ranking</a></div>
+        <small class="quem-joga" id="quemJoga"></small>
+      </div>
+      <div class="menu-actions">
+        <button class="primary-btn" id="startBtn">🚀 <span>INICIAR</span></button>
+        <button class="secondary-btn" id="exitBtn">🚪 SAIR</button>
+        <div class="exit-confirm hidden" id="exitConfirm"><span>Tem certeza que deseja sair?</span><div><button id="confirmExit">✓ Sim, sair</button><button id="cancelExit">✕ Cancelar</button></div></div>
+      </div>
+      <button class="settings-floating" id="settingsMenu" aria-label="Configurações">⚙</button>
+    </section>
+
+    <section class="screen intro-screen hidden" id="introScreen">
+      <div class="curtain left-curtain"></div><div class="curtain right-curtain"></div>
+      <div class="countdown" id="countdown">3</div>
+      <div class="fire-visual hidden" id="fireVisual"><div class="flame flame-one"></div><div class="flame flame-two"></div><div class="flame flame-three"></div><span>🔥</span></div>
+    </section>
+
+    <section class="playfield hidden" id="playfield">
+      <div class="scene hidden" id="scene" aria-hidden="true"></div>
+      <div class="game-hint">Resolva a conta e digite o resultado para destruir o meteoro!</div>
+      <div id="meteorsLayer"></div>
+      <div id="explosionsLayer"></div>
+      <div class="answer-panel">
+        <div class="feedback" id="feedback"></div>
+        <form id="answerForm">
+          <label for="answerInput">SUA RESPOSTA</label>
+          <div class="answer-row"><input id="answerInput" type="number" autocomplete="off" placeholder="?" required><button type="submit">💥 ATIRAR</button></div>
+        </form>
+      </div>
+    </section>
+
+    <section class="screen result-screen hidden" id="resultScreen">
+      <div class="result-icon" id="resultIcon">💥</div>
+      <h2 id="resultTitle">FIM DE JOGO</h2>
+      <p id="resultSubtitle"></p>
+      <div class="result-stats"><strong><span id="finalScore">0</span> pts</strong><span>Nível <b id="finalLevel">1</b> ⭐ · Combo máx. <b id="finalCombo">0</b> 🔥</span><small id="finalDetail"></small></div>
+      <p class="save-status" id="saveStatus" role="status"></p>
+      <div class="result-actions"><button class="primary-btn" id="againBtn">🔄 JOGAR NOVAMENTE</button><button class="secondary-btn" id="rankBtn">🏆 VER RANKING</button><button class="secondary-btn" id="menuBtn">🏠 MENU PRINCIPAL</button></div>
+    </section>
+
+    <aside class="settings-backdrop hidden" id="settingsBackdrop"></aside>
+    <aside class="settings-panel" id="settingsPanel" aria-label="Configurações">
+      <div class="settings-header"><div><span class="settings-symbol">⚙</span><div><strong>Configurações</strong><small>MATHLUME</small></div></div><button id="closeSettings">✕</button></div>
+      <div class="settings-content">
+        <div class="settings-section"><label>VOLUME DO SOM</label><div class="volume-card"><div class="volume-top"><button id="muteBtn">🔊</button><strong><span id="volumeValue">70</span>%</strong></div><input type="range" min="0" max="100" value="70" id="volumeRange"><div class="volume-presets"><button data-volume="0">🔇</button><button data-volume="25">25</button><button data-volume="50">50</button><button data-volume="75">75</button><button data-volume="100">100</button></div></div></div>
+        <div class="settings-section"><label>DIFICULDADE</label><div class="settings-difficulties"><button data-setting-difficulty="facil">🌱 <span><b>Fácil</b><small>Soma e subtração · Meteoros lentos</small></span><i></i></button><button data-setting-difficulty="medio">🔥 <span><b>Médio</b><small>Todas as operações · Velocidade normal</small></span><i></i></button><button data-setting-difficulty="dificil">💀 <span><b>Difícil</b><small>Contas difíceis · Meteoros rápidos</small></span><i></i></button></div></div>
+        <p class="save-note">💾 Preferências salvas automaticamente no seu dispositivo.</p>
+      </div>
+      <div class="settings-footer"><button id="backSettings">‹ Voltar</button></div>
+    </aside>
+  </main>
+  <script src="../JS/mathlume-dados.js"></script>
+  <script src="../JS/mathlume-api.js"></script>
+  <script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const config = {
+    facil: {label:"Fácil",emoji:"🌱",color:"#00ff88",minSpeed:14,maxSpeed:20,spawnMs:4000,desc:"Soma e subtração",count:12},
+    medio: {label:"Médio",emoji:"🔥",color:"#ff9a00",minSpeed:9,maxSpeed:15,spawnMs:3200,desc:"Todas as operações",count:20},
+    dificil:{label:"Difícil",emoji:"💀",color:"#ff4136",minSpeed:5,maxSpeed:9,spawnMs:2400,desc:"Contas difíceis",count:30}
+  };
+  let mode="infinito", difficulty=localStorage.getItem("mathlume_difficulty")||"medio";
+  if(!config[difficulty]) difficulty="medio";
+  let volume=Math.max(0,Math.min(100,Number(localStorage.getItem("mathlume_volume")??70)));
+  let score=0,lives=3,combo=0,maxCombo=0,level=1,totalCorrect=0,spawned=0,gameActive=false,gameOver=false,gameWon=false;
+  let meteorId=0,spawnTimer=null,liveMeteors=new Map(),audioCtx=null,masterGain=null,feedbackTimer=null;
+  const ML=window.MathLume,selecionados=new Set();let partidaDif="medio";
+  let boost={vidas:false,pontos:false,chance:false},startLives=3,dano=0,chanceUsada=false,dobroAte=0,dobroTimer=null,cenItens=[];
+  const menu=$("menuScreen"), intro=$("introScreen"), field=$("playfield"), result=$("resultScreen"), hud=$("hud");
+  const show=(el)=>el.classList.remove("hidden"), hide=(el)=>el.classList.add("hidden");
+  function sound(type){
+    if(volume<=0)return;
+    try{
+      audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+      masterGain ||= audioCtx.createGain(); if(!masterGain.__connected){masterGain.connect(audioCtx.destination);masterGain.__connected=true;}
+      masterGain.gain.setTargetAtTime(volume/100,audioCtx.currentTime,.01);
+      const now=audioCtx.currentTime;
+      const tones=type==="correct"?[880,1100]:type==="levelup"?[523,659,784,1047]:type==="wrong"?[280,120]:[];
+      if(type==="land")tones.push(100);
+      tones.forEach((freq,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type==="wrong"?"sawtooth":"sine";o.frequency.setValueAtTime(freq,now+i*.07);if(type==="wrong")o.frequency.linearRampToValueAtTime(120,now+.25);g.gain.setValueAtTime(.001,now+i*.07);g.gain.linearRampToValueAtTime(.16,now+i*.07+.02);g.gain.exponentialRampToValueAtTime(.001,now+i*.07+.22);o.connect(g);g.connect(masterGain);o.start(now+i*.07);o.stop(now+i*.07+.25);});
+    }catch(e){}
+  }
+  function selectMode(value){mode=value;document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("selected",b.dataset.mode===mode));updateFiniteCount();}
+  function selectDifficulty(value,fromSettings=false){difficulty=value;localStorage.setItem("mathlume_difficulty",value);document.querySelectorAll("[data-difficulty]").forEach(b=>b.classList.toggle("selected",b.dataset.difficulty===value));document.querySelectorAll("[data-setting-difficulty]").forEach(b=>{b.classList.toggle("selected",b.dataset.settingDifficulty===value);b.style.setProperty("--setting-color",config[value].color)});updateFiniteCount();if(fromSettings && gameActive){/* difficulty takes effect on newly spawned meteors */}}
+  function updateFiniteCount(){$("finiteCount").innerHTML=`${config[difficulty].count} meteoros<br>Destrua todos!`;}
+  document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>selectMode(b.dataset.mode)));
+  document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>selectDifficulty(b.dataset.difficulty)));
+  document.querySelectorAll("[data-setting-difficulty]").forEach(b=>b.addEventListener("click",()=>selectDifficulty(b.dataset.settingDifficulty,true)));
+  function updateHud(){$("score").textContent=score;$("lives").textContent=lives;$("combo").textContent=combo;$("level").textContent=level;}
+  function resetStats(){score=0;lives=3;combo=0;maxCombo=0;level=1;totalCorrect=0;spawned=0;meteorId=0;gameOver=false;gameWon=false;liveMeteors.clear();$("meteorsLayer").innerHTML="";$("explosionsLayer").innerHTML="";$("answerInput").value="";$("feedback").textContent="";updateHud();}
+  /* ===== Personalização + boosters (dados vêm de mathlume-dados.js) ===== */
+  const CENARIOS={
+    cidade:{ceu:"linear-gradient(180deg,#0b1437 0%,#2e2a6b 50%,#d9622b 100%)",tipo:"predio",qtd:15,voa:["✈️","🛩️","✈️"]},
+    floresta:{ceu:"linear-gradient(180deg,#07241c 0%,#14532d 60%,#365314 100%)",tipo:"emoji",itens:["🌲","🌳","🌲","🌴"],qtd:16,voa:["🦅","🦉","🦇"]},
+    oceano:{ceu:"linear-gradient(180deg,#082f49 0%,#0c4a6e 55%,#164e63 100%)",tipo:"emoji",itens:["🌿","🪸","🌿","🐚"],qtd:16,voa:["🐟","🐠","🐙","🐬"],espelha:true}
+  };
+  function montarCenario(){
+    const sc=$("scene"),c=CENARIOS[ML.equipado("fundos").id];sc.innerHTML="";cenItens=[];
+    if(!c){hide(sc);return;}
+    show(sc);sc.style.background=c.ceu;
+    const fum=document.createElement("div");fum.className="sc-fumaca";sc.appendChild(fum);
+    c.voa.forEach(e=>{const v=document.createElement("div");v.className="sc-voador"+(c.espelha?" flip":"");v.style.top=(6+Math.random()*30)+"%";v.style.animationDuration=(16+Math.random()*14)+"s";v.style.animationDelay=(-Math.random()*20)+"s";v.innerHTML=`<span>${e}</span>`;sc.appendChild(v);});
+    const chao=document.createElement("div");chao.className="sc-chao";
+    for(let i=0;i<c.qtd;i++){
+      const it=document.createElement("div");it.className="sc-item "+(c.tipo==="predio"?"predio":"emoji");
+      if(c.tipo==="predio"){it.style.height=(14+Math.random()*30)+"vh";}
+      else{it.textContent=c.itens[i%c.itens.length];it.style.fontSize=(34+Math.random()*34)+"px";}
+      it._t=Math.random()*.7;it.style.setProperty("--r",(Math.random()*10-5).toFixed(1));
+      chao.appendChild(it);cenItens.push(it);
+    }
+    sc.appendChild(chao);atualizarCenario();
+  }
+  function atualizarCenario(){
+    if(!cenItens.length)return;
+    cenItens.forEach(it=>it.style.setProperty("--d",Math.max(0,Math.min(1,(dano-it._t)/.3)).toFixed(2)));
+    const f=$("scene").querySelector(".sc-fumaca");if(f)f.style.opacity=(dano*.75).toFixed(2);
+  }
+  const BOOST_LABEL={vidas:"2× Vidas",pontos:"2× Pontos",chance:"2ª Chance"};
+  function desenharBoosters(){
+    const box=$("boosterOptions"),st=ML.estado();
+    box.innerHTML=ML.catalogo.boosters.map(b=>{const q=st.boosters[b.id]||0;if(q<=0)selecionados.delete(b.id);
+      return `<button type="button" class="booster-chip${selecionados.has(b.id)?" selected":""}" data-booster="${b.id}" ${q<=0?"disabled":""}><span>${b.emoji}</span><strong>${BOOST_LABEL[b.id]}</strong><small>x${q}</small></button>`;}).join("");
+  }
+  $("boosterOptions").addEventListener("click",e=>{const b=e.target.closest("[data-booster]");if(!b||b.disabled)return;const id=b.dataset.booster;selecionados.has(id)?selecionados.delete(id):selecionados.add(id);desenharBoosters();});
+  function atualizarMarca(){document.querySelector(".brand-meteor").textContent=ML.equipado("blocos").emoji;}
+  function prepararPartida(){
+    const sel=[...selecionados].filter(id=>ML.estado().boosters[id]>0);
+    boost={vidas:sel.includes("vidas"),pontos:sel.includes("pontos"),chance:sel.includes("chance")};
+    ML.consumirBoosters(sel);selecionados.clear();desenharBoosters();
+    startLives=boost.vidas?6:3;lives=startLives;dano=0;chanceUsada=false;dobroAte=0;
+    clearInterval(dobroTimer);hide($("pillDobro"));$("pillChance").classList.toggle("hidden",!boost.chance);
+    updateHud();montarCenario();
+  }
+  function tickDobro(){
+    const r=Math.ceil((dobroAte-Date.now())/1000);
+    if(r<=0){clearInterval(dobroTimer);hide($("pillDobro"));}else $("dobroTempo").textContent=r;
+  }
+  function iniciarBoosters(){
+    if(!boost.pontos)return;
+    dobroAte=Date.now()+60000;show($("pillDobro"));clearInterval(dobroTimer);dobroTimer=setInterval(tickDobro,250);tickDobro();
+  }
+  function usarSegundaChance(){
+    chanceUsada=true;hide($("pillChance"));lives=2;dano=Math.min(dano,.5);
+    liveMeteors.forEach(m=>{burst(m.el);m.el.remove();});spawned=Math.max(0,spawned-liveMeteors.size);liveMeteors.clear();
+    updateHud();atualizarCenario();sound("levelup");showFeedback("🛟 Segunda chance! Você voltou com 2 ❤️","#63b3ed");
+  }
+  function startGame(){clearInterval(spawnTimer);partidaDif=difficulty;resetStats();prepararPartida();hide(menu);hide(result);show(intro);show(hud);hide(field);gameActive=false;intro.classList.remove("open");hide($("fireVisual"));$("countdown").classList.remove("hidden");let count=3;$("countdown").textContent=count;
+    setTimeout(()=>intro.classList.add("open"),400);
+    const timer=setInterval(()=>{count--;if(count>0){$("countdown").textContent=count;$("countdown").animate([{transform:"scale(1.5)",opacity:0},{transform:"scale(1)",opacity:1}],{duration:350});}else{$("countdown").textContent="VAI!";sound("levelup");clearInterval(timer);setTimeout(()=>{hide($("countdown"));show($("fireVisual"));setTimeout(()=>{hide(intro);show(field);gameActive=true;iniciarBoosters();spawnMeteor();spawnTimer=setInterval(spawnMeteor,config[difficulty].spawnMs);$("answerInput").focus();},1800);},450);}},850);
+  }
+  function generateQuestion(){const ops=difficulty==="facil"?["+","-"]:["+","-","×","÷"];const op=ops[Math.floor(Math.random()*ops.length)];let a,b,answer,q;const hard=difficulty==="dificil";
+    if(op==="+"){a=1+Math.floor(Math.random()*(hard?50:20));b=1+Math.floor(Math.random()*(hard?50:20));answer=a+b;q=`${a} + ${b}`;}
+    else if(op==="-"){a=Math.floor(Math.random()*(hard?50:20))+(hard?20:10);b=1+Math.floor(Math.random()*a);answer=a-b;q=`${a} - ${b}`;}
+    else if(op==="×"){a=2+Math.floor(Math.random()*(hard?12:9));b=2+Math.floor(Math.random()*(hard?12:9));answer=a*b;q=`${a} × ${b}`;}
+    else{b=2+Math.floor(Math.random()*(hard?11:9));answer=2+Math.floor(Math.random()*(hard?11:9));a=b*answer;q=`${a} ÷ ${b}`;}
+    return {q,answer};
+  }
+  function spawnMeteor(){if(!gameActive||gameOver||gameWon)return;if(mode==="finito"&&spawned>=config[difficulty].count){checkWin();return;}if(liveMeteors.size>=3)return;
+    const {q,answer}=generateQuestion(),id=++meteorId,x=5+Math.random()*80,cfg=config[difficulty],speed=Math.max(3,cfg.minSpeed-level*.5)+Math.random()*(Math.max(4,cfg.maxSpeed-level*.6)-Math.max(3,cfg.minSpeed-level*.5));
+    const el=document.createElement("div");el.className="meteor";el.id=`meteor-${id}`;el.style.left=`${x}%`;el.style.setProperty("--duration",`${speed}s`);el.style.animationDuration=`${speed}s`;const eq=ML.equipado("blocos");
+    if(eq.id!=="meteoro"){el.classList.add("bola");el.innerHTML=`<div class="meteor-core"><span class="bola-icone">${eq.emoji}</span><span class="meteor-question">${q}<br>= ?</span></div>`;}
+    else{el.innerHTML=`<div class="meteor-core"><span class="meteor-question">${q}<br>= ?</span></div><div class="meteor-tail"></div>`;}
+    $("meteorsLayer").appendChild(el);const m={id,answer,el,x};liveMeteors.set(id,m);spawned++;
+    el.addEventListener("animationend",()=>{if(!liveMeteors.has(id)||el.classList.contains("exploding"))return;liveMeteors.delete(id);el.remove();loseLife("💥 Passou! -1 ❤️");checkWin();});
+  }
+  function burst(el){
+    const rect=el.getBoundingClientRect(),layer=$("explosionsLayer"),cx=rect.left+rect.width/2,cy=rect.top+rect.height/2,tipo=ML.equipado("explosoes").id;
+    const add=(n,ms)=>{layer.appendChild(n);setTimeout(()=>n.remove(),ms);};
+    const emojis=(emo,n,dMin,dMax,ms,sMin,sMax,up)=>{for(let i=0;i<n;i++){const p=document.createElement("span");p.className="explosion-emoji";p.textContent=emo;p.style.left=cx+"px";p.style.top=cy+"px";p.style.fontSize=(sMin+Math.random()*(sMax-sMin))+"px";
+      const a=up?(-Math.PI/2+(Math.random()-.5)*1.6):(Math.PI*2*i/n+Math.random()*.5),d=dMin+Math.random()*(dMax-dMin);
+      p.style.setProperty("--tx",Math.cos(a)*d+"px");p.style.setProperty("--ty",Math.sin(a)*d+"px");p.style.setProperty("--rot",(Math.random()*540-270)+"deg");
+      p.style.animationDuration=ms+"ms";p.style.animationDelay=(Math.random()*150)+"ms";add(p,ms+300);}};
+    if(tipo==="ketchup"){
+      const blob=document.createElement("i");blob.className="ketchup-blob";blob.style.left=cx+"px";blob.style.top=cy+"px";add(blob,1100);
+      const cores=["#e11d2a","#c1121f","#ff3b30","#8b0f14"];
+      for(let i=0;i<16;i++){const p=document.createElement("i");p.className="explosion-particle ketchup";const s=8+Math.random()*18;p.style.width=p.style.height=s+"px";p.style.left=cx+"px";p.style.top=cy+"px";p.style.background=cores[i%4];
+        const a=Math.PI*2*i/16+Math.random()*.4,d=40+Math.random()*110;p.style.setProperty("--tx",Math.cos(a)*d+"px");p.style.setProperty("--ty",Math.sin(a)*d+"px");add(p,1100);}
+      emojis("🍅",3,40,110,1000,22,30);
+    }else if(tipo==="fantasmas"){emojis("👻",6,60,150,1700,22,36,true);}
+    else if(tipo==="naves"){emojis("🛸",5,140,320,1500,24,34,false);}
+    else if(tipo==="moedas"){emojis("🪙",10,60,150,1100,16,24,false);}
+    else{
+      const colors=["#ff4500","#ff9a00","#ffdd00","#fff","#00ff88","#ff69b4"];
+      for(let i=0;i<18;i++){const p=document.createElement("i");p.className="explosion-particle";p.style.left=cx+"px";p.style.top=cy+"px";p.style.background=colors[i%colors.length];
+        const a=Math.PI*2*i/18,d=50+Math.random()*80;p.style.setProperty("--tx",Math.cos(a)*d+"px");p.style.setProperty("--ty",Math.sin(a)*d+"px");add(p,800);}
+    }
+  }
+  function answerQuestion(e){e.preventDefault();if(!gameActive||gameOver||gameWon)return;const val=Number($("answerInput").value);if($("answerInput").value.trim()==="")return;$("answerInput").value="";
+    const hit=[...liveMeteors.values()].find(m=>m.answer===val);
+    if(hit){liveMeteors.delete(hit.id);burst(hit.el);hit.el.classList.add("exploding");setTimeout(()=>hit.el.remove(),350);combo++;maxCombo=Math.max(maxCombo,combo);const mult=(boost.pontos&&Date.now()<dobroAte)?2:1,pts=(combo>=3?30:10)*mult;score+=pts;dano=Math.max(0,dano-.06);atualizarCenario();totalCorrect++;if(totalCorrect%5===0){level=Math.floor(totalCorrect/5)+1;lives=Math.min(lives+1,7);sound("levelup");showFeedback(`⭐ NÍVEL ${level}! +1 ❤️`,"#f5d76e");}else{sound("correct");showFeedback(combo>=3?`🔥 COMBO x${combo}! +${pts}`:`✅ Correto! +${pts}`,combo>=3?"#ff9a00":"#00ff88");}updateHud();checkWin();}
+    else{combo=0;loseLife("❌ Errou! -1 ❤️");sound("wrong");} $("answerInput").focus();
+  }
+  function showFeedback(text,color){$("feedback").textContent=text;$("feedback").style.color=color;clearTimeout(feedbackTimer);feedbackTimer=setTimeout(()=>{$("feedback").textContent="";},1000);}
+  function loseLife(message){if(gameOver||gameWon)return;lives=Math.max(0,lives-1);combo=0;dano=Math.min(1,dano+1/startLives);atualizarCenario();updateHud();showFeedback(message,"#ff4136");
+    if(lives<=0){if(boost.chance&&!chanceUsada){usarSegundaChance();return;}finish(false);}else sound("land");}
+  function checkWin(){if(mode==="finito"&&spawned>=config[difficulty].count&&liveMeteors.size===0&&!gameOver&&!gameWon)finish(true);}
+  function finish(won){gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?"🏆":"💥";$("resultTitle").textContent=won?"VOCÊ VENCEU!":"FIM DE JOGO";$("resultSubtitle").textContent=won?`⏳ MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:"Os meteoros venceram desta vez. Tente novamente!";$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("finalDetail").textContent=won?`${config[difficulty].count} meteoros destruídos ✅`:`Você destruiu ${totalCorrect} meteoros`;if(won)sound("levelup");salvarResultado(won);}
+  /* ===== Pontuação salva no Backend (ranking) ===== */
+  function salvarResultado(won){
+    const st=$("saveStatus"),API=window.MathLumeAPI;
+    if(!API){st.textContent="";return;}
+    if(!API.logado()){st.innerHTML='🔒 <a href="tela-princ.html">Faça login</a> para salvar sua pontuação no ranking.';return;}
+    if(score<=0){st.textContent="Faça pelo menos 1 acerto para entrar no ranking.";return;}
+    st.textContent="💾 Salvando pontuação...";
+    API.salvarPontuacao({pontos:score,nivel:level,comboMax:maxCombo,acertos:totalCorrect,modo:mode,dificuldade:partidaDif,venceu:won})
+      .then(r=>{st.textContent=r.novoRecorde?"🏆 Novo recorde pessoal salvo no ranking!":"✅ Pontuação salva no ranking!";},
+            e=>{st.textContent="⚠️ Não foi possível salvar: "+e.message;});
+  }
+  function mostrarJogador(){
+    const API=window.MathLumeAPI,el=$("quemJoga");if(!el||!API)return;
+    const u=API.usuario();
+    el.innerHTML=API.logado()&&u?`👤 Jogando como <b>${u.usuario.replace(/[<>&]/g,"")}</b> — sua pontuação vai para o ranking`:'👤 Visitante — <a href="tela-princ.html">faça login</a> para entrar no ranking';
+  }
+  function toMenu(){clearInterval(spawnTimer);clearInterval(dobroTimer);hide($("pillDobro"));hide($("pillChance"));desenharBoosters();atualizarMarca();gameActive=false;hide(result);hide(field);hide(intro);hide(hud);show(menu);selectDifficulty(difficulty);$("exitConfirm").classList.add("hidden");}
+  $("startBtn").addEventListener("click",startGame);$("againBtn").addEventListener("click",startGame);$("menuBtn").addEventListener("click",toMenu);$("rankBtn").addEventListener("click",()=>{window.location.href="TelaDeRank.html";});$("answerForm").addEventListener("submit",answerQuestion);
+  $("exitBtn").addEventListener("click",()=>show($("exitConfirm")));$("cancelExit").addEventListener("click",()=>hide($("exitConfirm")));$("confirmExit").addEventListener("click",()=>{window.location.href="tela-princ.html";});
+  function openSettings(){show($("settingsBackdrop"));$("settingsPanel").classList.add("open");$("volumeRange").value=volume;$("volumeValue").textContent=volume;$("muteBtn").textContent=volume===0?"🔇":"🔊";selectDifficulty(difficulty);}
+  function closeSettings(){$("settingsBackdrop").classList.add("hidden");$("settingsPanel").classList.remove("open");}
+  $("settingsMenu").addEventListener("click",openSettings);$("settingsGame").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("backSettings").addEventListener("click",closeSettings);$("settingsBackdrop").addEventListener("click",closeSettings);
+  function setVolume(v){volume=Number(v);localStorage.setItem("mathlume_volume",String(volume));$("volumeRange").value=volume;$("volumeValue").textContent=volume;$("muteBtn").textContent=volume===0?"🔇":"🔊";document.querySelectorAll("[data-volume]").forEach(b=>b.classList.toggle("active",Number(b.dataset.volume)===volume));if(masterGain&&audioCtx)masterGain.gain.setTargetAtTime(volume/100,audioCtx.currentTime,.01);}
+  $("volumeRange").addEventListener("input",e=>setVolume(e.target.value));$("muteBtn").addEventListener("click",()=>setVolume(volume===0?70:0));document.querySelectorAll("[data-volume]").forEach(b=>b.addEventListener("click",()=>setVolume(b.dataset.volume)));
+  selectDifficulty(difficulty);selectMode(mode);setVolume(volume);desenharBoosters();atualizarMarca();mostrarJogador();if(window.MathLumeAPI)MathLumeAPI.restaurar().then(mostrarJogador);
+  window.addEventListener("pageshow",e=>{if(e.persisted){ML.recarregar();desenharBoosters();atualizarMarca();}});
+})();
+  </script>
+</body>
+</html>

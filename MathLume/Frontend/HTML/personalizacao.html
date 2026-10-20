@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personalização — MathLume</title>
+  <link rel="stylesheet" href="../CSS/personalizacao.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
+      <div class="menu" id="menu">
+        <a href="tela-princ.html">Início</a>
+        <a href="minigamemat.html">Mini-game</a>
+        <a href="TelaDeRank.html">Ranking</a>
+        <a href="loja.html">Loja</a>
+        <a href="personalizacao.html" class="ativo">Personalização</a>
+      </div>
+      <div class="nav-right">
+        <a href="loja.html#moedas" class="saldo" id="saldoLink" title="Comprar Lumes">🪙 <b id="saldo">0</b> Lumes</a>
+        <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-head container">
+    <span class="badge">🎨 Personalização</span>
+    <h1>Deixe o jogo com a <span class="grad">sua cara</span></h1>
+    <p>Equipe o que você já comprou. Tudo aqui é estético e não muda o desempenho no jogo.</p>
+  </header>
+
+  <main class="container">
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-aba="fundos" role="tab" type="button">🌌 Plano de fundo</button>
+      <button class="tab" data-aba="blocos" role="tab" type="button">☄️ Bloco de cálculo</button>
+      <button class="tab" data-aba="explosoes" role="tab" type="button">🎉 Explosão de acerto</button>
+    </div>
+
+    <div class="stage" id="stage" aria-label="Prévia do visual equipado">
+      <div class="stage-bloco"><span class="ico" id="stageIcone">☄️</span><b>7 × 8</b></div>
+      <div class="stage-exp" id="stageExp">🎉</div>
+    </div>
+    <p class="legenda" id="legenda"></p>
+
+    <section class="aba active" id="aba-fundos" role="tabpanel"><div class="grid" id="grid-fundos"></div></section>
+    <section class="aba" id="aba-blocos" role="tabpanel"><div class="grid" id="grid-blocos"></div></section>
+    <section class="aba" id="aba-explosoes" role="tabpanel"><div class="grid" id="grid-explosoes"></div></section>
+  </main>
+
+  <footer class="rodape">
+    <div class="container"><a href="loja.html">🛍️ Ir para a Loja</a> • <a href="minigamemat.html">▶ Jogar</a> • <a href="tela-princ.html">Início</a></div>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="../JS/mathlume-dados.js"></script>
+  <script>
+    (function () {
+      var ML = window.MathLume;
+      var $ = function (id) { return document.getElementById(id); };
+      var CATS = ['fundos', 'blocos', 'explosoes'];
+
+      var menu = $('menu');
+      $('burger').addEventListener('click', function () { menu.classList.toggle('open'); });
+
+      function mostrarAba(nome) {
+        if (CATS.indexOf(nome) < 0) nome = 'fundos';
+        CATS.forEach(function (c) {
+          var ativa = c === nome;
+          $('aba-' + c).classList.toggle('active', ativa);
+          var t = document.querySelector('[data-aba="' + c + '"]');
+          t.classList.toggle('active', ativa);
+          t.setAttribute('aria-selected', String(ativa));
+        });
+      }
+      document.querySelectorAll('.tab').forEach(function (t) {
+        t.addEventListener('click', function () { location.hash = t.dataset.aba; });
+      });
+      window.addEventListener('hashchange', function () { mostrarAba(location.hash.slice(1)); });
+
+      var toastTimer;
+      function toast(txt) {
+        var t = $('toast');
+        t.textContent = txt;
+        t.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2500);
+      }
+
+      function card(cat, it) {
+        var st = ML.estado();
+        var tem = ML.possui(cat, it.id);
+        var eq = st.equipado[cat] === it.id;
+        var estilo = cat === 'fundos' ? ' style="background:' + it.preview + '"' : '';
+        var btn;
+        if (eq) btn = '<button class="btn" type="button" disabled>✓ Equipado</button>';
+        else if (tem) btn = '<button class="btn" type="button" data-equipar="' + cat + '" data-id="' + it.id + '">Equipar</button>';
+        else btn = '<a class="btn ouro" href="loja.html#personalizacao">🔒 Comprar na loja · ' + ML.fmt(it.preco) + ' Lumes</a>';
+        return '<article class="item' + (eq ? ' equipado' : '') + (tem ? '' : ' bloqueado') + '">' +
+               '<div class="prev"' + estilo + '>' + it.emoji + '</div>' +
+               '<div class="corpo"><h3>' + it.nome + '</h3><p>' + it.desc + '</p>' + btn + '</div></article>';
+      }
+
+      function render() {
+        var st = ML.estado();
+        $('saldo').textContent = ML.fmt(st.lumes);
+        CATS.forEach(function (cat) {
+          $('grid-' + cat).innerHTML = ML.catalogo[cat].map(function (it) { return card(cat, it); }).join('');
+        });
+        var f = ML.equipado('fundos'), b = ML.equipado('blocos'), x = ML.equipado('explosoes');
+        $('stage').style.background = f.preview;
+        $('stageIcone').textContent = b.emoji;
+        $('stageExp').textContent = x.emoji;
+        $('legenda').textContent = 'Equipado: ' + f.nome + ' • ' + b.nome + ' • ' + x.nome;
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-equipar]');
+        if (!b) return;
+        var it = ML.item(b.dataset.equipar, b.dataset.id);
+        if (ML.equipar(b.dataset.equipar, b.dataset.id)) { render(); toast('✓ ' + it.nome + ' equipado!'); }
+      });
+
+      window.addEventListener('pageshow', function (e) { if (e.persisted) { ML.recarregar(); render(); } });
+
+      render();
+      mostrarAba(location.hash.slice(1));
+    })();
+  </script>
+</body>
+</html>

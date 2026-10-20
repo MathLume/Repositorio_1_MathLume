@@ -1,0 +1,13 @@
+{
+  "name": "mathlume-backend",
+  "version": "1.0.0",
+  "description": "Backend da MathLume: cadastro, login, ADM, pontuação e ranking (banco em JSON, sem dependências)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "criar-admin": "node criar-admin.js"
+  },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED",
+  "private": true
+}

@@ -1,0 +1,9 @@
+.env
+node_modules/
+
+# Logins abertos neste computador (não compartilhar)
+data/sessoes.json
+data/*.tmp
+
+# ATENÇÃO: data/banco.json NÃO está aqui de propósito.
+# Ele é o banco de dados (usuários + ranking) e PRECISA ir para o GitHub.

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administração — MathLume</title>
+  <link rel="stylesheet" href="../CSS/TelaDeRank.css">
+  <link rel="stylesheet" href="../CSS/admin.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
+      <div class="menu" id="menu">
+        <a href="tela-princ.html">Início</a>
+        <a href="minigamemat.html">Mini-game</a>
+        <a href="TelaDeRank.html">Ranking</a>
+        <a href="loja.html">Loja</a>
+        <a href="admin.html" class="ativo">Admin</a>
+      </div>
+      <div class="nav-right">
+        <a href="tela-princ.html" class="user-pill" id="userPill">👤 Entrar</a>
+        <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-head container">
+    <span class="badge">🛡️ Administração</span>
+    <h1>Painel do <span class="grad">ADM</span></h1>
+    <p>Cadastre outros administradores e gerencie usuários e pontuações.</p>
+  </header>
+
+  <main class="container" style="padding-bottom:72px">
+    <div id="bloqueio" class="estado" hidden></div>
+
+    <div id="area" hidden>
+      <section class="painel">
+        <h2>Cadastrar usuário ADM</h2>
+        <p>O novo administrador poderá entrar pela tela de login e acessar este painel.</p>
+        <form id="formAdm" class="form-grid">
+          <div><label for="aNome">Usuário</label><input id="aNome" type="text" minlength="3" maxlength="24" placeholder="nome.sobrenome" required></div>
+          <div><label for="aEmail">E-mail</label><input id="aEmail" type="email" placeholder="adm@email.com" required></div>
+          <div><label for="aSenha">Senha</label><input id="aSenha" type="password" minlength="6" placeholder="mín. 6 caracteres" required></div>
+          <button class="btn" type="submit">Cadastrar ADM</button>
+        </form>
+        <div class="msg" id="msgAdm" hidden></div>
+      </section>
+
+      <section class="painel">
+        <h2>Usuários cadastrados</h2>
+        <p id="resumo"></p>
+        <div class="rolagem"><table class="usuarios"><thead><tr><th>ID</th><th>Usuário</th><th>E-mail</th><th>Papel</th><th>Partidas</th><th>Melhor</th><th>Ações</th></tr></thead><tbody id="corpo"></tbody></table></div>
+        <div class="msg" id="msgLista" hidden></div>
+      </section>
+
+      <section class="painel">
+        <h2>Zona de perigo</h2>
+        <p>Apaga todas as pontuações de todos os jogadores (o ranking volta do zero). Não dá para desfazer.</p>
+        <button class="mini perigo" id="zerarTudo" type="button">Zerar ranking inteiro</button>
+      </section>
+    </div>
+  </main>
+
+  <script src="../JS/mathlume-api.js"></script>
+  <script>
+    (function () {
+      var API = window.MathLumeAPI;
+      var $ = function (id) { return document.getElementById(id); };
+      $('burger').addEventListener('click', function () { $('menu').classList.toggle('open'); });
+
+      function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+      function msg(id, tipo, texto) { var el = $(id); el.className = 'msg ' + tipo; el.textContent = texto; el.hidden = !texto; }
+
+      function bloquear(texto) {
+        $('area').hidden = true;
+        $('bloqueio').hidden = false;
+        $('bloqueio').innerHTML = texto + '<br><a class="btn" href="tela-princ.html">Ir para o login</a>';
+      }
+
+      function carregar() {
+        API.admin.usuarios().then(function (d) {
+          var eu = API.usuario();
+          $('resumo').textContent = d.usuarios.length + (d.usuarios.length === 1 ? ' usuário' : ' usuários') + ' no total.';
+          $('corpo').innerHTML = d.usuarios.map(function (u) {
+            var meu = eu && eu.id === u.id;
+            return '<tr><td>' + u.id + '</td><td>' + esc(u.usuario) + (meu ? ' <span class="tag-voce">você</span>' : '') + '</td><td>' + esc(u.email) + '</td>' +
+              '<td><span class="papel ' + u.papel + '">' + (u.papel === 'admin' ? 'ADM' : 'Usuário') + '</span></td><td>' + u.partidas + '</td><td>' + u.melhor + '</td>' +
+              '<td><div class="acoes"><button class="mini" data-zerar="' + u.id + '" type="button">Zerar pontos</button>' +
+              (meu ? '' : '<button class="mini perigo" data-excluir="' + u.id + '" data-nome="' + esc(u.usuario) + '" type="button">Excluir</button>') + '</div></td></tr>';
+          }).join('');
+        }, function (e) { msg('msgLista', 'erro', e.message); });
+      }
+
+      $('formAdm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        msg('msgAdm', 'ok', '');
+        API.admin.criarAdmin($('aNome').value.trim(), $('aEmail').value.trim(), $('aSenha').value).then(function (d) {
+          msg('msgAdm', 'ok', '✓ ADM "' + d.usuario.usuario + '" cadastrado com sucesso.');
+          $('formAdm').reset();
+          carregar();
+        }, function (err) { msg('msgAdm', 'erro', err.message); });
+      });
+
+      $('corpo').addEventListener('click', function (e) {
+        var z = e.target.closest('[data-zerar]'), x = e.target.closest('[data-excluir]');
+        if (z && confirm('Zerar todas as pontuações deste usuário?')) {
+          API.admin.zerarPontosUsuario(z.dataset.zerar).then(function () { msg('msgLista', 'ok', 'Pontuações zeradas.'); carregar(); }, function (err) { msg('msgLista', 'erro', err.message); });
+        } else if (x && confirm('Excluir o usuário "' + x.dataset.nome + '" e todas as pontuações dele?')) {
+          API.admin.excluirUsuario(x.dataset.excluir).then(function () { msg('msgLista', 'ok', 'Usuário excluído.'); carregar(); }, function (err) { msg('msgLista', 'erro', err.message); });
+        }
+      });
+
+      $('zerarTudo').addEventListener('click', function () {
+        if (confirm('Tem certeza? Isso apaga TODAS as pontuações de TODOS os jogadores.')) {
+          API.admin.zerarRanking().then(function () { msg('msgLista', 'ok', 'Ranking zerado.'); carregar(); }, function (err) { msg('msgLista', 'erro', err.message); });
+        }
+      });
+
+      var u0 = API.usuario();
+      $('userPill').textContent = API.logado() && u0 ? '👤 ' + u0.usuario : '👤 Entrar';
+      API.restaurar().then(function (u) {
+        if (!u) return bloquear('🔒 Faça login com uma conta de administrador para acessar este painel.');
+        $('userPill').textContent = '👤 ' + u.usuario;
+        if (u.papel !== 'admin') return bloquear('⛔ Sua conta não tem permissão de administrador.');
+        $('area').hidden = false;
+        carregar();
+      });
+    })();
+  </script>
+</body>
+</html>

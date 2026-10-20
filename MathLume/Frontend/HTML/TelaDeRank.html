@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ranking — MathLume</title>
+  <link rel="stylesheet" href="../CSS/TelaDeRank.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
+      <div class="menu" id="menu">
+        <a href="tela-princ.html">Início</a>
+        <a href="minigamemat.html">Mini-game</a>
+        <a href="TelaDeRank.html" class="ativo">Ranking</a>
+        <a href="loja.html">Loja</a>
+        <a href="personalizacao.html">Personalização</a>
+      </div>
+      <div class="nav-right">
+        <a href="tela-princ.html" class="user-pill" id="userPill">👤 Entrar</a>
+        <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-head container">
+    <span class="badge">🏆 Ranking MathLume</span>
+    <h1>Os melhores <span class="grad">jogadores</span></h1>
+    <p>A classificação usa a melhor pontuação de cada jogador no mini-game. Jogue, acerte e suba de posição!</p>
+  </header>
+
+  <main class="container">
+    <div class="filtros">
+      <span class="rotulo">Dificuldade</span>
+      <div class="tabs" id="fDif" role="tablist">
+        <button class="tab active" data-v="" type="button">🌐 Todas</button>
+        <button class="tab" data-v="facil" type="button">🌱 Fácil</button>
+        <button class="tab" data-v="medio" type="button">🔥 Médio</button>
+        <button class="tab" data-v="dificil" type="button">💀 Difícil</button>
+      </div>
+      <span class="rotulo">Modo</span>
+      <div class="tabs" id="fModo" role="tablist">
+        <button class="tab active" data-v="" type="button">Todos</button>
+        <button class="tab" data-v="finito" type="button">⏳ Finito</button>
+        <button class="tab" data-v="infinito" type="button">♾️ Infinito</button>
+      </div>
+    </div>
+
+    <div id="minhaPos"></div>
+    <div id="conteudo" aria-live="polite"></div>
+    <p class="atualizado" id="atualizado"></p>
+  </main>
+
+  <footer class="rodape">
+    <div class="container"><a href="minigamemat.html">▶ Jogar</a> • <a href="loja.html">🛍️ Loja</a> • <a href="tela-princ.html">Início</a></div>
+  </footer>
+
+  <script src="../JS/mathlume-api.js"></script>
+  <script>
+    (function () {
+      var API = window.MathLumeAPI;
+      var $ = function (id) { return document.getElementById(id); };
+      var filtro = { dificuldade: '', modo: '' };
+      var MEDALHAS = ['🥇', '🥈', '🥉'];
+
+      $('burger').addEventListener('click', function () { $('menu').classList.toggle('open'); });
+
+      function esc(t) {
+        return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+      }
+      function fmt(n) { return Number(n).toLocaleString('pt-BR'); }
+
+      function pill() {
+        var u = API.usuario();
+        $('userPill').textContent = API.logado() && u ? '👤 ' + u.usuario : '👤 Entrar';
+      }
+
+      function pod(r, n) {
+        if (!r) return '<div class="pod p' + n + ' vazio"><div class="medalha">' + MEDALHAS[n - 1] + '</div><div class="nome">—</div></div>';
+        return '<div class="pod p' + n + (r.voce ? ' voce' : '') + '"><div class="medalha">' + MEDALHAS[n - 1] + '</div>' +
+               '<div class="nome" title="' + esc(r.usuario) + '">' + esc(r.usuario) + '</div>' +
+               '<div class="pts">' + fmt(r.pontos) + ' <small>pts</small></div>' +
+               '<div class="sub">Nível ' + r.nivel + ' · ' + r.partidas + (r.partidas === 1 ? ' partida' : ' partidas') + '</div></div>';
+      }
+
+      function desenhar(d) {
+        var lista = d.ranking;
+        if (!lista.length) {
+          $('conteudo').innerHTML = '<div class="estado">Ainda não há pontuações' + (filtro.dificuldade || filtro.modo ? ' neste filtro' : '') + '.<br>Seja o primeiro a entrar no ranking!' +
+            '<br><a class="btn" href="minigamemat.html">▶ Jogar agora</a></div>';
+          return;
+        }
+        // pódio: ordem visual 2º, 1º, 3º
+        var html = '<div class="podio">' + pod(lista[1], 2) + pod(lista[0], 1) + pod(lista[2], 3) + '</div>';
+        var resto = lista.slice(3);
+        if (resto.length) {
+          html += '<div class="tabela"><div class="linha cab"><span>#</span><span>Jogador</span><span style="text-align:right">Pontos</span><span class="opc" style="text-align:right">Nível</span><span class="opc" style="text-align:right">Partidas</span></div>';
+          resto.forEach(function (r) {
+            html += '<div class="linha' + (r.voce ? ' voce' : '') + '"><span class="pos">' + r.posicao + 'º</span>' +
+                    '<span class="nome">' + esc(r.usuario) + (r.voce ? '<span class="tag-voce">você</span>' : '') + '</span>' +
+                    '<span class="pts">' + fmt(r.pontos) + '</span>' +
+                    '<span class="num opc">' + r.nivel + '</span><span class="num opc">' + r.partidas + '</span></div>';
+          });
+          html += '</div>';
+        }
+        $('conteudo').innerHTML = html;
+      }
+
+      function minhaPosicao(d) {
+        var box = $('minhaPos');
+        if (!API.logado()) {
+          box.innerHTML = '<div class="minha-pos">🔒 <a href="tela-princ.html">Faça login</a> para ver a sua posição e entrar no ranking.</div>';
+        } else if (d.eu) {
+          box.innerHTML = '<div class="minha-pos">Você está em <b>' + d.eu.posicao + 'º lugar</b> de ' + d.totalJogadores + ' — melhor pontuação: <b>' + fmt(d.eu.pontos) + ' pts</b></div>';
+        } else {
+          box.innerHTML = '<div class="minha-pos">Você ainda não tem pontuação' + (filtro.dificuldade || filtro.modo ? ' neste filtro' : '') + '. <a href="minigamemat.html">Jogue agora!</a></div>';
+        }
+      }
+
+      function carregar() {
+        API.ranking(filtro).then(function (d) {
+          desenhar(d);
+          minhaPosicao(d);
+          $('atualizado').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' • atualiza sozinho a cada 30 segundos';
+        }, function (e) {
+          $('conteudo').innerHTML = '<div class="estado">⚠️ ' + esc(e.message) + '</div>';
+        });
+      }
+
+      function ligar(id, chave) {
+        $(id).addEventListener('click', function (e) {
+          var b = e.target.closest('.tab');
+          if (!b) return;
+          $(id).querySelectorAll('.tab').forEach(function (t) { t.classList.toggle('active', t === b); });
+          filtro[chave] = b.dataset.v;
+          carregar();
+        });
+      }
+      ligar('fDif', 'dificuldade');
+      ligar('fModo', 'modo');
+
+      pill();
+      API.restaurar().then(function () { pill(); carregar(); });
+      setInterval(function () { if (!document.hidden) carregar(); }, 30000);
+    })();
+  </script>
+</body>
+</html>
