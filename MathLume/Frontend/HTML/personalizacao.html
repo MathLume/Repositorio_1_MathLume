@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../CSS/personalizacao.css">
 </head>
 <body>
-
+  <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
   <nav class="navbar">
     <div class="container">
       <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
@@ -20,7 +20,7 @@
       </div>
       <div class="nav-right">
         <a href="loja.html#moedas" class="saldo" id="saldoLink" title="Comprar Lumes">🪙 <b id="saldo">0</b> Lumes</a>
-        <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
+        <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
       </div>
     </div>
   </nav>
@@ -33,9 +33,9 @@
 
   <main class="container">
     <div class="tabs" role="tablist">
-      <button class="tab active" data-aba="fundos" role="tab" type="button">🌌 Plano de fundo</button>
-      <button class="tab" data-aba="blocos" role="tab" type="button">☄️ Bloco de cálculo</button>
-      <button class="tab" data-aba="explosoes" role="tab" type="button">🎉 Explosão de acerto</button>
+      <button class="tab active" data-aba="fundos" role="tab" type="button" onclick="somBotao()">🌌 Plano de fundo</button>
+      <button class="tab" data-aba="blocos" role="tab" type="button" onclick="somBotao()">☄️ Bloco de cálculo</button>
+      <button class="tab" data-aba="explosoes" role="tab" type="button" onclick="somBotao()">🎉 Explosão de acerto</button>
     </div>
 
     <div class="stage" id="stage" aria-label="Prévia do visual equipado">
@@ -129,5 +129,6 @@
       mostrarAba(location.hash.slice(1));
     })();
   </script>
+  <script src="../JS/sons.js"></script>
 </body>
 </html>

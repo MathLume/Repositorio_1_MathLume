@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../CSS/admin.css">
 </head>
 <body>
-
+  <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
   <nav class="navbar">
     <div class="container">
       <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
@@ -21,7 +21,7 @@
       </div>
       <div class="nav-right">
         <a href="tela-princ.html" class="user-pill" id="userPill">👤 Entrar</a>
-        <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
+        <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
       </div>
     </div>
   </nav>
@@ -43,7 +43,7 @@
           <div><label for="aNome">Usuário</label><input id="aNome" type="text" minlength="3" maxlength="24" placeholder="nome.sobrenome" required></div>
           <div><label for="aEmail">E-mail</label><input id="aEmail" type="email" placeholder="adm@email.com" required></div>
           <div><label for="aSenha">Senha</label><input id="aSenha" type="password" minlength="6" placeholder="mín. 6 caracteres" required></div>
-          <button class="btn" type="submit">Cadastrar ADM</button>
+          <button class="btn" type="submit" onclick="somBotao()">Cadastrar ADM</button>
         </form>
         <div class="msg" id="msgAdm" hidden></div>
       </section>
@@ -58,7 +58,7 @@
       <section class="painel">
         <h2>Zona de perigo</h2>
         <p>Apaga todas as pontuações de todos os jogadores (o ranking volta do zero). Não dá para desfazer.</p>
-        <button class="mini perigo" id="zerarTudo" type="button">Zerar ranking inteiro</button>
+        <button class="mini perigo" id="zerarTudo" type="button" onclick="somBotao()">Zerar ranking inteiro</button>
       </section>
     </div>
   </main>
@@ -129,5 +129,6 @@
       });
     })();
   </script>
+  <script src="../JS/sons.js"></script>
 </body>
 </html>

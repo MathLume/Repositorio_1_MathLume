@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../CSS/TelaDeRank.css">
 </head>
 <body>
-
+  <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
   <nav class="navbar">
     <div class="container">
       <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
@@ -20,7 +20,7 @@
       </div>
       <div class="nav-right">
         <a href="tela-princ.html" class="user-pill" id="userPill">👤 Entrar</a>
-        <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
+        <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
       </div>
     </div>
   </nav>
@@ -35,16 +35,16 @@
     <div class="filtros">
       <span class="rotulo">Dificuldade</span>
       <div class="tabs" id="fDif" role="tablist">
-        <button class="tab active" data-v="" type="button">🌐 Todas</button>
-        <button class="tab" data-v="facil" type="button">🌱 Fácil</button>
-        <button class="tab" data-v="medio" type="button">🔥 Médio</button>
-        <button class="tab" data-v="dificil" type="button">💀 Difícil</button>
+        <button class="tab active" data-v="" type="button" onclick="somBotao()">🌐 Todas</button>
+        <button class="tab" data-v="facil" type="button" onclick="somBotao()">🌱 Fácil</button>
+        <button class="tab" data-v="medio" type="button" onclick="somBotao()">🔥 Médio</button>
+        <button class="tab" data-v="dificil" type="button" onclick="somBotao()">💀 Difícil</button>
       </div>
       <span class="rotulo">Modo</span>
       <div class="tabs" id="fModo" role="tablist">
-        <button class="tab active" data-v="" type="button">Todos</button>
-        <button class="tab" data-v="finito" type="button">⏳ Finito</button>
-        <button class="tab" data-v="infinito" type="button">♾️ Infinito</button>
+        <button class="tab active" data-v="" type="button" onclick="somBotao()">Todos</button>
+        <button class="tab" data-v="finito" type="button" onclick="somBotao()">⏳ Finito</button>
+        <button class="tab" data-v="infinito" type="button" onclick="somBotao()">♾️ Infinito</button>
       </div>
     </div>
 
@@ -146,5 +146,6 @@
       setInterval(function () { if (!document.hidden) carregar(); }, 30000);
     })();
   </script>
+  <script src="../JS/sons.js"></script>
 </body>
 </html>

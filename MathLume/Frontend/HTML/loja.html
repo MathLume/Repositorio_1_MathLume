@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../CSS/loja.css">
 </head>
 <body>
-
+  <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
   <nav class="navbar">
     <div class="container">
       <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
@@ -20,7 +20,7 @@
       </div>
       <div class="nav-right">
         <a href="loja.html#moedas" class="saldo" id="saldoLink" title="Comprar Lumes">🪙 <b id="saldo">0</b> Lumes</a>
-        <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
+        <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
       </div>
     </div>
   </nav>
@@ -33,9 +33,9 @@
 
   <main class="container">
     <div class="tabs" role="tablist">
-      <button class="tab active" data-aba="personalizacao" role="tab" type="button">🎨 Personalização</button>
-      <button class="tab" data-aba="boosters" role="tab" type="button">⚡ Boosters</button>
-      <button class="tab" data-aba="moedas" role="tab" type="button">🪙 Lumes</button>
+      <button class="tab active" data-aba="personalizacao" role="tab" type="button" onclick="somBotao()">🎨 Personalização</button>
+      <button class="tab" data-aba="boosters" role="tab" type="button" onclick="somBotao()">⚡ Boosters</button>
+      <button class="tab" data-aba="moedas" role="tab" type="button" onclick="somBotao()">🪙 Lumes</button>
     </div>
 
     <section class="aba active" id="aba-personalizacao" role="tabpanel">
@@ -227,5 +227,6 @@
       mostrarAba(location.hash.slice(1));
     })();
   </script>
+  <script src="../JS/sons.js"></script>
 </body>
 </html>

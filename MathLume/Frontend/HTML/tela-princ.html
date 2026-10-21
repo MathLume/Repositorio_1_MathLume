@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../CSS/tela-princ.css">
 </head>
 <body>
-
+  <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
   <nav class="navbar">
     <div class="container">
       <a href="#inicio" class="logo">Math<span>Lume</span></a>
@@ -20,10 +20,10 @@
         <a href="admin.html" id="linkAdmin" hidden>Admin</a>
       </div>
       <div class="nav-right">
-        <button class="btn-login" id="btnLogin" type="button">Login</button>
-        <button class="btn-login" id="btnLogout" type="button" hidden>Sair</button>
-        <button class="gear" id="btnGear" type="button" aria-label="Configurações" aria-expanded="false">⚙️</button>
-        <button class="burger" id="burger" type="button" aria-label="Menu">☰</button>
+        <button class="btn-login" id="btnLogin" type="button" onclick="somBotao()">Login</button>
+        <button class="btn-login" id="btnLogout" type="button" hidden onclick="somBotao()">Sair</button>
+        <button class="gear" id="btnGear" type="button" aria-label="Configurações" aria-expanded="false" onclick="somBotao()">⚙️</button>
+        <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
       </div>
     </div>
   </nav>
@@ -57,7 +57,7 @@
       <div class="cta-box">
         <h2>Pronto para começar sua jornada?</h2>
         <p>Junte-se a milhares de estudantes que já transformaram seu aprendizado com a MathLume</p>
-        <button class="btn-main" id="btnCriarConta" type="button">Criar Conta Grátis →</button>
+        <button class="btn-main" id="btnCriarConta" type="button" onclick="somBotao()">Criar Conta Grátis →</button>
       </div>
     </div>
   </section>
@@ -150,11 +150,11 @@
   <aside class="panel" id="panel" aria-hidden="true">
     <div class="panel-head">
       <strong>⚙️ Configurações</strong>
-      <button class="close" data-close="panel" type="button" aria-label="Fechar">✕</button>
+      <button class="close" data-close="panel" type="button" aria-label="Fechar" onclick="somBotao()">✕</button>
     </div>
     <div class="tabs">
-      <button class="tab active" data-tab="sobre" type="button">Sobre Nós</button>
-      <button class="tab" data-tab="som" type="button">Som</button>
+      <button class="tab active" data-tab="sobre" type="button" onclick="somBotao()">Sobre Nós</button>
+      <button class="tab" data-tab="som" type="button" onclick="somBotao()">Som</button>
     </div>
 
     <div class="tab-body active" id="tab-sobre">
@@ -183,7 +183,7 @@
 
   <div class="overlay" id="loginModal" aria-hidden="true">
     <div class="modal">
-      <button class="close" data-close="login" type="button" aria-label="Fechar">✕</button>
+      <button class="close" data-close="login" type="button" aria-label="Fechar" onclick="somBotao()">✕</button>
       <div class="logo" style="margin-bottom:6px">Math<span>Lume</span></div>
 
       <div class="auth-view active" id="view-login">
@@ -194,11 +194,11 @@
           <label for="lgPass">Senha</label>
           <input id="lgPass" type="password" placeholder="Sua senha" required>
           <p class="form-erro" id="erroLogin" role="alert" hidden></p>
-          <button class="btn-main" type="submit" style="width:100%;margin-top:8px">Entrar</button>
+          <button class="btn-main" type="submit" style="width:100%;margin-top:8px" onclick="somBotao()">Entrar</button>
         </form>
         <div class="auth-links">
-          <button type="button" class="link-btn" data-view="recuperar">Recuperar senha</button>
-          <button type="button" class="link-btn" data-view="criar">Criar usuário</button>
+          <button type="button" class="link-btn" data-view="recuperar" onclick="somBotao()">Recuperar senha</button>
+          <button type="button" class="link-btn" data-view="criar" onclick="somBotao()">Criar usuário</button>
         </div>
       </div>
 
@@ -214,10 +214,10 @@
           <label for="suPass">Senha</label>
           <input id="suPass" type="password" placeholder="Crie uma senha (mín. 6 caracteres)" minlength="6" autocomplete="new-password" required>
           <p class="form-erro" id="erroCadastro" role="alert" hidden></p>
-          <button class="btn-main" id="btnCadastrar" type="submit" style="width:100%;margin-top:8px">Criar usuário</button>
+          <button class="btn-main" id="btnCadastrar" type="submit" style="width:100%;margin-top:8px" onclick="somBotao()">Criar usuário</button>
         </form>
         <div class="auth-links">
-          <button type="button" class="link-btn" data-view="login">← Voltar ao login</button>
+          <button type="button" class="link-btn" data-view="login" onclick="somBotao()">← Voltar ao login</button>
         </div>
       </div>
 
@@ -226,10 +226,10 @@
         <form id="recoverForm">
           <label for="rcEmail">E-mail</label>
           <input id="rcEmail" type="email" placeholder="seu@email.com" required>
-          <button class="btn-main" type="submit" style="width:100%;margin-top:8px">Enviar link</button>
+          <button class="btn-main" type="submit" style="width:100%;margin-top:8px" onclick="somBotao()">Enviar link</button>
         </form>
         <div class="auth-links">
-          <button type="button" class="link-btn" data-view="login">← Voltar ao login</button>
+          <button type="button" class="link-btn" data-view="login" onclick="somBotao()">← Voltar ao login</button>
         </div>
       </div>
     </div>
@@ -240,11 +240,11 @@
       <div class="user-avatar" id="userAvatar">U</div>
       <strong id="userNameShow">usuário</strong>
     </div>
-    <button class="user-item" id="btnChangePhoto" type="button">🖼️ Alterar foto de usuário</button>
+    <button class="user-item" id="btnChangePhoto" type="button" onclick="somBotao()">🖼️ Alterar foto de usuário</button>
     <input type="file" id="photoInput" accept="image/*" hidden>
     <label for="userNameInput">Nome de usuário</label>
     <input id="userNameInput" type="text" maxlength="24" placeholder="Seu nome de usuário">
-    <button class="btn-main" id="btnSaveName" type="button" style="width:100%;margin-top:8px;padding:12px">Salvar</button>
+    <button class="btn-main" id="btnSaveName" type="button" style="width:100%;margin-top:8px;padding:12px" onclick="somBotao()">Salvar</button>
   </div>
 
   <script src="../JS/mathlume-api.js"></script>
@@ -517,5 +517,6 @@
       tone(880, 0.12, 0.6, s);
     });
   </script>
+  <script src="../JS/sons.js"></script>
 </body>
 </html>

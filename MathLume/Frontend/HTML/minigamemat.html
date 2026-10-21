@@ -6,7 +6,12 @@
   <title>MathLume — Meteoros Matemáticos</title>
   <link rel="stylesheet" href="../CSS/minigamemat.css">
 </head>
-<body>
+<body onload="musicaLobby()">
+  <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
+  <audio id="contagem" src="../assets/efeitos_sonoros/contador.wav"></audio>
+  <audio id="lobby" src="../assets/efeitos_sonoros/temaLob.mp3"></audio>
+  <audio id="temaGame" src = "../assets/efeitos_sonoros/temaGame.mp3"></audio>
+  
   <main id="game" class="game-shell">
     <div class="stars" aria-hidden="true"></div>
     <header class="hud hidden" id="hud">
@@ -28,16 +33,16 @@
       <div class="selector-block">
         <span class="eyebrow">MODO DE JOGO</span>
         <div class="mode-options">
-          <button class="mode-card" data-mode="finito"><span>⏳</span><strong>FINITO</strong><small id="finiteCount">20 meteoros<br>Destrua todos!</small></button>
-          <button class="mode-card selected" data-mode="infinito"><span>♾️</span><strong>INFINITO</strong><small>Sem fim<br>Sobreviva!</small></button>
+          <button class="mode-card" data-mode="finito" onclick="somBotao()"><span>⏳</span><strong>FINITO</strong><small id="finiteCount">20 meteoros<br>Destrua todos!</small></button>
+          <button class="mode-card selected" data-mode="infinito" onclick="somBotao()"><span>♾️</span><strong>INFINITO</strong><small>Sem fim<br>Sobreviva!</small></button>
         </div>
       </div>
       <div class="selector-block">
         <span class="eyebrow">ESCOLHA A DIFICULDADE</span>
         <div class="difficulty-options">
-          <button class="difficulty-card easy" data-difficulty="facil"><span>🌱</span><strong>Fácil</strong><small>Soma e subtração<br>Meteoros lentos</small></button>
-          <button class="difficulty-card medium selected" data-difficulty="medio"><span>🔥</span><strong>Médio</strong><small>Todas as operações<br>Velocidade normal</small></button>
-          <button class="difficulty-card hard" data-difficulty="dificil"><span>💀</span><strong>Difícil</strong><small>Contas difíceis<br>Meteoros rápidos</small></button>
+          <button class="difficulty-card easy" data-difficulty="facil" onclick="somBotao()"><span>🌱</span><strong>Fácil</strong><small>Soma e subtração<br>Meteoros lentos</small></button>
+          <button class="difficulty-card medium selected" data-difficulty="medio" onclick="somBotao()"><span>🔥</span><strong>Médio</strong><small>Todas as operações<br>Velocidade normal</small></button>
+          <button class="difficulty-card hard" data-difficulty="dificil" onclick="somBotao()"><span>💀</span><strong>Difícil</strong><small>Contas difíceis<br>Meteoros rápidos</small></button>
         </div>
       </div>
       <div class="selector-block" id="boosterBlock">
@@ -47,11 +52,11 @@
         <small class="quem-joga" id="quemJoga"></small>
       </div>
       <div class="menu-actions">
-        <button class="primary-btn" id="startBtn">🚀 <span>INICIAR</span></button>
-        <button class="secondary-btn" id="exitBtn">🚪 SAIR</button>
+        <button class="primary-btn" id="startBtn" onclick="contagemR()">🚀 <span>INICIAR</span></button>
+        <button class="secondary-btn" id="exitBtn" onclick="somBotao()">🚪 SAIR</button>
         <div class="exit-confirm hidden" id="exitConfirm"><span>Tem certeza que deseja sair?</span><div><button id="confirmExit">✓ Sim, sair</button><button id="cancelExit">✕ Cancelar</button></div></div>
       </div>
-      <button class="settings-floating" id="settingsMenu" aria-label="Configurações">⚙</button>
+      <button class="settings-floating" id="settingsMenu" aria-label="Configurações" onclick="somBotao()">⚙</button>
     </section>
 
     <section class="screen intro-screen hidden" id="introScreen">
@@ -268,5 +273,6 @@
   window.addEventListener("pageshow",e=>{if(e.persisted){ML.recarregar();desenharBoosters();atualizarMarca();}});
 })();
   </script>
+  <script src="../JS/sons.js"></script>
 </body>
 </html>
