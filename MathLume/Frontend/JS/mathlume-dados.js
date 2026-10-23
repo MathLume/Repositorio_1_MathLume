@@ -187,6 +187,15 @@
       desc: 'Menu, HUD e tela de jogo no fundo do mar: bolhas, algas, peixes e zona de perigo.',
       preview: 'linear-gradient(180deg,#0c1b6b 0%,#0369a1 55%,#164e63 100%)',
       css: '../CSS/minigamemat-oceano.css'
+    },
+    {
+      id: 'halloween',
+      nome: 'Halloween',
+      emoji: '🎃',
+      preco: 250, // <- ajuste o preço (em Lumes) aqui
+      desc: 'Noite de lua cheia: abóboras caindo sobre um milharal, vidas em morcegos e um bando de morcegos voando a cada acerto.',
+      preview: 'linear-gradient(180deg,#0d0508 0%,#2a0a00 58%,#6b2a00 100%)',
+      css: '../CSS/minigamemat-halloween.css'
     }
   ];
 
