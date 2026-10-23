@@ -4,51 +4,83 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MathLume — Meteoros Matemáticos</title>
-  <link rel="stylesheet" href="../CSS/minigamemat.css">
+  <!-- Tema equipado (Espaço / Oceano / ...): carrega o CSS certo antes de renderizar -->
+  <script src="../JS/mathlume-dados.js"></script>
+  <script>MathLumeTemas.aplicar();</script>
 </head>
 <body>
   <main id="game" class="game-shell">
     <div class="stars" aria-hidden="true"></div>
+    <div class="ocean-bg" aria-hidden="true">
+      <i class="ray" style="left:15%;--r:-10deg;animation-duration:4s;animation-delay:0.0s"></i>
+      <i class="ray" style="left:30%;--r:-5deg;animation-duration:5s;animation-delay:0.8s"></i>
+      <i class="ray" style="left:50%;--r:0deg;animation-duration:6s;animation-delay:1.6s"></i>
+      <i class="ray" style="left:70%;--r:5deg;animation-duration:7s;animation-delay:2.4000000000000004s"></i>
+      <i class="ray" style="left:85%;--r:10deg;animation-duration:8s;animation-delay:3.2s"></i>
+      <i class="bub" style="--s:8px;--l:10%;--d:0s;--t:8s"></i>
+      <i class="bub" style="--s:14px;--l:20%;--d:2s;--t:10s"></i>
+      <i class="bub" style="--s:6px;--l:35%;--d:4s;--t:7s"></i>
+      <i class="bub" style="--s:10px;--l:50%;--d:1s;--t:9s"></i>
+      <i class="bub" style="--s:18px;--l:65%;--d:3s;--t:12s"></i>
+      <i class="bub" style="--s:8px;--l:75%;--d:5s;--t:8s"></i>
+      <i class="bub" style="--s:12px;--l:85%;--d:0.5s;--t:11s"></i>
+      <i class="bub" style="--s:6px;--l:92%;--d:6s;--t:7s"></i>
+      <div class="weed" style="--l:5%"><svg width="24" height="80" viewBox="0 0 24 80"><ellipse cx="14" cy="70" rx="8" ry="10" fill="#0d9488" opacity=".7"/><ellipse cx="10" cy="50" rx="8" ry="10" fill="#0d9488" opacity=".7"/><ellipse cx="14" cy="30" rx="8" ry="10" fill="#0d9488" opacity=".7"/><ellipse cx="10" cy="10" rx="8" ry="10" fill="#0d9488" opacity=".7"/></svg></div>
+      <div class="weed" style="--l:12%"><svg width="24" height="60" viewBox="0 0 24 60"><ellipse cx="14" cy="50" rx="8" ry="10" fill="#0f766e" opacity=".7"/><ellipse cx="10" cy="30" rx="8" ry="10" fill="#0f766e" opacity=".7"/><ellipse cx="14" cy="10" rx="8" ry="10" fill="#0f766e" opacity=".7"/></svg></div>
+      <div class="weed" style="--l:88%"><svg width="24" height="90" viewBox="0 0 24 90"><ellipse cx="14" cy="80" rx="8" ry="10" fill="#0d9488" opacity=".7"/><ellipse cx="10" cy="60" rx="8" ry="10" fill="#0d9488" opacity=".7"/><ellipse cx="14" cy="40" rx="8" ry="10" fill="#0d9488" opacity=".7"/><ellipse cx="10" cy="20" rx="8" ry="10" fill="#0d9488" opacity=".7"/></svg></div>
+      <div class="weed" style="--l:94%"><svg width="24" height="55" viewBox="0 0 24 55"><ellipse cx="14" cy="45" rx="8" ry="10" fill="#115e59" opacity=".7"/><ellipse cx="10" cy="25" rx="8" ry="10" fill="#115e59" opacity=".7"/></svg></div>
+      <div class="weed" style="--l:80%"><svg width="24" height="70" viewBox="0 0 24 70"><ellipse cx="14" cy="60" rx="8" ry="10" fill="#0f766e" opacity=".7"/><ellipse cx="10" cy="40" rx="8" ry="10" fill="#0f766e" opacity=".7"/><ellipse cx="14" cy="20" rx="8" ry="10" fill="#0f766e" opacity=".7"/></svg></div>
+      <div class="swim to-right" style="top:12%;--t:18s;--d:0s"><span>🐟</span></div>
+      <div class="swim to-left" style="top:38%;--t:22s;--d:6s"><span>🐟</span></div>
+      <div class="floor"></div>
+    </div>
+    <div class="flash" id="flash"></div>
+
     <header class="hud hidden" id="hud">
-      <div class="hud-pill">⭐ <span id="score">0</span> pts</div>
-      <div class="hud-pill">❤️ <span id="lives">3</span></div>
-      <div class="hud-pill">🔥 Combo <span id="combo">0</span></div>
-      <div class="hud-pill">Nível <span id="level">1</span></div>
-      <div class="hud-pill boost hidden" id="pillDobro">✨ ×2 <span id="dobroTempo">60</span>s</div>
-      <div class="hud-pill boost hidden" id="pillChance">🛟 Segunda chance</div>
+      <button class="hud-exit" id="hudExit" aria-label="Sair para o menu"><svg class="ico" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span>Sair</span></button>
+      <div class="hud-pill hud-score">⭐ <span id="score">0</span><span class="t-esp"> pts</span></div>
+      <div class="hud-pill hud-lives"><span class="t-esp">❤️ </span><span id="lives">3</span></div>
+      <div class="hud-pill hud-combo" id="comboPill"><span class="t-esp">🔥 Combo </span><span class="t-oce">🔥 ×</span><span id="combo">0</span></div>
+      <div class="hud-pill hud-level"><span class="t-esp">Nível </span><span class="t-oce">Nv </span><span id="level">1</span></div>
+      <div class="boost-row">
+        <div class="hud-pill boost hidden" id="pillDobro">✨ ×2 <span id="dobroTempo">60</span>s</div>
+        <div class="hud-pill boost hidden" id="pillChance">🛟 Segunda chance</div>
+      </div>
       <button class="icon-btn" id="settingsGame" aria-label="Configurações">⚙</button>
     </header>
 
     <section class="screen menu-screen" id="menuScreen">
       <div class="brand">
+        <div class="brand-top t-oce"><svg class="ico" viewBox="0 0 24 24"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg><span>Mini Game</span><svg class="ico" viewBox="0 0 24 24"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg></div>
         <div class="brand-meteor">☄️</div>
-        <h1>MATHLUME</h1>
-        <p>DESTRUA OS METEOROS COM MATEMÁTICA!</p>
+        <h1><span class="t-esp">MATHLUME</span><span class="t-oce">MathLume</span></h1>
+        <p><span class="t-esp">DESTRUA OS METEOROS COM MATEMÁTICA!</span><span class="t-oce">Responda antes que a questão afunde!</span></p>
       </div>
       <div class="selector-block">
-        <span class="eyebrow">MODO DE JOGO</span>
+        <span class="eyebrow"><svg class="ico t-oce" viewBox="0 0 24 24"><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></svg><span class="t-esp">MODO DE JOGO</span><span class="t-oce">Modo de Jogo</span></span>
         <div class="mode-options">
-          <button class="mode-card" data-mode="finito"><span>⏳</span><strong>FINITO</strong><small id="finiteCount">20 meteoros<br>Destrua todos!</small></button>
-          <button class="mode-card selected" data-mode="infinito"><span>♾️</span><strong>INFINITO</strong><small>Sem fim<br>Sobreviva!</small></button>
+          <button class="mode-card" data-mode="finito"><span><span class="t-esp">⏳</span><span class="t-oce">🏁</span></span><strong><span class="t-esp">FINITO</span><span class="t-oce">Finito</span></strong><small id="finiteCount">20 meteoros<br>Destrua todos!</small></button>
+          <button class="mode-card selected" data-mode="infinito"><span><span class="t-esp">♾️</span><span class="t-oce">∞</span></span><strong><span class="t-esp">INFINITO</span><span class="t-oce">Infinito</span></strong><small><span class="t-esp">Sem fim<br>Sobreviva!</span><span class="t-oce">Jogue sem parar</span></small></button>
         </div>
       </div>
       <div class="selector-block">
-        <span class="eyebrow">ESCOLHA A DIFICULDADE</span>
+        <span class="eyebrow"><svg class="ico t-oce" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="t-esp">ESCOLHA A DIFICULDADE</span><span class="t-oce">Dificuldade</span></span>
         <div class="difficulty-options">
-          <button class="difficulty-card easy" data-difficulty="facil"><span>🌱</span><strong>Fácil</strong><small>Soma e subtração<br>Meteoros lentos</small></button>
-          <button class="difficulty-card medium selected" data-difficulty="medio"><span>🔥</span><strong>Médio</strong><small>Todas as operações<br>Velocidade normal</small></button>
-          <button class="difficulty-card hard" data-difficulty="dificil"><span>💀</span><strong>Difícil</strong><small>Contas difíceis<br>Meteoros rápidos</small></button>
+          <button class="difficulty-card easy" data-difficulty="facil"><span><span class="t-esp">🌱</span><span class="t-oce">🐙</span></span><strong>Fácil</strong><small>Soma e subtração<br>Meteoros lentos</small><div class="dstars"><i class="on">★</i><i>★</i><i>★</i></div></button>
+          <button class="difficulty-card medium selected" data-difficulty="medio"><span><span class="t-esp">🔥</span><span class="t-oce">🐡</span></span><strong>Médio</strong><small>Todas as operações<br>Velocidade normal</small><div class="dstars"><i class="on">★</i><i class="on">★</i><i>★</i></div></button>
+          <button class="difficulty-card hard" data-difficulty="dificil"><span><span class="t-esp">💀</span><span class="t-oce">🦈</span></span><strong>Difícil</strong><small>Contas difíceis<br>Meteoros rápidos</small><div class="dstars"><i class="on">★</i><i class="on">★</i><i class="on">★</i></div></button>
         </div>
       </div>
       <div class="selector-block" id="boosterBlock">
-        <span class="eyebrow">BOOSTERS DA PARTIDA</span>
+        <span class="eyebrow"><span class="t-oce">🧪 </span><span class="t-esp">BOOSTERS DA PARTIDA</span><span class="t-oce">Boosters da partida</span></span>
         <div class="booster-options" id="boosterOptions"></div>
         <div class="menu-links"><a href="loja.html#boosters">🛍️ Loja</a><a href="personalizacao.html">🎨 Personalização</a><a href="TelaDeRank.html">🏆 Ranking</a></div>
         <small class="quem-joga" id="quemJoga"></small>
       </div>
       <div class="menu-actions">
-        <button class="primary-btn" id="startBtn">🚀 <span>INICIAR</span></button>
-        <button class="secondary-btn" id="exitBtn">🚪 SAIR</button>
+        <button class="primary-btn" id="startBtn"><span class="t-esp">🚀 </span><span class="t-oce">▶ </span><span class="t-esp">INICIAR</span><span class="t-oce">Jogar Agora</span></button>
+        <div class="menu-summary" id="menuSummary"></div>
+        <button class="secondary-btn" id="exitBtn">🚪 <span class="t-esp">SAIR</span><span class="t-oce">Sair</span></button>
         <div class="exit-confirm hidden" id="exitConfirm"><span>Tem certeza que deseja sair?</span><div><button id="confirmExit">✓ Sim, sair</button><button id="cancelExit">✕ Cancelar</button></div></div>
       </div>
       <button class="settings-floating" id="settingsMenu" aria-label="Configurações">⚙</button>
@@ -57,20 +89,24 @@
     <section class="screen intro-screen hidden" id="introScreen">
       <div class="curtain left-curtain"></div><div class="curtain right-curtain"></div>
       <div class="countdown" id="countdown">3</div>
-      <div class="fire-visual hidden" id="fireVisual"><div class="flame flame-one"></div><div class="flame flame-two"></div><div class="flame flame-three"></div><span>🔥</span></div>
+      <div class="fire-visual hidden" id="fireVisual"><div class="flame flame-one"></div><div class="flame flame-two"></div><div class="flame flame-three"></div><span class="t-esp">🔥</span><span class="t-oce">🌊</span></div>
     </section>
 
     <section class="playfield hidden" id="playfield">
       <div class="scene hidden" id="scene" aria-hidden="true"></div>
-      <div class="game-hint">Resolva a conta e digite o resultado para destruir o meteoro!</div>
-      <div id="meteorsLayer"></div>
+      <div class="fall-zone">
+        <div class="danger-strip"><i class="danger-line"></i><span class="danger-label">⚠ ZONA DE PERIGO ⚠</span></div>
+        <div class="game-hint">Resolva a conta e digite o resultado para destruir o meteoro!</div>
+        <div id="meteorsLayer"></div>
+      </div>
       <div id="explosionsLayer"></div>
       <div class="answer-panel">
         <div class="feedback" id="feedback"></div>
         <form id="answerForm">
-          <label for="answerInput">SUA RESPOSTA</label>
-          <div class="answer-row"><input id="answerInput" type="number" autocomplete="off" placeholder="?" required><button type="submit">💥 ATIRAR</button></div>
+          <label for="answerInput"><span class="t-esp">SUA RESPOSTA</span><span class="t-oce">Sua resposta</span></label>
+          <div class="answer-row"><div class="answer-input-wrap" id="answerWrap"><input id="answerInput" type="number" autocomplete="off" placeholder="?" required><span class="answer-icon" id="answerIcon">Enter ↵</span></div><button type="submit"><span class="t-esp">💥 ATIRAR</span><svg class="ico t-oce" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button></div>
         </form>
+        <div class="answer-tip">Digite o número e pressione Enter ou toque em enviar</div>
       </div>
     </section>
 
@@ -78,17 +114,17 @@
       <div class="result-icon" id="resultIcon">💥</div>
       <h2 id="resultTitle">FIM DE JOGO</h2>
       <p id="resultSubtitle"></p>
-      <div class="result-stats"><strong><span id="finalScore">0</span> pts</strong><span>Nível <b id="finalLevel">1</b> ⭐ · Combo máx. <b id="finalCombo">0</b> 🔥</span><small id="finalDetail"></small></div>
+      <div class="result-stats"><strong><span id="finalScore">0</span> pts</strong><span>Nível <b id="finalLevel">1</b> ⭐ · Combo máx. <b id="finalCombo">0</b> 🔥</span><div class="rows t-oce"><div class="row"><span>⭐ Pontuação</span><b class="c-gold"><span id="rScore">0</span> pts</b></div><div class="row"><span>✅ Acertos</span><b class="c-green" id="rHits">0</b></div><div class="row"><span>🌊 Nível</span><b class="c-sky" id="rLevel">1</b></div><div class="row"><span>🔥 Melhor sequência</span><b class="c-violet"><span id="rCombo">0</span>x</b></div></div><small id="finalDetail"></small></div>
       <p class="save-status" id="saveStatus" role="status"></p>
-      <div class="result-actions"><button class="primary-btn" id="againBtn">🔄 JOGAR NOVAMENTE</button><button class="secondary-btn" id="rankBtn">🏆 VER RANKING</button><button class="secondary-btn" id="menuBtn">🏠 MENU PRINCIPAL</button></div>
+      <div class="result-actions"><button class="primary-btn" id="againBtn">🔄 <span class="t-esp">JOGAR NOVAMENTE</span><span class="t-oce">Jogar Novamente</span></button><button class="secondary-btn" id="rankBtn">🏆 <span class="t-esp">VER RANKING</span><span class="t-oce">Ver Ranking</span></button><button class="secondary-btn" id="menuBtn">🏠 <span class="t-esp">MENU PRINCIPAL</span><span class="t-oce">Menu</span></button></div>
     </section>
 
     <aside class="settings-backdrop hidden" id="settingsBackdrop"></aside>
     <aside class="settings-panel" id="settingsPanel" aria-label="Configurações">
-      <div class="settings-header"><div><span class="settings-symbol">⚙</span><div><strong>Configurações</strong><small>MATHLUME</small></div></div><button id="closeSettings">✕</button></div>
+      <div class="settings-header"><button class="set-voltar" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><span>Voltar</span></button><div><span class="settings-symbol">⚙</span><div><strong>Configurações</strong><small>MATHLUME</small></div></div><button id="closeSettings">✕</button></div>
       <div class="settings-content">
-        <div class="settings-section"><label>VOLUME DO SOM</label><div class="volume-card"><div class="volume-top"><button id="muteBtn">🔊</button><strong><span id="volumeValue">70</span>%</strong></div><input type="range" min="0" max="100" value="70" id="volumeRange"><div class="volume-presets"><button data-volume="0">🔇</button><button data-volume="25">25</button><button data-volume="50">50</button><button data-volume="75">75</button><button data-volume="100">100</button></div></div></div>
-        <div class="settings-section"><label>DIFICULDADE</label><div class="settings-difficulties"><button data-setting-difficulty="facil">🌱 <span><b>Fácil</b><small>Soma e subtração · Meteoros lentos</small></span><i></i></button><button data-setting-difficulty="medio">🔥 <span><b>Médio</b><small>Todas as operações · Velocidade normal</small></span><i></i></button><button data-setting-difficulty="dificil">💀 <span><b>Difícil</b><small>Contas difíceis · Meteoros rápidos</small></span><i></i></button></div></div>
+        <div class="settings-section"><label><span class="t-esp">VOLUME DO SOM</span><span class="t-oce">Volume do Áudio</span></label><div class="volume-card"><div class="volume-top"><button id="muteBtn">🔊</button><strong><span id="volumeValue">70</span>%</strong></div><input type="range" min="0" max="100" value="70" id="volumeRange"><div class="volume-presets"><button data-volume="0">🔇</button><button data-volume="25">25</button><button data-volume="50">50</button><button data-volume="75">75</button><button data-volume="100">100</button></div></div></div>
+        <div class="settings-section"><label><span class="t-esp">DIFICULDADE</span><span class="t-oce">Nível de Dificuldade</span></label><div class="settings-difficulties"><button data-setting-difficulty="facil"><em class="t-esp">🌱</em><em class="t-oce">🐙</em> <span><b>Fácil</b><small>Soma e subtração · <em class="t-esp">Meteoros lentos</em><em class="t-oce">Bolhas lentas</em></small></span><i></i></button><button data-setting-difficulty="medio"><em class="t-esp">🔥</em><em class="t-oce">🐡</em> <span><b>Médio</b><small>Todas as operações · Velocidade normal</small></span><i></i></button><button data-setting-difficulty="dificil"><em class="t-esp">💀</em><em class="t-oce">🦈</em> <span><b>Difícil</b><small>Contas difíceis · <em class="t-esp">Meteoros rápidos</em><em class="t-oce">Bolhas rápidas</em></small></span><i></i></button></div></div>
         <p class="save-note">💾 Preferências salvas automaticamente no seu dispositivo.</p>
       </div>
       <div class="settings-footer"><button id="backSettings">‹ Voltar</button></div>
@@ -99,10 +135,15 @@
   <script>
 (() => {
   const $ = id => document.getElementById(id);
+  /* ===== Tema do mini-game (vem de mathlume-temas.js) ===== */
+  const TEMA = (window.MathLumeTemas && MathLumeTemas.atual().id) || "espaco", OCE = TEMA === "oceano";
+  const TXT = OCE
+    ? {passou:"💦 Afundou! -1 ❤️", perdeu:"As bolhas venceram desta vez. Tente novamente!", ganhou:n=>`${n} bolhas estouradas ✅`, destruiu:n=>`Você estourou ${n} bolhas`, fin:"🏁", icone:"🦈"}
+    : {passou:"💥 Passou! -1 ❤️", perdeu:"Os meteoros venceram desta vez. Tente novamente!", ganhou:n=>`${n} meteoros destruídos ✅`, destruiu:n=>`Você destruiu ${n} meteoros`, fin:"⏳", icone:"💥"};
   const config = {
-    facil: {label:"Fácil",emoji:"🌱",color:"#00ff88",minSpeed:14,maxSpeed:20,spawnMs:4000,desc:"Soma e subtração",count:12},
-    medio: {label:"Médio",emoji:"🔥",color:"#ff9a00",minSpeed:9,maxSpeed:15,spawnMs:3200,desc:"Todas as operações",count:20},
-    dificil:{label:"Difícil",emoji:"💀",color:"#ff4136",minSpeed:5,maxSpeed:9,spawnMs:2400,desc:"Contas difíceis",count:30}
+    facil: {label:"Fácil",emoji:OCE?"🐙":"🌱",color:OCE?"#34d399":"#00ff88",minSpeed:14,maxSpeed:20,spawnMs:4000,desc:"Soma e subtração",count:12},
+    medio: {label:"Médio",emoji:OCE?"🐡":"🔥",color:OCE?"#fbbf24":"#ff9a00",minSpeed:9,maxSpeed:15,spawnMs:3200,desc:"Todas as operações",count:20},
+    dificil:{label:"Difícil",emoji:OCE?"🦈":"💀",color:OCE?"#f87171":"#ff4136",minSpeed:5,maxSpeed:9,spawnMs:2400,desc:"Contas difíceis",count:30}
   };
   let mode="infinito", difficulty=localStorage.getItem("mathlume_difficulty")||"medio";
   if(!config[difficulty]) difficulty="medio";
@@ -127,11 +168,11 @@
   }
   function selectMode(value){mode=value;document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("selected",b.dataset.mode===mode));updateFiniteCount();}
   function selectDifficulty(value,fromSettings=false){difficulty=value;localStorage.setItem("mathlume_difficulty",value);document.querySelectorAll("[data-difficulty]").forEach(b=>b.classList.toggle("selected",b.dataset.difficulty===value));document.querySelectorAll("[data-setting-difficulty]").forEach(b=>{b.classList.toggle("selected",b.dataset.settingDifficulty===value);b.style.setProperty("--setting-color",config[value].color)});updateFiniteCount();if(fromSettings && gameActive){/* difficulty takes effect on newly spawned meteors */}}
-  function updateFiniteCount(){$("finiteCount").innerHTML=`${config[difficulty].count} meteoros<br>Destrua todos!`;}
+  function updateFiniteCount(){const c=config[difficulty];$("finiteCount").innerHTML=OCE?`${c.count} bolhas`:`${c.count} meteoros<br>Destrua todos!`;$("menuSummary").textContent=`${c.emoji} ${c.label} · ${mode==="finito"?"🏁 Finito":"∞ Infinito"}`;}
   document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>selectMode(b.dataset.mode)));
   document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>selectDifficulty(b.dataset.difficulty)));
   document.querySelectorAll("[data-setting-difficulty]").forEach(b=>b.addEventListener("click",()=>selectDifficulty(b.dataset.settingDifficulty,true)));
-  function updateHud(){$("score").textContent=score;$("lives").textContent=lives;$("combo").textContent=combo;$("level").textContent=level;}
+  function updateHud(){$("score").textContent=score;if(OCE)$("lives").innerHTML=Array.from({length:Math.max(startLives,lives)},(_,i)=>`<i class="${i<lives?"on":"off"}">♥</i>`).join("");else $("lives").textContent=lives;$("combo").textContent=combo;if(OCE)$("comboPill").classList.toggle("hidden",combo<2);$("level").textContent=level;}
   function resetStats(){score=0;lives=3;combo=0;maxCombo=0;level=1;totalCorrect=0;spawned=0;meteorId=0;gameOver=false;gameWon=false;liveMeteors.clear();$("meteorsLayer").innerHTML="";$("explosionsLayer").innerHTML="";$("answerInput").value="";$("feedback").textContent="";updateHud();}
   /* ===== Personalização + boosters (dados vêm de mathlume-dados.js) ===== */
   const CENARIOS={
@@ -167,7 +208,7 @@
       return `<button type="button" class="booster-chip${selecionados.has(b.id)?" selected":""}" data-booster="${b.id}" ${q<=0?"disabled":""}><span>${b.emoji}</span><strong>${BOOST_LABEL[b.id]}</strong><small>x${q}</small></button>`;}).join("");
   }
   $("boosterOptions").addEventListener("click",e=>{const b=e.target.closest("[data-booster]");if(!b||b.disabled)return;const id=b.dataset.booster;selecionados.has(id)?selecionados.delete(id):selecionados.add(id);desenharBoosters();});
-  function atualizarMarca(){document.querySelector(".brand-meteor").textContent=ML.equipado("blocos").emoji;}
+  function atualizarMarca(){const eq=ML.equipado("blocos");document.querySelector(".brand-meteor").textContent=(OCE&&eq.id==="meteoro")?"🐠":eq.emoji;}
   function prepararPartida(){
     const sel=[...selecionados].filter(id=>ML.estado().boosters[id]>0);
     boost={vidas:sel.includes("vidas"),pontos:sel.includes("pontos"),chance:sel.includes("chance")};
@@ -202,11 +243,12 @@
   }
   function spawnMeteor(){if(!gameActive||gameOver||gameWon)return;if(mode==="finito"&&spawned>=config[difficulty].count){checkWin();return;}if(liveMeteors.size>=3)return;
     const {q,answer}=generateQuestion(),id=++meteorId,x=5+Math.random()*80,cfg=config[difficulty],speed=Math.max(3,cfg.minSpeed-level*.5)+Math.random()*(Math.max(4,cfg.maxSpeed-level*.6)-Math.max(3,cfg.minSpeed-level*.5));
-    const el=document.createElement("div");el.className="meteor";el.id=`meteor-${id}`;el.style.left=`${x}%`;el.style.setProperty("--duration",`${speed}s`);el.style.animationDuration=`${speed}s`;const eq=ML.equipado("blocos");
+    const el=document.createElement("div");el.className="meteor";el.id=`meteor-${id}`;el.style.left=OCE?`calc((100% - var(--bw)) * ${Math.random().toFixed(3)})`:`${x}%`;el.style.setProperty("--duration",`${speed}s`);el.style.animationDuration=`${speed}s`;const eq=ML.equipado("blocos");
     if(eq.id!=="meteoro"){el.classList.add("bola");el.innerHTML=`<div class="meteor-core"><span class="bola-icone">${eq.emoji}</span><span class="meteor-question">${q}<br>= ?</span></div>`;}
+    else if(OCE){el.innerHTML=`<div class="meteor-core"><span class="card-fish">🐟</span><span class="card-label"><i>QUANTO É?</i><i>⚠️ RÁPIDO!</i></span><span class="meteor-question">${q} = ?</span></div>`;}
     else{el.innerHTML=`<div class="meteor-core"><span class="meteor-question">${q}<br>= ?</span></div><div class="meteor-tail"></div>`;}
     $("meteorsLayer").appendChild(el);const m={id,answer,el,x};liveMeteors.set(id,m);spawned++;
-    el.addEventListener("animationend",()=>{if(!liveMeteors.has(id)||el.classList.contains("exploding"))return;liveMeteors.delete(id);el.remove();loseLife("💥 Passou! -1 ❤️");checkWin();});
+    el.addEventListener("animationend",(ev)=>{if(ev.target!==el)return;if(!liveMeteors.has(id)||el.classList.contains("exploding"))return;liveMeteors.delete(id);el.remove();loseLife(TXT.passou);checkWin();});
   }
   function burst(el){
     const rect=el.getBoundingClientRect(),layer=$("explosionsLayer"),cx=rect.left+rect.width/2,cy=rect.top+rect.height/2,tipo=ML.equipado("explosoes").id;
@@ -225,21 +267,24 @@
     else if(tipo==="naves"){emojis("🛸",5,140,320,1500,24,34,false);}
     else if(tipo==="moedas"){emojis("🪙",10,60,150,1100,16,24,false);}
     else{
-      const colors=["#ff4500","#ff9a00","#ffdd00","#fff","#00ff88","#ff69b4"];
+      const colors=OCE?["#67e8f9","#22d3ee","#ffffff","#a5f3fc","#38bdf8","#34d399"]:["#ff4500","#ff9a00","#ffdd00","#fff","#00ff88","#ff69b4"];
       for(let i=0;i<18;i++){const p=document.createElement("i");p.className="explosion-particle";p.style.left=cx+"px";p.style.top=cy+"px";p.style.background=colors[i%colors.length];
         const a=Math.PI*2*i/18,d=50+Math.random()*80;p.style.setProperty("--tx",Math.cos(a)*d+"px");p.style.setProperty("--ty",Math.sin(a)*d+"px");add(p,800);}
     }
   }
   function answerQuestion(e){e.preventDefault();if(!gameActive||gameOver||gameWon)return;const val=Number($("answerInput").value);if($("answerInput").value.trim()==="")return;$("answerInput").value="";
     const hit=[...liveMeteors.values()].find(m=>m.answer===val);
-    if(hit){liveMeteors.delete(hit.id);burst(hit.el);hit.el.classList.add("exploding");setTimeout(()=>hit.el.remove(),350);combo++;maxCombo=Math.max(maxCombo,combo);const mult=(boost.pontos&&Date.now()<dobroAte)?2:1,pts=(combo>=3?30:10)*mult;score+=pts;dano=Math.max(0,dano-.06);atualizarCenario();totalCorrect++;if(totalCorrect%5===0){level=Math.floor(totalCorrect/5)+1;lives=Math.min(lives+1,7);sound("levelup");showFeedback(`⭐ NÍVEL ${level}! +1 ❤️`,"#f5d76e");}else{sound("correct");showFeedback(combo>=3?`🔥 COMBO x${combo}! +${pts}`:`✅ Correto! +${pts}`,combo>=3?"#ff9a00":"#00ff88");}updateHud();checkWin();}
-    else{combo=0;loseLife("❌ Errou! -1 ❤️");sound("wrong");} $("answerInput").focus();
+    if(hit){liveMeteors.delete(hit.id);burst(hit.el);if(OCE)hit.el.style.transform=getComputedStyle(hit.el).transform;hit.el.classList.add("exploding");flashInput("ok");flash("green");setTimeout(()=>hit.el.remove(),350);combo++;maxCombo=Math.max(maxCombo,combo);const mult=(boost.pontos&&Date.now()<dobroAte)?2:1,pts=(combo>=3?30:10)*mult;score+=pts;dano=Math.max(0,dano-.06);atualizarCenario();totalCorrect++;if(totalCorrect%5===0){level=Math.floor(totalCorrect/5)+1;lives=Math.min(lives+1,7);sound("levelup");showFeedback(`⭐ NÍVEL ${level}! +1 ❤️`,"#f5d76e");}else{sound("correct");showFeedback(combo>=3?`🔥 COMBO x${combo}! +${pts}`:`✅ Correto! +${pts}`,combo>=3?"#ff9a00":"#00ff88");}updateHud();checkWin();}
+    else{combo=0;loseLife("❌ Errou! -1 ❤️");sound("wrong");flashInput("bad");} $("answerInput").focus();
   }
+  function flash(kind){if(!OCE)return;const f=$("flash");f.className="flash";void f.offsetWidth;f.className="flash "+kind;}
+  let inputTimer=null;
+  function flashInput(kind){if(!OCE)return;const w=$("answerWrap"),ic=$("answerIcon");w.classList.remove("ok","bad");void w.offsetWidth;w.classList.add(kind);ic.textContent=kind==="ok"?"✅":"❌";clearTimeout(inputTimer);inputTimer=setTimeout(()=>{w.classList.remove("ok","bad");ic.textContent="Enter ↵";},750);}
   function showFeedback(text,color){$("feedback").textContent=text;$("feedback").style.color=color;clearTimeout(feedbackTimer);feedbackTimer=setTimeout(()=>{$("feedback").textContent="";},1000);}
-  function loseLife(message){if(gameOver||gameWon)return;lives=Math.max(0,lives-1);combo=0;dano=Math.min(1,dano+1/startLives);atualizarCenario();updateHud();showFeedback(message,"#ff4136");
+  function loseLife(message){if(gameOver||gameWon)return;flash("red");lives=Math.max(0,lives-1);combo=0;dano=Math.min(1,dano+1/startLives);atualizarCenario();updateHud();showFeedback(message,"#ff4136");
     if(lives<=0){if(boost.chance&&!chanceUsada){usarSegundaChance();return;}finish(false);}else sound("land");}
   function checkWin(){if(mode==="finito"&&spawned>=config[difficulty].count&&liveMeteors.size===0&&!gameOver&&!gameWon)finish(true);}
-  function finish(won){gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?"🏆":"💥";$("resultTitle").textContent=won?"VOCÊ VENCEU!":"FIM DE JOGO";$("resultSubtitle").textContent=won?`⏳ MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:"Os meteoros venceram desta vez. Tente novamente!";$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("finalDetail").textContent=won?`${config[difficulty].count} meteoros destruídos ✅`:`Você destruiu ${totalCorrect} meteoros`;if(won)sound("levelup");salvarResultado(won);}
+  function finish(won){gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?"🏆":TXT.icone;$("resultTitle").textContent=won?"VOCÊ VENCEU!":"FIM DE JOGO";$("resultSubtitle").textContent=won?`${TXT.fin} MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:TXT.perdeu;$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("rScore").textContent=score;$("rHits").textContent=totalCorrect;$("rLevel").textContent=level;$("rCombo").textContent=maxCombo;$("finalDetail").textContent=won?TXT.ganhou(config[difficulty].count):TXT.destruiu(totalCorrect);if(won)sound("levelup");salvarResultado(won);}
   /* ===== Pontuação salva no Backend (ranking) ===== */
   function salvarResultado(won){
     const st=$("saveStatus"),API=window.MathLumeAPI;
@@ -257,15 +302,16 @@
     el.innerHTML=API.logado()&&u?`👤 Jogando como <b>${u.usuario.replace(/[<>&]/g,"")}</b> — sua pontuação vai para o ranking`:'👤 Visitante — <a href="tela-princ.html">faça login</a> para entrar no ranking';
   }
   function toMenu(){clearInterval(spawnTimer);clearInterval(dobroTimer);hide($("pillDobro"));hide($("pillChance"));desenharBoosters();atualizarMarca();gameActive=false;hide(result);hide(field);hide(intro);hide(hud);show(menu);selectDifficulty(difficulty);$("exitConfirm").classList.add("hidden");}
-  $("startBtn").addEventListener("click",startGame);$("againBtn").addEventListener("click",startGame);$("menuBtn").addEventListener("click",toMenu);$("rankBtn").addEventListener("click",()=>{window.location.href="TelaDeRank.html";});$("answerForm").addEventListener("submit",answerQuestion);
+  $("startBtn").addEventListener("click",startGame);$("hudExit").addEventListener("click",()=>{if(!intro.classList.contains("hidden"))return;toMenu();});$("againBtn").addEventListener("click",startGame);$("menuBtn").addEventListener("click",toMenu);$("rankBtn").addEventListener("click",()=>{window.location.href="TelaDeRank.html";});$("answerForm").addEventListener("submit",answerQuestion);
   $("exitBtn").addEventListener("click",()=>show($("exitConfirm")));$("cancelExit").addEventListener("click",()=>hide($("exitConfirm")));$("confirmExit").addEventListener("click",()=>{window.location.href="tela-princ.html";});
   function openSettings(){show($("settingsBackdrop"));$("settingsPanel").classList.add("open");$("volumeRange").value=volume;$("volumeValue").textContent=volume;$("muteBtn").textContent=volume===0?"🔇":"🔊";selectDifficulty(difficulty);}
   function closeSettings(){$("settingsBackdrop").classList.add("hidden");$("settingsPanel").classList.remove("open");}
-  $("settingsMenu").addEventListener("click",openSettings);$("settingsGame").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("backSettings").addEventListener("click",closeSettings);$("settingsBackdrop").addEventListener("click",closeSettings);
-  function setVolume(v){volume=Number(v);localStorage.setItem("mathlume_volume",String(volume));$("volumeRange").value=volume;$("volumeValue").textContent=volume;$("muteBtn").textContent=volume===0?"🔇":"🔊";document.querySelectorAll("[data-volume]").forEach(b=>b.classList.toggle("active",Number(b.dataset.volume)===volume));if(masterGain&&audioCtx)masterGain.gain.setTargetAtTime(volume/100,audioCtx.currentTime,.01);}
+  $("settingsMenu").addEventListener("click",openSettings);$("settingsGame").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("backSettings").addEventListener("click",closeSettings);document.querySelectorAll(".set-voltar").forEach(b=>b.addEventListener("click",closeSettings));$("settingsBackdrop").addEventListener("click",closeSettings);
+  function setVolume(v){volume=Number(v);localStorage.setItem("mathlume_volume",String(volume));$("volumeRange").value=volume;$("volumeRange").style.setProperty("--p",volume+"%");$("volumeValue").textContent=volume;$("muteBtn").textContent=volume===0?"🔇":"🔊";document.querySelectorAll("[data-volume]").forEach(b=>b.classList.toggle("active",Number(b.dataset.volume)===volume));if(masterGain&&audioCtx)masterGain.gain.setTargetAtTime(volume/100,audioCtx.currentTime,.01);}
   $("volumeRange").addEventListener("input",e=>setVolume(e.target.value));$("muteBtn").addEventListener("click",()=>setVolume(volume===0?70:0));document.querySelectorAll("[data-volume]").forEach(b=>b.addEventListener("click",()=>setVolume(b.dataset.volume)));
+  if(OCE)$("answerInput").placeholder="Sua resposta...";
   selectDifficulty(difficulty);selectMode(mode);setVolume(volume);desenharBoosters();atualizarMarca();mostrarJogador();if(window.MathLumeAPI)MathLumeAPI.restaurar().then(mostrarJogador);
-  window.addEventListener("pageshow",e=>{if(e.persisted){ML.recarregar();desenharBoosters();atualizarMarca();}});
+  window.addEventListener("pageshow",e=>{if(e.persisted){if(window.MathLumeTemas&&MathLumeTemas.atual().id!==TEMA){location.reload();return;}ML.recarregar();desenharBoosters();atualizarMarca();}});
 })();
   </script>
 </body>

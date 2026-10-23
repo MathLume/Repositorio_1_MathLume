@@ -36,6 +36,7 @@
       <button class="tab active" data-aba="fundos" role="tab" type="button">🌌 Plano de fundo</button>
       <button class="tab" data-aba="blocos" role="tab" type="button">☄️ Bloco de cálculo</button>
       <button class="tab" data-aba="explosoes" role="tab" type="button">🎉 Explosão de acerto</button>
+      <button class="tab" data-aba="temas" role="tab" type="button">🎭 Tema do jogo</button>
     </div>
 
     <div class="stage" id="stage" aria-label="Prévia do visual equipado">
@@ -47,6 +48,7 @@
     <section class="aba active" id="aba-fundos" role="tabpanel"><div class="grid" id="grid-fundos"></div></section>
     <section class="aba" id="aba-blocos" role="tabpanel"><div class="grid" id="grid-blocos"></div></section>
     <section class="aba" id="aba-explosoes" role="tabpanel"><div class="grid" id="grid-explosoes"></div></section>
+    <section class="aba" id="aba-temas" role="tabpanel"><div class="grid" id="grid-temas"></div></section>
   </main>
 
   <footer class="rodape">
@@ -56,18 +58,21 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script src="../JS/mathlume-dados.js"></script>
+  <script src="../JS/mathlume-temas.js"></script>
   <script>
     (function () {
       var ML = window.MathLume;
+      var T = window.MathLumeTemas;
       var $ = function (id) { return document.getElementById(id); };
       var CATS = ['fundos', 'blocos', 'explosoes'];
+      var ABAS = CATS.concat(['temas']);
 
       var menu = $('menu');
       $('burger').addEventListener('click', function () { menu.classList.toggle('open'); });
 
       function mostrarAba(nome) {
-        if (CATS.indexOf(nome) < 0) nome = 'fundos';
-        CATS.forEach(function (c) {
+        if (ABAS.indexOf(nome) < 0) nome = 'fundos';
+        ABAS.forEach(function (c) {
           var ativa = c === nome;
           $('aba-' + c).classList.toggle('active', ativa);
           var t = document.querySelector('[data-aba="' + c + '"]');
@@ -103,20 +108,39 @@
                '<div class="corpo"><h3>' + it.nome + '</h3><p>' + it.desc + '</p>' + btn + '</div></article>';
       }
 
+      function cardTema(t) {
+        var tem = T.possui(t.id);
+        var eq = T.atual().id === t.id;
+        var btn;
+        if (eq) btn = '<button class="btn" type="button" disabled>✓ Equipado</button>';
+        else if (tem) btn = '<button class="btn" type="button" data-equipar-tema="' + t.id + '">Equipar</button>';
+        else btn = '<a class="btn ouro" href="loja.html#personalizacao">🔒 Comprar na loja · ' + ML.fmt(t.preco) + ' Lumes</a>';
+        return '<article class="item' + (eq ? ' equipado' : '') + (tem ? '' : ' bloqueado') + '">' +
+               '<div class="prev" style="background:' + t.preview + '">' + t.emoji + '</div>' +
+               '<div class="corpo"><h3>Tema ' + t.nome + '</h3><p>' + t.desc + '</p>' + btn + '</div></article>';
+      }
+
       function render() {
         var st = ML.estado();
         $('saldo').textContent = ML.fmt(st.lumes);
         CATS.forEach(function (cat) {
           $('grid-' + cat).innerHTML = ML.catalogo[cat].map(function (it) { return card(cat, it); }).join('');
         });
+        $('grid-temas').innerHTML = T.catalogo.map(cardTema).join('');
         var f = ML.equipado('fundos'), b = ML.equipado('blocos'), x = ML.equipado('explosoes');
         $('stage').style.background = f.preview;
         $('stageIcone').textContent = b.emoji;
         $('stageExp').textContent = x.emoji;
-        $('legenda').textContent = 'Equipado: ' + f.nome + ' • ' + b.nome + ' • ' + x.nome;
+        $('legenda').textContent = 'Equipado: ' + f.nome + ' • ' + b.nome + ' • ' + x.nome + ' • Tema ' + T.atual().nome;
       }
 
       document.addEventListener('click', function (e) {
+        var tb = e.target.closest('[data-equipar-tema]');
+        if (tb) {
+          var tm = T.item(tb.dataset.equiparTema);
+          if (T.equipar(tm.id)) { render(); toast('✓ Tema ' + tm.nome + ' equipado! Abra o mini-game para ver.'); }
+          return;
+        }
         var b = e.target.closest('[data-equipar]');
         if (!b) return;
         var it = ML.item(b.dataset.equipar, b.dataset.id);

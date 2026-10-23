@@ -1,5 +1,5 @@
 /* ==========================================================
-   MathLume — dados compartilhados (catálogo + estado do jogador)
+   MathLume — dados compartilhados (catálogo + estado do jogador + temas)
    Usado por: loja.html, personalizacao.html e minigamemat.html
 
    ⚠ PLACEHOLDER DE BANCO DE DADOS
@@ -22,7 +22,7 @@
       { id: 'espaco',   nome: 'Espaço',       emoji: '🌌', preco: 0,   preview: 'linear-gradient(160deg,#2c1450,#070611)', desc: 'O céu estrelado clássico do MathLume.' },
       { id: 'cidade',   nome: 'Cidade',       emoji: '🏙️', preco: 300, preview: 'linear-gradient(180deg,#0b1437,#2e2a6b 55%,#d9622b)', desc: 'Prédios e aviões no céu. Cada vida perdida destrói mais a cidade — e cada acerto ajuda a reconstruí-la!' },
       { id: 'floresta', nome: 'Floresta',     emoji: '🌲', preco: 250, preview: 'linear-gradient(180deg,#07241c,#14532d 60%,#365314)', desc: 'Uma floresta com aves sobrevoando. Errar queima as árvores; acertar faz a mata se recuperar.' },
-      { id: 'oceano',   nome: 'Fundo do Mar', emoji: '🐠', preco: 250, preview: 'linear-gradient(180deg,#082f49,#0c4a6e 55%,#164e63)', desc: 'Algas, corais e peixes nadando. Os erros escurecem e danificam o recife; os acertos o restauram.' }
+      { id: 'oceano',   nome: 'Fundo do Mar', emoji: '🐠', preco: 300, preview: 'linear-gradient(180deg,#082f49,#0c4a6e 55%,#164e63)', desc: 'Algas, corais e peixes nadando. Os erros escurecem e danificam o recife; os acertos o restauram.' }
     ],
     blocos: [
       { id: 'meteoro',  nome: 'Meteoro',         emoji: '☄️', preco: 0,   desc: 'O bloco de cálculo clássico.' },
@@ -162,6 +162,89 @@
   function fmt(n) { return Number(n).toLocaleString('pt-BR'); }
   function brl(n) { return Number(n).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 
+
+  /* =====================================================
+     MathLume — Temas do mini-game (Integrado)
+     ===================================================== */
+  var KEY_TEMAS = 'mathlume_temas';
+  var PADRAO_TEMAS = 'espaco';
+
+  var CATALOGO_TEMAS = [
+    {
+      id: 'espaco',
+      nome: 'Espaço',
+      emoji: '☄️',
+      preco: 0,
+      desc: 'O visual clássico: meteoros caindo num céu roxo cheio de estrelas. Já vem liberado.',
+      preview: 'radial-gradient(ellipse at 50% 35%,#2c1450 0%,#150b2c 48%,#070611 100%)',
+      css: '../CSS/minigamemat.css'
+    },
+    {
+      id: 'oceano',
+      nome: 'Oceano',
+      emoji: '🐠',
+      preco: 250, // <- ajuste o preço (em Lumes) aqui
+      desc: 'Menu, HUD e tela de jogo no fundo do mar: bolhas, algas, peixes e zona de perigo.',
+      preview: 'linear-gradient(180deg,#0c1b6b 0%,#0369a1 55%,#164e63 100%)',
+      css: '../CSS/minigamemat-oceano.css'
+    }
+  ];
+
+  function lerTemas() {
+    var s = null;
+    try { s = JSON.parse(localStorage.getItem(KEY_TEMAS)); } catch (e) {}
+    if (!s || typeof s !== 'object') s = {};
+    if (!Array.isArray(s.possui)) s.possui = [];
+    if (s.possui.indexOf(PADRAO_TEMAS) < 0) s.possui.unshift(PADRAO_TEMAS);
+    if (!s.equipado) s.equipado = PADRAO_TEMAS;
+    return s;
+  }
+  function gravarTemas(s) { try { localStorage.setItem(KEY_TEMAS, JSON.stringify(s)); } catch (e) {} }
+
+  function itemTema(id) {
+    for (var i = 0; i < CATALOGO_TEMAS.length; i++) if (CATALOGO_TEMAS[i].id === id) return CATALOGO_TEMAS[i];
+    return null;
+  }
+  function possuiTema(id) { return lerTemas().possui.indexOf(id) >= 0; }
+
+  function atualTema() {
+    var s = lerTemas(), t = itemTema(s.equipado);
+    if (!t || s.possui.indexOf(t.id) < 0) t = itemTema(PADRAO_TEMAS);
+    return t;
+  }
+
+  function equiparTema(id) {
+    if (!itemTema(id) || !possuiTema(id)) return false;
+    var s = lerTemas(); s.equipado = id; gravarTemas(s);
+    return true;
+  }
+
+  function comprarTema(id) {
+    var t = itemTema(id), ML = window.MathLume;
+    if (!t) return { ok: false, erro: 'tema' };
+    if (possuiTema(id)) return { ok: true, jaTinha: true };
+    if (t.preco > 0) {
+      if (!window.MathLume || typeof window.MathLume.estado !== 'function' || typeof window.MathLume.adicionarLumes !== 'function') return { ok: false, erro: 'dados' };
+      var antes = window.MathLume.estado().lumes;
+      if (antes < t.preco) return { ok: false, erro: 'saldo' };
+      window.MathLume.adicionarLumes(-t.preco);
+      var depois = window.MathLume.estado().lumes;
+      if (depois !== antes - t.preco) {
+        if (depois !== antes) window.MathLume.adicionarLumes(antes - depois);
+        return { ok: false, erro: 'cobranca' };
+      }
+    }
+    var s = lerTemas(); s.possui.push(id); gravarTemas(s);
+    return { ok: true };
+  }
+
+  function aplicarTema() {
+    var t = atualTema();
+    document.documentElement.setAttribute('data-tema', t.id);
+    document.write('<link rel="stylesheet" href="' + t.css + '">');
+    return t;
+  }
+
   window.MathLume = {
     catalogo: CATALOGO,
     estado: function () { return estado; },
@@ -169,5 +252,15 @@
     item: item, possui: possui, comprar: comprar, equipar: equipar, equipado: equipado,
     comprarBooster: comprarBooster, consumirBoosters: consumirBoosters,
     adicionarLumes: adicionarLumes, pagamento: pagamento, fmt: fmt, brl: brl
+  };
+
+  window.MathLumeTemas = {
+    catalogo: CATALOGO_TEMAS,
+    item: itemTema,
+    possui: possuiTema,
+    atual: atualTema,
+    equipar: equiparTema,
+    comprar: comprarTema,
+    aplicar: aplicarTema
   };
 })();
