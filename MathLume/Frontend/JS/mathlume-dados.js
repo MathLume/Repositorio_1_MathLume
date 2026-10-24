@@ -196,6 +196,24 @@
       desc: 'Noite de lua cheia: abóboras caindo sobre um milharal, vidas em morcegos e um bando de morcegos voando a cada acerto.',
       preview: 'linear-gradient(180deg,#0d0508 0%,#2a0a00 58%,#6b2a00 100%)',
       css: '../CSS/minigamemat-halloween.css'
+    },
+    {
+      id: 'floresta',
+      nome: 'Floresta',
+      emoji: '🌲',
+      preco: 250, // <- ajuste o preço (em Lumes) aqui
+      desc: 'Proteja a floresta das chamas: cada erro ou chama que passa incendeia uma árvore, e cada acerto faz chover e apaga o fogo.',
+      preview: 'linear-gradient(180deg,#0d1a0d 0%,#0f2a14 55%,#1f6a2a 100%)',
+      css: '../CSS/minigamemat-floresta.css'
+    },
+    {
+      id: 'cidade',
+      nome: 'Cidade',
+      emoji: '🏙️',
+      preco: 250, // <- ajuste o preço (em Lumes) aqui
+      desc: 'Defenda a cidade dos aliens: slimes caem do céu e deixam os prédios sujos; cada acerto solta faíscas de energia.',
+      preview: 'linear-gradient(180deg,#020510 0%,#050a22 55%,#0b3a6b 100%)',
+      css: '../CSS/minigamemat-cidade.css'
     }
   ];
 
