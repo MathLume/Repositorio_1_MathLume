@@ -1,0 +1,75 @@
+/* =====================================================
+   MathLume — enquadramento fixo do mini-game
+   Carregado DEPOIS do CSS do tema (Espaço, Oceano, Halloween,
+   Floresta, Cidade...), então vale para todos os temas.
+   - A tela fica presa ao tamanho da janela: sem rolagem,
+     sem "pulos" quando o campo de resposta recebe foco.
+   - O menu e a tela de resultado são reduzidos por JS
+     (enquadrarTelas) quando não cabem na altura disponível.
+   ===================================================== */
+
+html, body {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+}
+
+.game-shell {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: clip;          /* "clip" impede rolagem até por foco/JS */
+}
+
+.screen,
+.playfield {
+  overflow: clip;
+}
+
+/* ---------- seta para voltar à tela inicial ---------- */
+.voltar-inicio {
+  position: absolute;
+  z-index: 40;            /* acima do resultado (30), abaixo das configurações (60+) */
+  top: 18px;
+  left: 18px;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  color: #fff;
+  background: #ffffff0c;
+  border: 1px solid #ffffff26;
+  backdrop-filter: blur(6px);
+  text-decoration: none;
+  transition: background .2s, border-color .2s;
+}
+.voltar-inicio svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.voltar-inicio:hover { background: #ffffff1f; border-color: #ffffff55; }
+.voltar-inicio:focus-visible { outline: 2px solid #f5d76e; outline-offset: 2px; }
+
+/* o HUD da partida não passa por cima da seta */
+.hud { left: 72px; }
+
+@media (max-width: 480px), (max-height: 760px) {
+  .voltar-inicio { top: 12px; left: 12px; width: 38px; height: 38px; border-radius: 11px; }
+  .hud { left: 58px; }
+}
