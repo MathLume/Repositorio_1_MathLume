@@ -266,18 +266,25 @@ jobs:
                          || (c.body || '').match(/\|\s*(\d{2}\/\d{2}\/\d{4})\s*\|/)
                          || (c.body || '').match(/(\d{2}\/\d{2}\/\d{4})/);
                   const alvo = m ? (m[1].includes('/') ? iso(m[1]) : m[1]) : null;
-                  return { criado: c.created_at, alvo };
+                  // Numero do aviso lido do titulo ("Terceiro aviso de atraso" = 3, "11º aviso de atraso" = 11)
+                  const t = (c.body || '').match(/([\wÀ-ú]+)\s+aviso de atraso/i);
+                  let num = 0;
+                  if (t) {
+                    const idx = ORDINAIS.findIndex(o => o.toLowerCase() === t[1].toLowerCase());
+                    num = idx >= 0 ? idx + 1 : (parseInt(t[1], 10) || 0);
+                  }
+                  return { criado: c.created_at, alvo, num };
                 });
 
-              // A contagem recomeca quando o Target date muda (novo prazo combinado)
-              const avisosDoPrazo = avisos.filter(a => a.alvo === target);
+              // A numeracao continua mesmo quando o Target date e renegociado
+              const ultimoNumero = avisos.reduce((max, a, i) => Math.max(max, a.num || i + 1), 0);
               const ultimo = avisos[avisos.length - 1];
               if (ultimo && diasEntre(dataSP(ultimo.criado), hoje) < INTERVALO_DIAS) {
                 console.log(`#${issue_number}: atrasada ${atraso} dia(s), ultimo aviso recente, aguardando`);
                 continue;
               }
 
-              const n = avisosDoPrazo.length;
+              const n = ultimoNumero;
               const ordinal = ORDINAIS[n] || `${n + 1}º`;
               const mencoes = assignees.length ? assignees.map(a => `@${a}`).join(' ') : 'Atenção';
               const body =
