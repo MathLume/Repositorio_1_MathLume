@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carreira</title>
+  <link rel="stylesheet" href="TelaDeCarreira.CSS">
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-swords" viewBox="0 0 24 24"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></symbol>
+  </svg>
+
+  <div class="screen">
+    <div class="career">
+
+      <!-- Alternância das abas (radio + CSS) -->
+      <input class="view-input" type="radio" name="view" id="view-stats" checked>
+      <input class="view-input" type="radio" name="view" id="view-ranking">
+
+      <!-- ── Hero / player card ── -->
+      <div class="hero tier-ouro">
+        <!-- Top row -->
+        <div class="hero-top">
+          <!-- Big avatar -->
+          <div class="hero-avatar-wrap">
+            <div class="avatar s56 you">J</div>
+            <!-- tier badge -->
+            <div class="tier-badge">
+              <svg class="icon icon-14"><use href="#i-trophy"/></svg>
+            </div>
+          </div>
+
+          <div class="hero-info">
+            <h1 class="hero-name">Jogador</h1>
+            <div class="hero-meta">
+              <span class="tier-chip">Ouro</span>
+              <span class="hero-rank">#4 no ranking</span>
+            </div>
+          </div>
+
+          <!-- XP glow badge (total de pontos das partidas) -->
+          <div class="xp-badge">
+            <svg class="icon icon-14"><use href="#i-zap"/></svg>
+            9.800 pts
+          </div>
+        </div>
+
+        <!-- Mini stats (totais das partidas) -->
+        <div class="mini-stats">
+          <div class="mini c-blue">
+            <span class="mini-icon"><svg class="icon icon-13"><use href="#i-clock"/></svg></span>
+            <div>
+              <div class="mini-value">31:51</div>
+              <div class="mini-label">Tempo total</div>
+            </div>
+          </div>
+          <div class="mini c-green">
+            <span class="mini-icon"><svg class="icon icon-13"><use href="#i-check"/></svg></span>
+            <div>
+              <div class="mini-value">157</div>
+              <div class="mini-label">Acertos</div>
+            </div>
+          </div>
+          <div class="mini c-red">
+            <span class="mini-icon"><svg class="icon icon-13"><use href="#i-x"/></svg></span>
+            <div>
+              <div class="mini-value">43</div>
+              <div class="mini-label">Erros</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Tab switcher ── -->
+      <div class="tabs">
+        <label class="tab" for="view-stats">
+          <svg class="icon icon-14"><use href="#i-target"/></svg>
+          Histórico
+        </label>
+        <label class="tab" for="view-ranking">
+          <svg class="icon icon-14"><use href="#i-users"/></svg>
+          Ranking
+        </label>
+      </div>
+
+      <!-- ── Content area ── -->
+      <div class="content">
+
+        <!-- HISTÓRICO view -->
+        <div class="view view-stats">
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#1</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 1</div>
+                <div class="match-date">23/10/2026</div>
+              </div>
+              <div class="match-badge hi">90% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">1.250</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">02:34</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">18</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">2</div>
+              </div>
+            </div>
+          </div>
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#2</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 2</div>
+                <div class="match-date">22/10/2026</div>
+              </div>
+              <div class="match-badge hi">85% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">1.100</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">02:50</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">17</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">3</div>
+              </div>
+            </div>
+          </div>
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#3</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 3</div>
+                <div class="match-date">21/10/2026</div>
+              </div>
+              <div class="match-badge hi">80% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">1.000</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">03:05</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">16</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">4</div>
+              </div>
+            </div>
+          </div>
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#4</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 4</div>
+                <div class="match-date">20/10/2026</div>
+              </div>
+              <div class="match-badge hi">95% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">1.300</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">02:21</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">19</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">1</div>
+              </div>
+            </div>
+          </div>
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#5</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 5</div>
+                <div class="match-date">19/10/2026</div>
+              </div>
+              <div class="match-badge hi">75% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">920</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">03:20</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">15</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">5</div>
+              </div>
+            </div>
+          </div>
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#6</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 6</div>
+                <div class="match-date">18/10/2026</div>
+              </div>
+              <div class="match-badge mid">70% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">800</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">03:36</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">14</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">6</div>
+              </div>
+            </div>
+          </div>
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#7</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 7</div>
+                <div class="match-date">17/10/2026</div>
+              </div>
+              <div class="match-badge hi">80% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">1.050</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">03:00</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">16</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">4</div>
+              </div>
+            </div>
+          </div>
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#8</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 8</div>
+                <div class="match-date">16/10/2026</div>
+              </div>
+              <div class="match-badge mid">65% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">750</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">03:58</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">13</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">7</div>
+              </div>
+            </div>
+          </div>
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#9</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 9</div>
+                <div class="match-date">15/10/2026</div>
+              </div>
+              <div class="match-badge mid">75% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">880</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">03:25</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">15</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">5</div>
+              </div>
+            </div>
+          </div>
+          <div class="match">
+            <div class="match-head">
+              <div class="match-num"><span>#10</span></div>
+              <div class="match-title-wrap">
+                <div class="match-title">Partida 10</div>
+                <div class="match-date">14/10/2026</div>
+              </div>
+              <div class="match-badge mid">70% acerto</div>
+            </div>
+            <div class="match-details">
+              <div class="detail c-purple">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-trophy"/></svg>
+                  <span class="detail-label">Pontos</span>
+                </div>
+                <div class="detail-value">750</div>
+              </div>
+              <div class="detail c-blue">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-clock"/></svg>
+                  <span class="detail-label">Tempo</span>
+                </div>
+                <div class="detail-value">03:42</div>
+              </div>
+              <div class="detail c-green">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-check"/></svg>
+                  <span class="detail-label">Acertos</span>
+                </div>
+                <div class="detail-value">14</div>
+              </div>
+              <div class="detail c-red">
+                <div class="detail-head">
+                  <svg class="icon icon-12"><use href="#i-x"/></svg>
+                  <span class="detail-label">Erros</span>
+                </div>
+                <div class="detail-value">6</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RANKING view -->
+        <div class="view view-ranking">
+
+          <!-- Podium top 3 -->
+          <div class="podium">
+            <div class="podium-title">
+              <svg class="icon icon-13 swords"><use href="#i-swords"/></svg>
+              <span>TOP 3</span>
+            </div>
+            <div class="podium-row">
+          <div class="podium-card pos-2">
+            <div class="avatar s44 av-2">P</div>
+            <div class="medal medal-2">2</div>
+            <span class="podium-name">Patyn_77</span>
+            <span class="podium-score">11.750</span>
+            <span class="podium-pts">pts</span>
+          </div>
+          <div class="podium-card pos-1">
+            <div class="crown-float">
+              <svg class="icon icon-18 crown-gold"><use href="#i-crown"/></svg>
+            </div>
+            <div class="avatar s56 av-4">X</div>
+            <div class="medal medal-1">1</div>
+            <span class="podium-name">Xandangos_X1</span>
+            <span class="podium-score">12.400</span>
+            <span class="podium-pts">pts</span>
+          </div>
+          <div class="podium-card pos-3">
+            <div class="avatar s44 av-2">J</div>
+            <div class="medal medal-3">3</div>
+            <span class="podium-name">JMB</span>
+            <span class="podium-score">10.980</span>
+            <span class="podium-pts">pts</span>
+          </div>
+            </div>
+          </div>
+
+          <!-- Rest of the list -->
+          <div class="rank-list">
+            <div class="rank-row you">
+              <span class="rank-pos">4</span>
+              <div class="avatar s32 you">J</div>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <span class="rank-name">Jogador</span>
+              <span class="you-tag">VOCÊ</span>
+                </div>
+                <div class="rank-tier tier-ouro">
+                  <svg class="icon icon-14"><use href="#i-trophy"/></svg>
+                  <span>Ouro</span>
+                </div>
+              </div>
+              <div class="rank-score-wrap">
+                <div class="rank-score">9.800</div>
+                <div class="rank-pts">pts</div>
+              </div>
+            </div>
+            <div class="rank-row">
+              <span class="rank-pos">5</span>
+              <div class="avatar s32 av-4">R</div>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <span class="rank-name">Ryzen88</span>
+                </div>
+                <div class="rank-tier tier-ouro">
+                  <svg class="icon icon-14"><use href="#i-trophy"/></svg>
+                  <span>Ouro</span>
+                </div>
+              </div>
+              <div class="rank-score-wrap">
+                <div class="rank-score">8.900</div>
+                <div class="rank-pts">pts</div>
+              </div>
+            </div>
+            <div class="rank-row">
+              <span class="rank-pos">6</span>
+              <div class="avatar s32 av-5">S</div>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <span class="rank-name">ShadowX</span>
+                </div>
+                <div class="rank-tier tier-prata">
+                  <svg class="icon icon-14"><use href="#i-shield"/></svg>
+                  <span>Prata</span>
+                </div>
+              </div>
+              <div class="rank-score-wrap">
+                <div class="rank-score">7.650</div>
+                <div class="rank-pts">pts</div>
+              </div>
+            </div>
+            <div class="rank-row">
+              <span class="rank-pos">7</span>
+              <div class="avatar s32 av-1">C</div>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <span class="rank-name">CactusKid</span>
+                </div>
+                <div class="rank-tier tier-prata">
+                  <svg class="icon icon-14"><use href="#i-shield"/></svg>
+                  <span>Prata</span>
+                </div>
+              </div>
+              <div class="rank-score-wrap">
+                <div class="rank-score">6.300</div>
+                <div class="rank-pts">pts</div>
+              </div>
+            </div>
+            <div class="rank-row">
+              <span class="rank-pos">8</span>
+              <div class="avatar s32 av-0">B</div>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <span class="rank-name">Blaze99</span>
+                </div>
+                <div class="rank-tier tier-bronze">
+                  <svg class="icon icon-14"><use href="#i-shield"/></svg>
+                  <span>Bronze</span>
+                </div>
+              </div>
+              <div class="rank-score-wrap">
+                <div class="rank-score">5.200</div>
+                <div class="rank-pts">pts</div>
+              </div>
+            </div>
+            <div class="rank-row">
+              <span class="rank-pos">9</span>
+              <div class="avatar s32 av-2">P</div>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <span class="rank-name">PixelDust</span>
+                </div>
+                <div class="rank-tier tier-bronze">
+                  <svg class="icon icon-14"><use href="#i-shield"/></svg>
+                  <span>Bronze</span>
+                </div>
+              </div>
+              <div class="rank-score-wrap">
+                <div class="rank-score">4.100</div>
+                <div class="rank-pts">pts</div>
+              </div>
+            </div>
+            <div class="rank-row">
+              <span class="rank-pos">10</span>
+              <div class="avatar s32 av-0">Z</div>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <span class="rank-name">Zephyr</span>
+                </div>
+                <div class="rank-tier tier-bronze">
+                  <svg class="icon icon-14"><use href="#i-shield"/></svg>
+                  <span>Bronze</span>
+                </div>
+              </div>
+              <div class="rank-score-wrap">
+                <div class="rank-score">3.500</div>
+                <div class="rank-pts">pts</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
