@@ -43,6 +43,50 @@
           <div class="slide g2"><div class="emoji">🏆</div><h3>Ranking e Conquistas</h3><p>Compare seu desempenho e desbloqueie medalhas.</p></div>
           <div class="slide g3"><div class="emoji">📚</div><h3>Trilhas Personalizadas</h3><p>Conteúdos de Matemática no seu ritmo.</p></div>
           <div class="slide g4"><div class="emoji">⚡</div><h3>Prática Interativa</h3><p>Desafios em tempo real para testar o que você aprendeu.</p></div>
+
+          <!-- Slide 5: tutorial de cadastro (some quando o usuário está logado) -->
+          <div class="slide g5 slide-tutorial" id="slideTutorial" data-passo="0">
+            <h3>Cadastre-se agora</h3>
+            <div class="tut-stage" aria-hidden="true">
+              <!-- passo 1: botão Login no topo -->
+              <div class="tut-step" data-step="1">
+                <div class="mini-nav">
+                  <span class="mini-logo">Math<b>Lume</b></span>
+                  <span class="mini-menu"><i></i><i></i><i></i></span>
+                  <span class="mini-login tut-alvo">Login</span>
+                  <svg class="tut-seta seta-cima" viewBox="0 0 24 32" aria-hidden="true"><path d="M12 1 23 14h-7v17H8V14H1z"/></svg>
+                </div>
+                <div class="mini-hero"><i style="width:70%"></i><i style="width:45%"></i><i style="width:58%"></i></div>
+              </div>
+              <!-- passo 2: link Criar usuário -->
+              <div class="tut-step" data-step="2">
+                <div class="mini-modal">
+                  <span class="mini-logo">Math<b>Lume</b></span>
+                  <span class="mini-campo"></span>
+                  <span class="mini-campo"></span>
+                  <span class="mini-btn">Entrar</span>
+                  <div class="mini-links"><span>Recuperar senha</span><span class="tut-alvo">Criar usuário</span></div>
+                  <svg class="tut-seta seta-esq" viewBox="0 0 24 32" aria-hidden="true" style="right:-30px;bottom:6px"><path d="M12 1 23 14h-7v17H8V14H1z"/></svg>
+                </div>
+              </div>
+              <!-- passo 3: campos usuário, e-mail e senha -->
+              <div class="tut-step" data-step="3">
+                <div class="mini-modal">
+                  <span class="mini-sub">Crie sua conta gratuita</span>
+                  <span class="mini-label">Usuário</span>
+                  <span class="mini-campo" style="--d:.3s"><em class="digita">marialume</em></span>
+                  <span class="mini-label">E-mail</span>
+                  <span class="mini-campo" style="--d:1.3s"><em class="digita">maria@email.com</em></span>
+                  <span class="mini-label">Senha</span>
+                  <span class="mini-campo" style="--d:2.3s"><em class="digita">••••••</em></span>
+                  <span class="mini-btn mini-btn-final">Criar usuário</span>
+                  <svg class="tut-seta seta-esq seta-final" viewBox="0 0 24 32" aria-hidden="true" style="right:-30px;bottom:8px"><path d="M12 1 23 14h-7v17H8V14H1z"/></svg>
+                </div>
+              </div>
+            </div>
+            <p class="tut-legenda" id="tutLegenda" aria-live="polite"></p>
+            <button class="tut-cta" id="btnTutCriar" type="button">Criar minha conta</button>
+          </div>
           <button class="arrow prev" type="button" aria-label="Slide anterior">‹</button>
           <button class="arrow next" type="button" aria-label="Próximo slide">›</button>
         </div>
@@ -253,22 +297,40 @@
     document.getElementById('burger').addEventListener('click', function () { menu.classList.toggle('open'); });
     menu.addEventListener('click', function () { menu.classList.remove('open'); });
 
-    (function () {
-      var INTERVAL = 4000;
+    /* ---- carrossel do topo: passa sozinho + slide tutorial de cadastro ---- */
+    var carrossel = (function () {
+      var TEMPO = 5000;            // tempo de cada slide comum
+      var TEMPO_TUTORIAL = 12000;  // o tutorial fica mais tempo na tela
+      var TEMPO_PASSO = 3200;      // tempo de cada passo do tutorial
+      var LEGENDAS = [
+        'Clique em <b>Login</b>, no topo da página',
+        'Na janela que abrir, clique em <b>Criar usuário</b>',
+        'Preencha <b>usuário</b>, <b>e-mail</b> e <b>senha</b> e confirme'
+      ];
       var root = document.getElementById('carousel');
-      var slides = root.querySelectorAll('.slide');
+      var todos = Array.prototype.slice.call(root.querySelectorAll('.slide'));
+      var tutorial = document.getElementById('slideTutorial');
+      var legenda = document.getElementById('tutLegenda');
+      var btnLoginReal = document.getElementById('btnLogin');
       var dotsBox = root.querySelector('.dots');
-      var current = 0, timer = null;
+      var slides = [], dots = [], current = 0, timer = null, passos = [], resetTimer = null, pausado = false;
 
-      slides.forEach(function (_, i) {
-        var d = document.createElement('button');
-        d.type = 'button';
-        d.className = 'dot' + (i === 0 ? ' active' : '');
-        d.setAttribute('aria-label', 'Ir para o slide ' + (i + 1));
-        d.addEventListener('click', function () { goTo(i); start(); });
-        dotsBox.appendChild(d);
-      });
-      var dots = dotsBox.querySelectorAll('.dot');
+      function montar(slideAtual) {
+        slides = todos.filter(function (s) { return !s.hidden; });
+        dotsBox.innerHTML = '';
+        dots = slides.map(function (_, i) {
+          var d = document.createElement('button');
+          d.type = 'button';
+          d.className = 'dot';
+          d.setAttribute('aria-label', 'Ir para o slide ' + (i + 1));
+          d.addEventListener('click', function () { goTo(i); agendar(); });
+          dotsBox.appendChild(d);
+          return d;
+        });
+        var i = slides.indexOf(slideAtual);
+        goTo(i < 0 ? 0 : i);
+        agendar();
+      }
 
       function goTo(index) {
         index = (index + slides.length) % slides.length;
@@ -279,15 +341,62 @@
         slides[index].classList.add('active');
         dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
         current = index;
+        if (slides[index] === tutorial) iniciarTutorial(); else pararTutorial();
       }
-      function stop() { if (timer) clearInterval(timer); timer = null; }
-      function start() { stop(); timer = setInterval(function () { goTo(current + 1); }, INTERVAL); }
 
-      root.querySelector('.prev').addEventListener('click', function () { goTo(current - 1); start(); });
-      root.querySelector('.next').addEventListener('click', function () { goTo(current + 1); start(); });
-      root.addEventListener('mouseenter', stop);
-      root.addEventListener('mouseleave', start);
-      start();
+      function agendar() {
+        clearTimeout(timer);
+        if (pausado) return;
+        var tempo = slides[current] === tutorial ? TEMPO_TUTORIAL : TEMPO;
+        timer = setTimeout(function () { goTo(current + 1); agendar(); }, tempo);
+      }
+
+      /* passos do tutorial: 1 Login -> 2 Criar usuário -> 3 preencher campos */
+      function mostrarPasso(n) {
+        tutorial.dataset.passo = n;
+        legenda.innerHTML = '<span class="tut-num">' + n + '</span><span>' + LEGENDAS[n - 1] + '</span>';
+        btnLoginReal.classList.toggle('destaque', n === 1);
+      }
+      function iniciarTutorial() {
+        clearTimeout(resetTimer);
+        passos.forEach(clearTimeout);
+        mostrarPasso(1);
+        passos = [
+          setTimeout(function () { mostrarPasso(2); }, TEMPO_PASSO),
+          setTimeout(function () { mostrarPasso(3); }, TEMPO_PASSO * 2)
+        ];
+      }
+      function pararTutorial() {
+        passos.forEach(clearTimeout);
+        passos = [];
+        btnLoginReal.classList.remove('destaque');
+        // volta ao início depois que o slide saiu da tela (assim a animação recomeça na próxima vez)
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(function () { tutorial.dataset.passo = '0'; }, 450);
+      }
+
+      root.querySelector('.prev').addEventListener('click', function () { goTo(current - 1); agendar(); });
+      root.querySelector('.next').addEventListener('click', function () { goTo(current + 1); agendar(); });
+      // pausa só quando a aba está escondida ou quando alguém navega pelo teclado dentro do carrossel
+      document.addEventListener('visibilitychange', function () { pausado = document.hidden; agendar(); });
+      root.addEventListener('focusin', function (e) {
+        if (!e.target.matches(':focus-visible')) return; // clique com mouse não pausa
+        pausado = true; clearTimeout(timer);
+      });
+      root.addEventListener('focusout', function () { if (pausado && !document.hidden) { pausado = false; agendar(); } });
+
+      montar(todos[0]);
+
+      return {
+        // logado: o tutorial de cadastro some; deslogado: ele volta
+        tutorial: function (mostrar) {
+          if (tutorial.hidden === !mostrar) return;
+          var atual = slides[current];
+          tutorial.hidden = !mostrar;
+          if (!mostrar) pararTutorial();
+          montar(atual);
+        }
+      };
     })();
 
     var panelEl = document.getElementById('panel');
@@ -435,6 +544,7 @@
       showLogin(true);
     });
     document.getElementById('btnCriarConta').addEventListener('click', function () { togglePanel(false); showView('criar'); showLogin(true); });
+    document.getElementById('btnTutCriar').addEventListener('click', function () { togglePanel(false); showView('criar'); showLogin(true); });
     document.querySelector('[data-close="login"]').addEventListener('click', function () { showLogin(false); });
     loginModal.addEventListener('click', function (e) { if (e.target === loginModal) showLogin(false); });
     function aplicarLogin() {
@@ -450,6 +560,7 @@
       document.getElementById('loja').after(document.getElementById('ranking'));
       document.getElementById('btnLogout').hidden = true;
       document.getElementById('btnLogin').textContent = 'Login';
+      carrossel.tutorial(true);
       document.getElementById('loginForm').reset();
       logado = false;
       toggleUserMenu(false);
@@ -462,6 +573,7 @@
       usuario = u.usuario;
       atualizarPerfil();
       document.getElementById('btnLogin').textContent = 'Olá! 👋';
+      carrossel.tutorial(false);
       aplicarLogin();
     }
     document.getElementById('loginForm').addEventListener('submit', function (e) {
