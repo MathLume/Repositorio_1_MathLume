@@ -38,5 +38,14 @@ function temaGamer(){
         audio2.play();
         audio2.loop = true; 
     }, 2500);
+}
 
+function stopGame(){
+    let audio = document.getElementById("temaGame");
+    audio.pause();
+}
+
+function startLobby(){
+    let audio = document.getElementById("lobby");
+    audio.play();
 }

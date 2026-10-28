@@ -11,6 +11,8 @@
   <audio id="contagem" src="../assets/efeitos_sonoros/contador.wav"></audio>
   <audio id="lobby" src="../assets/efeitos_sonoros/temaLob.mp3"></audio>
   <audio id="temaGame" src = "../assets/efeitos_sonoros/temaGame.mp3"></audio>
+  <audio id="winGame" src="../assets/efeitos_sonoros/win.wav"></audio>
+  <audio id="gameOver" src="../assets/efeitos_sonoros/gameOver.wav"></audio>
   
   <main id="game" class="game-shell">
     <div class="stars" aria-hidden="true"></div>
@@ -81,13 +83,12 @@
 
     <section class="screen result-screen hidden" id="resultScreen">
       <div class="result-icon" id="resultIcon">💥</div>
-      <h2 id="resultTitle">FIM DE JOGO</h2>
+      <h2 id="resultTitle" >FIM DE JOGO</h2>
       <p id="resultSubtitle"></p>
       <div class="result-stats"><strong><span id="finalScore">0</span> pts</strong><span>Nível <b id="finalLevel">1</b> ⭐ · Combo máx. <b id="finalCombo">0</b> 🔥</span><small id="finalDetail"></small></div>
       <p class="save-status" id="saveStatus" role="status"></p>
-      <div class="result-actions"><button class="primary-btn" id="againBtn">🔄 JOGAR NOVAMENTE</button><button class="secondary-btn" id="rankBtn">🏆 VER RANKING</button><button class="secondary-btn" id="menuBtn">🏠 MENU PRINCIPAL</button></div>
+      <div class="result-actions"><button class="primary-btn" id="againBtn" onclick="contagemR()">🔄 JOGAR NOVAMENTE</button><button class="secondary-btn" id="rankBtn">🏆 VER RANKING</button><button class="secondary-btn" id="menuBtn" onclick="somBotao(); startLobby()">🏠 MENU PRINCIPAL</button></div>
     </section>
-
     <aside class="settings-backdrop hidden" id="settingsBackdrop"></aside>
     <aside class="settings-panel" id="settingsPanel" aria-label="Configurações">
       <div class="settings-header"><div><span class="settings-symbol">⚙</span><div><strong>Configurações</strong><small>MATHLUME</small></div></div><button id="closeSettings">✕</button></div>
@@ -244,7 +245,15 @@
   function loseLife(message){if(gameOver||gameWon)return;lives=Math.max(0,lives-1);combo=0;dano=Math.min(1,dano+1/startLives);atualizarCenario();updateHud();showFeedback(message,"#ff4136");
     if(lives<=0){if(boost.chance&&!chanceUsada){usarSegundaChance();return;}finish(false);}else sound("land");}
   function checkWin(){if(mode==="finito"&&spawned>=config[difficulty].count&&liveMeteors.size===0&&!gameOver&&!gameWon)finish(true);}
-  function finish(won){gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?"🏆":"💥";$("resultTitle").textContent=won?"VOCÊ VENCEU!":"FIM DE JOGO";$("resultSubtitle").textContent=won?`⏳ MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:"Os meteoros venceram desta vez. Tente novamente!";$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("finalDetail").textContent=won?`${config[difficulty].count} meteoros destruídos ✅`:`Você destruiu ${totalCorrect} meteoros`;if(won)sound("levelup");salvarResultado(won);}
+  function finish(won){gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);stopGame();$("resultIcon").textContent=won?"🏆":"💥";$("resultTitle").textContent=won?"VOCÊ VENCEU!":"FIM DE JOGO";$("resultSubtitle").textContent=won?`⏳ MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:"Os meteoros venceram desta vez. Tente novamente!";$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("finalDetail").textContent=won?`${config[difficulty].count} meteoros destruídos ✅`:`Você destruiu ${totalCorrect} meteoros`;if(won)sound("levelup");salvarResultado(won);
+if (won) {
+      $("winGame").currentTime = 0;
+      $("winGame").play();
+    } 
+      else {
+    $("gameOver").currentTime = 0;
+    $("gameOver").play();
+  }}
   /* ===== Pontuação salva no Backend (ranking) ===== */
   function salvarResultado(won){
     const st=$("saveStatus"),API=window.MathLumeAPI;

@@ -34,7 +34,7 @@
         <span class="badge">Bem-vindo à sua jornada!</span>
         <h1>Aprenda, jogue,<br><span class="grad">evolua.</span></h1>
         <p>Transforme seu aprendizado com a plataforma mais inovadora do mercado. Gamificação, certificação e resultados reais.</p>
-        <a href="#jornada" class="btn-main">Começar Jornada →</a>
+        <a href="#jornada" class="btn-main" onclick="somBotao()">Começar Jornada →</a>
       </div>
 
       <div class="carousel" id="carousel">
@@ -43,8 +43,8 @@
           <div class="slide g2"><div class="emoji">🏆</div><h3>Ranking e Conquistas</h3><p>Compare seu desempenho e desbloqueie medalhas.</p></div>
           <div class="slide g3"><div class="emoji">📚</div><h3>Trilhas Personalizadas</h3><p>Conteúdos de Matemática no seu ritmo.</p></div>
           <div class="slide g4"><div class="emoji">⚡</div><h3>Prática Interativa</h3><p>Desafios em tempo real para testar o que você aprendeu.</p></div>
-          <button class="arrow prev" type="button" aria-label="Slide anterior">‹</button>
-          <button class="arrow next" type="button" aria-label="Próximo slide">›</button>
+          <button class="arrow prev" type="button" aria-label="Slide anterior" onclick="somBotao()">‹</button>
+          <button class="arrow next" type="button" aria-label="Próximo slide" onclick="somBotao()">›</button>
         </div>
         <div class="dots"></div>
       </div>
@@ -510,12 +510,6 @@
     document.getElementById('musicToggle').addEventListener('change', function (e) { e.target.checked ? startMusic() : stopMusic(); });
     document.getElementById('volume').addEventListener('input', function (e) { if (master) master.gain.value = e.target.value / 100 * 0.25; });
     document.getElementById('sfxToggle').addEventListener('change', function (e) { sfxOn = e.target.checked; });
-    document.addEventListener('click', function (e) {
-      if (!sfxOn || !AC || !e.target.closest('button, .btn-main')) return;
-      initAudio();
-      var s = ctx.createGain(); s.gain.value = 0.15; s.connect(ctx.destination);
-      tone(880, 0.12, 0.6, s);
-    });
   </script>
   <script src="../JS/sons.js"></script>
 </body>
