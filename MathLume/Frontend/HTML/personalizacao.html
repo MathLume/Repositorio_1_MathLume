@@ -33,7 +33,7 @@
 
   <main class="container">
     <div class="tabs" role="tablist">
-      <button class="tab active" data-aba="fundos" role="tab" type="button">🌌 Plano de fundo</button>
+      <button class="tab active" data-aba="temas" role="tab" type="button">🎭 Tema do jogo</button>
       <button class="tab" data-aba="blocos" role="tab" type="button">☄️ Bloco de cálculo</button>
       <button class="tab" data-aba="explosoes" role="tab" type="button">🎉 Explosão de acerto</button>
     </div>
@@ -44,7 +44,7 @@
     </div>
     <p class="legenda" id="legenda"></p>
 
-    <section class="aba active" id="aba-fundos" role="tabpanel"><div class="grid" id="grid-fundos"></div></section>
+    <section class="aba active" id="aba-temas" role="tabpanel"><div class="grid" id="grid-temas"></div></section>
     <section class="aba" id="aba-blocos" role="tabpanel"><div class="grid" id="grid-blocos"></div></section>
     <section class="aba" id="aba-explosoes" role="tabpanel"><div class="grid" id="grid-explosoes"></div></section>
   </main>
@@ -59,20 +59,24 @@
   <script>
     (function () {
       var ML = window.MathLume;
+      var T = window.MathLumeTemas;
       var $ = function (id) { return document.getElementById(id); };
-      var CATS = ['fundos', 'blocos', 'explosoes'];
+      var CATS = ['blocos', 'explosoes'];
+      var ABAS = ['temas'].concat(CATS);
 
       var menu = $('menu');
       $('burger').addEventListener('click', function () { menu.classList.toggle('open'); });
 
       function mostrarAba(nome) {
-        if (CATS.indexOf(nome) < 0) nome = 'fundos';
-        CATS.forEach(function (c) {
+        if (ABAS.indexOf(nome) < 0) nome = 'temas';
+        ABAS.forEach(function (c) {
           var ativa = c === nome;
           $('aba-' + c).classList.toggle('active', ativa);
           var t = document.querySelector('[data-aba="' + c + '"]');
-          t.classList.toggle('active', ativa);
-          t.setAttribute('aria-selected', String(ativa));
+          if (t) {
+            t.classList.toggle('active', ativa);
+            t.setAttribute('aria-selected', String(ativa));
+          }
         });
       }
       document.querySelectorAll('.tab').forEach(function (t) {
@@ -90,17 +94,27 @@
       }
 
       function card(cat, it) {
-        var st = ML.estado();
         var tem = ML.possui(cat, it.id);
-        var eq = st.equipado[cat] === it.id;
-        var estilo = cat === 'fundos' ? ' style="background:' + it.preview + '"' : '';
+        var eq = ML.estado().equipado[cat] === it.id;
         var btn;
         if (eq) btn = '<button class="btn" type="button" disabled>✓ Equipado</button>';
         else if (tem) btn = '<button class="btn" type="button" data-equipar="' + cat + '" data-id="' + it.id + '">Equipar</button>';
         else btn = '<a class="btn ouro" href="loja.html#personalizacao">🔒 Comprar na loja · ' + ML.fmt(it.preco) + ' Lumes</a>';
         return '<article class="item' + (eq ? ' equipado' : '') + (tem ? '' : ' bloqueado') + '">' +
-               '<div class="prev"' + estilo + '>' + it.emoji + '</div>' +
+               '<div class="prev">' + it.emoji + '</div>' +
                '<div class="corpo"><h3>' + it.nome + '</h3><p>' + it.desc + '</p>' + btn + '</div></article>';
+      }
+
+      function cardTema(t) {
+        var tem = T.possui(t.id);
+        var eq = T.atual().id === t.id;
+        var btn;
+        if (eq) btn = '<button class="btn" type="button" disabled>✓ Equipado</button>';
+        else if (tem) btn = '<button class="btn" type="button" data-equipar-tema="' + t.id + '">Equipar</button>';
+        else btn = '<a class="btn ouro" href="loja.html#personalizacao">🔒 Comprar na loja · ' + ML.fmt(t.preco) + ' Lumes</a>';
+        return '<article class="item' + (eq ? ' equipado' : '') + (tem ? '' : ' bloqueado') + '">' +
+               '<div class="prev" style="background:' + t.preview + '">' + t.emoji + '</div>' +
+               '<div class="corpo"><h3>Tema ' + t.nome + '</h3><p>' + t.desc + '</p>' + btn + '</div></article>';
       }
 
       function render() {
@@ -109,14 +123,21 @@
         CATS.forEach(function (cat) {
           $('grid-' + cat).innerHTML = ML.catalogo[cat].map(function (it) { return card(cat, it); }).join('');
         });
-        var f = ML.equipado('fundos'), b = ML.equipado('blocos'), x = ML.equipado('explosoes');
-        $('stage').style.background = f.preview;
+        $('grid-temas').innerHTML = T.catalogo.map(cardTema).join('');
+        var b = ML.equipado('blocos'), x = ML.equipado('explosoes'), tm = T.atual();
+        $('stage').style.background = tm.preview;
         $('stageIcone').textContent = b.emoji;
         $('stageExp').textContent = x.emoji;
-        $('legenda').textContent = 'Equipado: ' + f.nome + ' • ' + b.nome + ' • ' + x.nome;
+        $('legenda').textContent = 'Equipado: Tema ' + tm.nome + ' • ' + b.nome + ' • ' + x.nome;
       }
 
       document.addEventListener('click', function (e) {
+        var tb = e.target.closest('[data-equipar-tema]');
+        if (tb) {
+          var tm = T.item(tb.dataset.equiparTema);
+          if (T.equipar(tm.id)) { render(); toast('✓ Tema ' + tm.nome + ' equipado! Abra o mini-game para ver.'); }
+          return;
+        }
         var b = e.target.closest('[data-equipar]');
         if (!b) return;
         var it = ML.item(b.dataset.equipar, b.dataset.id);

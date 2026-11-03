@@ -48,3 +48,13 @@
 .quem-joga b{color:#f5d76e}
 .quem-joga a,.save-status a{color:#f5d76e}
 .save-status{min-height:18px;margin:0;font-size:13px;font-weight:800;color:#a78bfa;text-align:center}
+
+/* =====================================================
+   COMPATIBILIDADE DE TEMAS
+   O HTML agora serve a mais de um tema. Estas regras só
+   escondem os elementos do tema Oceano — o visual do tema
+   Espaço continua exatamente como era.
+   ===================================================== */
+.t-oce,.ocean-bg,.flash,.danger-strip,.dstars,.hud-exit,.set-voltar,.menu-summary,.brand-top,.answer-tip,.answer-icon{display:none!important}
+.fall-zone,.answer-input-wrap,.boost-row{display:contents}
+.settings-difficulties em{font-style:normal}
