@@ -39,9 +39,9 @@
     </div>
 
     <section class="aba active" id="aba-personalizacao" role="tabpanel">
-      <h2 class="sec-title">Planos de fundo</h2>
-      <p class="sec-sub">Mude o cenário do mini-game. Apenas estético — não influencia o desempenho.</p>
-      <div class="grid" id="grid-fundos"></div>
+      <h2 class="sec-title">Temas do jogo</h2>
+      <p class="sec-sub">Troque todo o visual do mini-game — menu, HUD e tela de jogo. Você pode voltar ao tema original quando quiser.</p>
+      <div class="grid" id="grid-temas"></div>
 
       <h2 class="sec-title">Blocos de cálculo</h2>
       <p class="sec-sub">Troque o ícone dos blocos que caem durante o jogo.</p>
@@ -83,13 +83,14 @@
   <script>
     (function () {
       var ML = window.MathLume;
+      var T = window.MathLumeTemas;
       var $ = function (id) { return document.getElementById(id); };
       var ABAS = ['personalizacao', 'boosters', 'moedas'];
 
       var menu = $('menu');
       $('burger').addEventListener('click', function () { menu.classList.toggle('open'); });
 
-      /* ---------- abas (usa #hash: loja.html#boosters, loja.html#moedas) ---------- */
+      /* ---------- abas ---------- */
       function mostrarAba(nome) {
         if (ABAS.indexOf(nome) < 0) nome = 'personalizacao';
         ABAS.forEach(function (a) {
@@ -136,16 +137,24 @@
       }
 
       /* ---------- renderização ---------- */
-      function precoTxt(p) { return p === 0 ? 'Grátis' : '🪙 ' + ML.fmt(p) + ' Lumes'; }
+      function precoTxt(p) { return p === 0 ? 'Grátis' : 'Comprar por ' + ML.fmt(p) + ' Lumes'; }
 
       function cardItem(cat, it) {
         var tem = ML.possui(cat, it.id);
-        var estilo = cat === 'fundos' ? ' style="background:' + it.preview + '"' : '';
         var btn = tem
-          ? '<button class="btn" type="button" disabled>✓ ' + (it.preco === 0 ? 'Já é seu' : 'Adquirido') + '</button>'
+          ? '<button class="btn" type="button" disabled>✓ Adquirido</button>'
           : '<button class="btn ouro" type="button" data-comprar="' + cat + '" data-id="' + it.id + '">' + precoTxt(it.preco) + '</button>';
-        return '<article class="item"><div class="prev"' + estilo + '>' + it.emoji + '</div>' +
+        return '<article class="item"><div class="prev">' + it.emoji + '</div>' +
                '<div class="corpo"><h3>' + it.nome + '</h3><p>' + it.desc + '</p>' + btn + '</div></article>';
+      }
+
+      function cardTema(t) {
+        var tem = T.possui(t.id);
+        var btn = tem
+          ? '<button class="btn" type="button" disabled>✓ ' + (t.preco === 0 ? 'Já é seu' : 'Adquirido') + '</button>'
+          : '<button class="btn ouro" type="button" data-tema="' + t.id + '">Comprar Tema por ' + ML.fmt(t.preco) + ' Lumes</button>';
+        return '<article class="item"><div class="prev" style="background:' + t.preview + '">' + t.emoji + '</div>' +
+               '<div class="corpo"><h3>' + t.nome + '</h3><p>' + t.desc + '</p>' + btn + '</div></article>';
       }
 
       function cardBooster(b) {
@@ -165,7 +174,8 @@
 
       function render() {
         $('saldo').textContent = ML.fmt(ML.estado().lumes);
-        ['fundos', 'blocos', 'explosoes'].forEach(function (cat) {
+        $('grid-temas').innerHTML = T.catalogo.map(cardTema).join('');
+        ['blocos', 'explosoes'].forEach(function (cat) {
           $('grid-' + cat).innerHTML = ML.catalogo[cat].map(function (it) { return cardItem(cat, it); }).join('');
         });
         $('grid-boosters').innerHTML = ML.catalogo.boosters.map(cardBooster).join('');
@@ -191,7 +201,15 @@
 
       document.addEventListener('click', function (e) {
         var b;
-        if ((b = e.target.closest('[data-comprar]'))) {
+        if ((b = e.target.closest('[data-tema]'))) {
+          var tm = T.item(b.dataset.tema);
+          confirmarCompra('o tema ' + tm.nome, tm.preco, function () {
+            var r = T.comprar(tm.id);
+            render();
+            if (r.ok) toast('✓ Tema ' + tm.nome + ' adquirido! <a href="personalizacao.html">Equipar</a>');
+            else toast('Não foi possível concluir a compra. Tente novamente.');
+          });
+        } else if ((b = e.target.closest('[data-comprar]'))) {
           var cat = b.dataset.comprar, it = ML.item(cat, b.dataset.id);
           confirmarCompra(it.nome, it.preco, function () {
             var r = ML.comprar(cat, it.id);

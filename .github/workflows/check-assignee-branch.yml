@@ -1,0 +1,303 @@
+name: Verificar Assignee, Branch e Datas (In Progress)
+
+on:
+  schedule:
+    - cron: '*/15 * * * *' # a cada 15 minutos
+  workflow_dispatch: # permite rodar manualmente pela aba Actions
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check-in-progress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar issues em "In Progress"
+        id: dados
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+          script: |
+            const ORG = context.repo.owner;
+            const PROJECT_NUMBER = 1;
+            const STATUS_ALVO = 'In Progress';
+            const START_FIELD = 'Start date';
+            const TARGET_FIELD = 'Target date';
+            const MARKER = '<!-- check-assignee-branch-bot -->';
+            const LABEL_ANTIGA = 'aguardando-assignee-branch'; // label da versao anterior, removida se existir
+
+            // Uma label para cada pendencia
+            const LABELS = {
+              assignee: { name: 'sem-assignees',   color: 'D93F0B', description: 'Issue em In Progress sem assignee' },
+              branch:   { name: 'sem-branch',      color: 'B60205', description: 'Issue em In Progress sem branch vinculada' },
+              start:    { name: 'sem-start-date',  color: 'FBCA04', description: 'Issue em In Progress sem Start date' },
+              target:   { name: 'sem-target-date', color: 'E99695', description: 'Issue em In Progress sem Target date' },
+            };
+            const NOMES_LABELS = Object.values(LABELS).map(l => l.name);
+
+            // Garante que as labels existem neste repositorio
+            for (const l of Object.values(LABELS)) {
+              try {
+                await github.rest.issues.getLabel({ owner: context.repo.owner, repo: context.repo.repo, name: l.name });
+              } catch (e) {
+                await github.rest.issues.createLabel({ owner: context.repo.owner, repo: context.repo.repo, ...l });
+              }
+            }
+
+            // Busca itens do Project. As datas podem estar no Project ou como campo da propria issue
+            const query = `
+              query($org: String!, $number: Int!, $cursor: String, $start: String!, $target: String!) {
+                organization(login: $org) {
+                  projectV2(number: $number) {
+                    items(first: 100, after: $cursor) {
+                      pageInfo { hasNextPage endCursor }
+                      nodes {
+                        fieldValueByName(name: "Status") {
+                          ... on ProjectV2ItemFieldSingleSelectValue { name }
+                        }
+                        inicio: fieldValueByName(name: $start) {
+                          ... on ProjectV2ItemFieldDateValue { date }
+                        }
+                        prazo: fieldValueByName(name: $target) {
+                          ... on ProjectV2ItemFieldDateValue { date }
+                        }
+                        content {
+                          ... on Issue {
+                            id number url state
+                            repository { name owner { login } }
+                            assignees(first: 20) { totalCount nodes { login } }
+                            linkedBranches(first: 10) { nodes { ref { name } } }
+                            closedByPullRequestsReferences(first: 10, includeClosedPrs: true) { nodes { number } }
+                            labels(first: 50) { nodes { name } }
+                            issueFieldValues(first: 20) {
+                              nodes {
+                                ... on IssueFieldDateValue {
+                                  value
+                                  field { ... on IssueFieldDate { name } }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }`;
+
+            let cursor = null, items = [];
+            while (true) {
+              const res = await github.graphql(query, {
+                org: ORG, number: PROJECT_NUMBER, cursor,
+                start: START_FIELD, target: TARGET_FIELD,
+                // Necessario para ler os campos da issue (Start date, Target date)
+                headers: { 'GraphQL-Features': 'issue_fields' }
+              });
+              const conn = res.organization.projectV2.items;
+              items = items.concat(conn.nodes);
+              if (!conn.pageInfo.hasNextPage) break;
+              cursor = conn.pageInfo.endCursor;
+            }
+
+            // Le a data do campo do Project; se vazio, usa o campo da propria issue
+            const lerData = (valorProject, issue, nomeCampo) => {
+              if (valorProject?.date) return valorProject.date;
+              for (const v of issue.issueFieldValues?.nodes || []) {
+                if ((v?.field?.name || '').toLowerCase() === nomeCampo.toLowerCase() && v.value) {
+                  return v.value.slice(0, 10);
+                }
+              }
+              return null;
+            };
+
+            const buscarAviso = async (owner, repo, issue_number) => {
+              const comentarios = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number, per_page: 100 });
+              return comentarios.filter(c => (c.body || '').includes(MARKER)).pop();
+            };
+
+            const emAndamento = [];
+            for (const item of items) {
+              const status = item.fieldValueByName?.name;
+              const issue = item.content;
+              if (status !== STATUS_ALVO || !issue || !issue.number || issue.state !== 'OPEN') continue;
+
+              const owner = issue.repository.owner.login;
+              const repo = issue.repository.name;
+              const issue_number = issue.number;
+              const labelsAtuais = issue.labels.nodes.map(l => l.name);
+
+              // Guarda os dados para o passo de verificacao de atraso
+              emAndamento.push({
+                owner, repo, number: issue_number,
+                target: lerData(item.prazo, issue, TARGET_FIELD),
+                assignees: issue.assignees.nodes.map(a => a.login),
+                labels: labelsAtuais,
+              });
+
+              // Considera satisfeito se houver branch vinculada OU pull request vinculado na secao Development
+              const prsVinculados = issue.closedByPullRequestsReferences?.nodes || [];
+              const temBranchOuPr = issue.linkedBranches.nodes.some(b => b?.ref) || prsVinculados.length > 0;
+
+              const checks = [
+                { key: 'assignee', ok: issue.assignees.totalCount > 0, texto: '**Assignee** (responsável pela issue)', acao: 'atribua um responsável' },
+                { key: 'branch', ok: temBranchOuPr, texto: '**Branch ou pull request vinculado** (seção "Development" da issue)', acao: 'vincule uma branch ou um pull request na seção "Development"' },
+                { key: 'start', ok: !!lerData(item.inicio, issue, START_FIELD), texto: `**${START_FIELD}** (data de início)`, acao: `preencha o campo **${START_FIELD}**` },
+                { key: 'target', ok: !!lerData(item.prazo, issue, TARGET_FIELD), texto: `**${TARGET_FIELD}** (data prevista de entrega)`, acao: `preencha o campo **${TARGET_FIELD}**` },
+              ];
+              const pendente = checks.some(c => !c.ok);
+              const jaAvisada = labelsAtuais.some(n => NOMES_LABELS.includes(n) || n === LABEL_ANTIGA);
+
+              // Remove a label da versao anterior
+              if (labelsAtuais.includes(LABEL_ANTIGA)) {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name: LABEL_ANTIGA }).catch(() => {});
+              }
+
+              // Sincroniza as labels: adiciona as que faltam, remove as ja resolvidas
+              const adicionar = checks.filter(c => !c.ok && !labelsAtuais.includes(LABELS[c.key].name)).map(c => LABELS[c.key].name);
+              const remover = checks.filter(c => c.ok && labelsAtuais.includes(LABELS[c.key].name)).map(c => LABELS[c.key].name);
+              if (adicionar.length) {
+                await github.rest.issues.addLabels({ owner, repo, issue_number, labels: adicionar });
+              }
+              for (const name of remover) {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name }).catch(() => {});
+              }
+
+              // Tudo certo: marca o aviso anterior como resolvido
+              if (!pendente) {
+                if (jaAvisada) {
+                  const aviso = await buscarAviso(owner, repo, issue_number);
+                  if (aviso) {
+                    await github.rest.issues.updateComment({
+                      owner, repo, comment_id: aviso.id,
+                      body: `${MARKER}\n✅ Pendências resolvidas: esta issue já tem assignee, branch ou pull request vinculado, ${START_FIELD} e ${TARGET_FIELD}. Obrigado!`
+                    });
+                  }
+                  console.log(`#${issue_number}: tudo ok, labels removidas`);
+                }
+                continue;
+              }
+
+              const mencoes = issue.assignees.nodes.map(a => `@${a.login}`).join(' ');
+              // Lista somente o que esta faltando
+              const faltando = checks.filter(c => !c.ok);
+              const lista = faltando.map(c => `- ${c.texto}`).join('\n');
+              const juntar = arr => arr.length <= 1 ? arr.join('') : `${arr.slice(0, -1).join(', ')} e ${arr[arr.length - 1]}`;
+              const acoes = juntar(faltando.map(c => c.acao));
+              const faltaData = faltando.some(c => c.key === 'start' || c.key === 'target');
+              const body =
+                `${MARKER}\n` +
+                `⚠️ ${mencoes ? mencoes + ', esta' : 'Esta'} issue está em **${STATUS_ALVO}**, mas ainda falta:\n\n` +
+                `${lista}\n\n` +
+                `Para resolver, ${acoes}${faltaData ? ' (na barra lateral da issue ou no Project)' : ''}. Este aviso é atualizado automaticamente.`;
+
+              if (jaAvisada) {
+                // Ja avisada: so atualiza o comentario existente se as pendencias mudaram (evita spam)
+                const aviso = await buscarAviso(owner, repo, issue_number);
+                if (aviso && aviso.body !== body) {
+                  await github.rest.issues.updateComment({ owner, repo, comment_id: aviso.id, body });
+                  console.log(`#${issue_number}: aviso atualizado`);
+                } else if (!aviso) {
+                  await github.rest.issues.createComment({ owner, repo, issue_number, body });
+                }
+                continue;
+              }
+
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+              console.log(`#${issue_number}: novo aviso publicado (${adicionar.join(', ')})`);
+            }
+
+            // Repassa as issues em In Progress para o passo de verificacao de atraso
+            core.setOutput('em_andamento', JSON.stringify(emAndamento));
+
+      # Usa o GITHUB_TOKEN padrao: os avisos saem como "github-actions" (Bot)
+      - name: Verificar atraso das issues em "In Progress"
+        uses: actions/github-script@v7
+        env:
+          EM_ANDAMENTO: ${{ steps.dados.outputs.em_andamento }}
+        with:
+          script: |
+            const ORIENTADOR = 'Arthur Mariano';
+            const STATUS_ALVO = 'In Progress';
+            const INTERVALO_DIAS = 2; // intervalo entre um aviso e o proximo
+            const MARKER = '<!-- aviso-atraso-bot';
+            const LABEL = { name: 'atrasada', color: '5319E7', description: 'Issue em In Progress com Target date vencido' };
+            const ORDINAIS = ['Primeiro', 'Segundo', 'Terceiro', 'Quarto', 'Quinto', 'Sexto', 'Sétimo', 'Oitavo', 'Nono', 'Décimo'];
+
+            const lista = JSON.parse(process.env.EM_ANDAMENTO || '[]');
+            if (!lista.length) { console.log('Nenhuma issue em In Progress.'); return; }
+
+            // Data de hoje no fuso de Brasilia (AAAA-MM-DD)
+            const hoje = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+            const dataSP = iso => new Date(iso).toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+            const diasEntre = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 86400000);
+            const br = d => d.split('-').reverse().join('/');
+            const iso = d => d.split('/').reverse().join('-');
+
+            try {
+              await github.rest.issues.getLabel({ owner: context.repo.owner, repo: context.repo.repo, name: LABEL.name });
+            } catch (e) {
+              await github.rest.issues.createLabel({ owner: context.repo.owner, repo: context.repo.repo, ...LABEL });
+            }
+
+            for (const it of lista) {
+              const { owner, repo, number: issue_number, target, assignees, labels } = it;
+              const atraso = target ? diasEntre(target, hoje) : 0;
+
+              // Em dia (ou sem Target date): so remove a label, se houver
+              if (atraso <= 0) {
+                if (labels.includes(LABEL.name)) {
+                  await github.rest.issues.removeLabel({ owner, repo, issue_number, name: LABEL.name }).catch(() => {});
+                  console.log(`#${issue_number}: em dia, label removida`);
+                }
+                continue;
+              }
+
+              if (!labels.includes(LABEL.name)) {
+                await github.rest.issues.addLabels({ owner, repo, issue_number, labels: [LABEL.name] });
+              }
+
+              // Avisos anteriores de atraso (inclui os da versao antiga, sem marcador)
+              const comentarios = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number, per_page: 100 });
+              const avisos = comentarios
+                .filter(c => c.user?.login === 'github-actions[bot]' && /aviso de atraso/i.test(c.body || ''))
+                .map(c => {
+                  const m = (c.body || '').match(/aviso-atraso-bot target=(\d{4}-\d{2}-\d{2})/)
+                         || (c.body || '').match(/\|\s*(\d{2}\/\d{2}\/\d{4})\s*\|/)
+                         || (c.body || '').match(/(\d{2}\/\d{2}\/\d{4})/);
+                  const alvo = m ? (m[1].includes('/') ? iso(m[1]) : m[1]) : null;
+                  // Numero do aviso lido do titulo ("Terceiro aviso de atraso" = 3, "11º aviso de atraso" = 11)
+                  const t = (c.body || '').match(/([\wÀ-ú]+)\s+aviso de atraso/i);
+                  let num = 0;
+                  if (t) {
+                    const idx = ORDINAIS.findIndex(o => o.toLowerCase() === t[1].toLowerCase());
+                    num = idx >= 0 ? idx + 1 : (parseInt(t[1], 10) || 0);
+                  }
+                  return { criado: c.created_at, alvo, num };
+                });
+
+              // A numeracao continua mesmo quando o Target date e renegociado
+              const ultimoNumero = avisos.reduce((max, a, i) => Math.max(max, a.num || i + 1), 0);
+              const ultimo = avisos[avisos.length - 1];
+              if (ultimo && diasEntre(dataSP(ultimo.criado), hoje) < INTERVALO_DIAS) {
+                console.log(`#${issue_number}: atrasada ${atraso} dia(s), ultimo aviso recente, aguardando`);
+                continue;
+              }
+
+              const n = ultimoNumero;
+              const ordinal = ORDINAIS[n] || `${n + 1}º`;
+              const mencoes = assignees.length ? assignees.map(a => `@${a}`).join(' ') : 'Atenção';
+              const body =
+                `${MARKER} target=${target} -->\n` +
+                `## ${ordinal} aviso de atraso\n\n` +
+                `${mencoes}, esta issue está com o prazo vencido.\n\n` +
+                `| Status atual | Target date | Atraso |\n` +
+                `|---|---|---|\n` +
+                `| ${STATUS_ALVO} | ${br(target)} | ${atraso} ${atraso === 1 ? 'dia' : 'dias'} |\n\n` +
+                `Combine um novo prazo de entrega com o seu orientador, **${ORIENTADOR}**, e com a sua equipe, ou conclua esta issue o quanto antes. ` +
+                `Lembre-se: **a data não deve ser alterada sem a aprovação prévia do seu orientador.**\n\n` +
+                `_Irei emitir esta mensagem periodicamente até que a situação desta issue seja resolvida._`;
+
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+              console.log(`#${issue_number}: ${ordinal} aviso de atraso publicado (${atraso} dias)`);
+            }

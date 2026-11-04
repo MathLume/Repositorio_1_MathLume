@@ -1,7 +1,8 @@
 //Reproduz o efeito sonoro dos cliques no site.
 function somBotao() {
     let audio = document.getElementById("botoes");
-    audio.currentTime = 0.23;
+    if (window.sfxOn === false) return;
+    audio.currentTime = 0.20;
     audio.play();
 }
 //Executa a contagem regressiva antes do início do minigame.
@@ -43,3 +44,4 @@ function stopGame(){
     let audio = document.getElementById("temaGame");
     audio.pause();
 }
+
