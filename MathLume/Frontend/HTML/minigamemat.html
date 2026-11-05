@@ -8,7 +8,14 @@
   <script src="../JS/mathlume-dados.js"></script>
   <script>MathLumeTemas.aplicar();</script>
 </head>
-<body>
+<body onload="musicaLobby()">
+  <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
+  <audio id="contagem" src="../assets/efeitos_sonoros/contador.wav"></audio>
+  <audio id="lobby" src="../assets/efeitos_sonoros/temaLob.mp3"></audio>
+  <audio id="temaGame" src = "../assets/efeitos_sonoros/temaGame.mp3"></audio>
+  <audio id="winGame" src="../assets/efeitos_sonoros/win.wav"></audio>
+  <audio id="gameOver" src="../assets/efeitos_sonoros/gameOver.wav"></audio>
+  
   <main id="game" class="game-shell">
     <div class="stars" aria-hidden="true"></div>
     <div class="ocean-bg" aria-hidden="true">
@@ -72,16 +79,18 @@
       <div class="selector-block">
         <span class="eyebrow"><svg class="ico t-oce" viewBox="0 0 24 24"><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></svg><span class="t-esp">MODO DE JOGO</span><span class="t-oce">Modo de Jogo</span></span>
         <div class="mode-options">
-          <button class="mode-card" data-mode="finito"><span><span class="t-esp t-nohal t-nocid">⏳</span><span class="t-hal" hidden>🕯️</span><span class="t-cid" hidden>🎯</span><span class="t-oce">🏁</span></span><strong><span class="t-esp">FINITO</span><span class="t-oce">Finito</span></strong><small id="finiteCount">20 meteoros<br>Destrua todos!</small></button>
-          <button class="mode-card selected" data-mode="infinito"><span><span class="t-esp t-nohal t-nocid">♾️</span><span class="t-hal" hidden>🌕</span><span class="t-cid" hidden>🌌</span><span class="t-oce">∞</span></span><strong><span class="t-esp">INFINITO</span><span class="t-oce">Infinito</span></strong><small><span class="t-esp">Sem fim<br>Sobreviva!</span><span class="t-oce">Jogue sem parar</span></small></button>
+          <button class="mode-card" data-mode="finito" onclick="somBotao()"><span><span class="t-esp t-nohal t-nocid">⏳</span><span class="t-hal" hidden>🕯️</span><span class="t-cid" hidden>🎯</span><span class="t-oce">🏁</span></span><strong><span class="t-esp">FINITO</span><span class="t-oce">Finito</span></strong><small id="finiteCount">20 meteoros<br>Destrua todos!</small></button>
+          <button class="mode-card selected" data-mode="infinito"onclick="somBotao()"><span><span class="t-esp t-nohal t-nocid">♾️</span><span class="t-hal" hidden>🌕</span><span class="t-cid" hidden>🌌</span><span class="t-oce">∞</span></span><strong><span class="t-esp">INFINITO</span><span class="t-oce">Infinito</span></strong><small><span class="t-esp">Sem fim<br>Sobreviva!</span><span class="t-oce">Jogue sem parar</span></small></button>
         </div>
       </div>
       <div class="selector-block">
         <span class="eyebrow"><svg class="ico t-oce" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="t-esp">ESCOLHA A DIFICULDADE</span><span class="t-oce">Dificuldade</span></span>
         <div class="difficulty-options">
-          <button class="difficulty-card easy" data-difficulty="facil"><span><span class="t-esp t-nohal t-nocid">🌱</span><span class="t-hal" hidden>🍬</span><span class="t-cid" hidden>🌍</span><span class="t-oce">🐙</span></span><strong>Fácil</strong><small>Soma e subtração<br><em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros lentos</em><em class="t-hal" hidden style="font-style:normal">Abóboras lentas</em><em class="t-flo" hidden style="font-style:normal">Chamas lentas</em><em class="t-cid" hidden style="font-style:normal">Slimes lentos</em></small><div class="dstars"><i class="on">★</i><i>★</i><i>★</i></div></button>
-          <button class="difficulty-card medium selected" data-difficulty="medio"><span><span class="t-esp t-nohal t-nocid">🔥</span><span class="t-hal" hidden>🦇</span><span class="t-cid" hidden>👽</span><span class="t-oce">🐡</span></span><strong>Médio</strong><small>Todas as operações<br>Velocidade normal</small><div class="dstars"><i class="on">★</i><i class="on">★</i><i>★</i></div></button>
-          <button class="difficulty-card hard" data-difficulty="dificil"><span><span class="t-esp t-nohal t-nocid">💀</span><span class="t-hal" hidden>🕷️</span><span class="t-cid" hidden>🛸</span><span class="t-oce">🦈</span></span><strong>Difícil</strong><small>Contas difíceis<br><em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros rápidos</em><em class="t-hal" hidden style="font-style:normal">Abóboras rápidas</em><em class="t-flo" hidden style="font-style:normal">Chamas rápidas</em><em class="t-cid" hidden style="font-style:normal">Slimes rápidos</em></small><div class="dstars"><i class="on">★</i><i class="on">★</i><i class="on">★</i></div></button>
+
+          <button class="difficulty-card easy" data-difficulty="facil" onclick="somBotao()"><span><span class="t-esp t-nohal t-nocid">🌱</span><span class="t-hal" hidden>🍬</span><span class="t-cid" hidden>🌍</span><span class="t-oce">🐙</span></span><strong>Fácil</strong><small>Soma e subtração<br><em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros lentos</em><em class="t-hal" hidden style="font-style:normal">Abóboras lentas</em><em class="t-flo" hidden style="font-style:normal">Chamas lentas</em><em class="t-cid" hidden style="font-style:normal">Slimes lentos</em></small><div class="dstars"><i class="on">★</i><i>★</i><i>★</i></div></button>
+          <button class="difficulty-card medium selected" data-difficulty="medio" onclick="somBotao()"><span><span class="t-esp t-nohal t-nocid">🔥</span><span class="t-hal" hidden>🦇</span><span class="t-cid" hidden>👽</span><span class="t-oce">🐡</span></span><strong>Médio</strong><small>Todas as operações<br>Velocidade normal</small><div class="dstars"><i class="on">★</i><i class="on">★</i><i>★</i></div></button>
+          <button class="difficulty-card hard" data-difficulty="dificil" onclick="somBotao()"><span><span class="t-esp t-nohal t-nocid">💀</span><span class="t-hal" hidden>🕷️</span><span class="t-cid" hidden>🛸</span><span class="t-oce">🦈</span></span><strong>Difícil</strong><small>Contas difíceis<br><em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros rápidos</em><em class="t-hal" hidden style="font-style:normal">Abóboras rápidas</em><em class="t-flo" hidden style="font-style:normal">Chamas rápidas</em><em class="t-cid" hidden style="font-style:normal">Slimes rápidos</em></small><div class="dstars"><i class="on">★</i><i class="on">★</i><i class="on">★</i></div></button>
+          
         </div>
       </div>
       <div class="selector-block" id="boosterBlock">
@@ -91,12 +100,12 @@
         <small class="quem-joga" id="quemJoga"></small>
       </div>
       <div class="menu-actions">
-        <button class="primary-btn" id="startBtn"><span class="t-esp t-nohal t-noflo t-nocid">🚀 </span><span class="t-hal" hidden>🧹 </span><span class="t-flo" hidden>🌿 </span><span class="t-cid" hidden>⚡ </span><span class="t-oce">▶ </span><span class="t-esp">INICIAR</span><span class="t-oce">Jogar Agora</span></button>
+        <button class="primary-btn" id="startBtn" onclick="contagemR()"><span class="t-esp t-nohal t-noflo t-nocid">🚀 </span><span class="t-hal" hidden>🧹 </span><span class="t-flo" hidden>🌿 </span><span class="t-cid" hidden>⚡ </span><span class="t-oce">▶ </span><span class="t-esp">INICIAR</span><span class="t-oce">Jogar Agora</span></button>
         <div class="menu-summary" id="menuSummary"></div>
-        <button class="secondary-btn" id="exitBtn">🚪 <span class="t-esp">SAIR</span><span class="t-oce">Sair</span></button>
+        <button class="secondary-btn" id="exitBtn" onclick="somBotao()";>🚪 <span class="t-esp">SAIR</span><span class="t-oce">Sair</span></button>
         <div class="exit-confirm hidden" id="exitConfirm"><span>Tem certeza que deseja sair?</span><div><button id="confirmExit">✓ Sim, sair</button><button id="cancelExit">✕ Cancelar</button></div></div>
       </div>
-      <button class="settings-floating" id="settingsMenu" aria-label="Configurações">⚙</button>
+      <button class="settings-floating" id="settingsMenu" aria-label="Configurações" onclick="somBotao()">⚙</button>
     </section>
 
     <section class="screen intro-screen hidden" id="introScreen">
@@ -125,22 +134,21 @@
 
     <section class="screen result-screen hidden" id="resultScreen">
       <div class="result-icon" id="resultIcon">💥</div>
-      <h2 id="resultTitle">FIM DE JOGO</h2>
+      <h2 id="resultTitle" >FIM DE JOGO</h2>
       <p id="resultSubtitle"></p>
       <div class="result-stats"><strong><span id="finalScore">0</span> pts</strong><span>Nível <b id="finalLevel">1</b> ⭐ · Combo máx. <b id="finalCombo">0</b> 🔥</span><div class="rows t-oce"><div class="row"><span>⭐ Pontuação</span><b class="c-gold"><span id="rScore">0</span> pts</b></div><div class="row"><span>✅ Acertos</span><b class="c-green" id="rHits">0</b></div><div class="row"><span>🌊 Nível</span><b class="c-sky" id="rLevel">1</b></div><div class="row"><span>🔥 Melhor sequência</span><b class="c-violet"><span id="rCombo">0</span>x</b></div></div><small id="finalDetail"></small></div>
       <p class="save-status" id="saveStatus" role="status"></p>
-      <div class="result-actions"><button class="primary-btn" id="againBtn">🔄 <span class="t-esp">JOGAR NOVAMENTE</span><span class="t-oce">Jogar Novamente</span></button><button class="secondary-btn" id="rankBtn">🏆 <span class="t-esp">VER RANKING</span><span class="t-oce">Ver Ranking</span></button><button class="secondary-btn" id="menuBtn">🏠 <span class="t-esp">MENU PRINCIPAL</span><span class="t-oce">Menu</span></button></div>
+      <div class="result-actions"><button class="primary-btn" id="againBtn" onclick="contagemR()">🔄 <span class="t-esp">JOGAR NOVAMENTE</span><span class="t-oce">Jogar Novamente</span></button><button class="secondary-btn" id="rankBtn">🏆 <span class="t-esp">VER RANKING</span><span class="t-oce">Ver Ranking</span></button><button class="secondary-btn" id="menuBtn" onclick="musicaLobby()";>🏠 <span class="t-esp">MENU PRINCIPAL</span><span class="t-oce">Menu</span></button></div>
     </section>
-
     <aside class="settings-backdrop hidden" id="settingsBackdrop"></aside>
     <aside class="settings-panel" id="settingsPanel" aria-label="Configurações">
       <div class="settings-header"><button class="set-voltar" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><span>Voltar</span></button><div><span class="settings-symbol">⚙</span><div><strong>Configurações</strong><small>MATHLUME<span class="t-hal" hidden> 🎃</span><span class="t-flo" hidden> 🌲</span><span class="t-cid" hidden> 👾</span></small></div></div><button id="closeSettings">✕</button></div>
       <div class="settings-content">
-        <div class="settings-section"><label><span class="t-esp">VOLUME DO SOM</span><span class="t-oce">Volume do Áudio</span></label><div class="volume-card"><div class="volume-top"><button id="muteBtn">🔊</button><strong><span id="volumeValue">70</span>%</strong></div><input type="range" min="0" max="100" value="70" id="volumeRange"><div class="volume-presets"><button data-volume="0">🔇</button><button data-volume="25">25</button><button data-volume="50">50</button><button data-volume="75">75</button><button data-volume="100">100</button></div></div></div>
-        <div class="settings-section"><label><span class="t-esp">DIFICULDADE</span><span class="t-oce">Nível de Dificuldade</span></label><div class="settings-difficulties"><button data-setting-difficulty="facil"><em class="t-esp t-nohal t-nocid">🌱</em><em class="t-hal" hidden>🍬</em><em class="t-cid" hidden>🌍</em><em class="t-oce">🐙</em> <span><b>Fácil</b><small>Soma e subtração · <em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros lentos</em><em class="t-hal" hidden style="font-style:normal">Abóboras lentas</em><em class="t-flo" hidden style="font-style:normal">Chamas lentas</em><em class="t-cid" hidden style="font-style:normal">Slimes lentos</em></small></span><i></i></button><button data-setting-difficulty="medio"><em class="t-esp t-nohal t-nocid">🔥</em><em class="t-hal" hidden>🦇</em><em class="t-cid" hidden>👽</em><em class="t-oce">🐡</em> <span><b>Médio</b><small>Todas as operações · Velocidade normal</small></span><i></i></button><button data-setting-difficulty="dificil"><em class="t-esp t-nohal t-nocid">💀</em><em class="t-hal" hidden>🕷️</em><em class="t-cid" hidden>🛸</em><em class="t-oce">🦈</em> <span><b>Difícil</b><small>Contas difíceis · <em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros rápidos</em><em class="t-hal" hidden style="font-style:normal">Abóboras rápidas</em><em class="t-flo" hidden style="font-style:normal">Chamas rápidas</em><em class="t-cid" hidden style="font-style:normal">Slimes rápidos</em></small></span><i></i></button></div></div>
+        <div class="settings-section" onclick="somBotao()";><label><span class="t-esp">VOLUME DO SOM</span><span class="t-oce">Volume do Áudio</span></label><div class="volume-card"><div class="volume-top"><button id="muteBtn">🔊</button><strong><span id="volumeValue">70</span>%</strong></div><input type="range" min="0" max="100" value="70" id="volumeRange"><div class="volume-presets"><button data-volume="0">🔇</button><button data-volume="25">25</button><button data-volume="50">50</button><button data-volume="75">75</button><button data-volume="100">100</button></div></div></div>
+        <div class="settings-section"><label><span class="t-esp">DIFICULDADE</span><span class="t-oce">Nível de Dificuldade</span></label><div class="settings-difficulties"><button data-setting-difficulty="facil" onclick="somBotao()";><em class="t-esp t-nohal t-nocid">🌱</em><em class="t-hal" hidden>🍬</em><em class="t-cid" hidden>🌍</em><em class="t-oce">🐙</em> <span><b>Fácil</b><small>Soma e subtração · <em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros lentos</em><em class="t-hal" hidden style="font-style:normal">Abóboras lentas</em><em class="t-flo" hidden style="font-style:normal">Chamas lentas</em><em class="t-cid" hidden style="font-style:normal">Slimes lentos</em></small></span><i></i></button><button data-setting-difficulty="medio" onclick="somBotao()";><em class="t-esp t-nohal t-nocid">🔥</em><em class="t-hal" hidden>🦇</em><em class="t-cid" hidden>👽</em><em class="t-oce">🐡</em> <span><b>Médio</b><small>Todas as operações · Velocidade normal</small></span><i></i></button><button data-setting-difficulty="dificil" onclick="somBotao()";><em class="t-esp t-nohal t-nocid">💀</em><em class="t-hal" hidden>🕷️</em><em class="t-cid" hidden>🛸</em><em class="t-oce">🦈</em> <span><b>Difícil</b><small>Contas difíceis · <em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros rápidos</em><em class="t-hal" hidden style="font-style:normal">Abóboras rápidas</em><em class="t-flo" hidden style="font-style:normal">Chamas rápidas</em><em class="t-cid" hidden style="font-style:normal">Slimes rápidos</em></small></span><i></i></button></div></div>
         <p class="save-note">💾 Preferências salvas automaticamente no seu dispositivo.</p>
       </div>
-      <div class="settings-footer"><button id="backSettings">‹ Voltar</button></div>
+      <div class="settings-footer"><button id="backSettings" onclick="somBotao()";>‹ Voltar</button></div>
     </aside>
   </main>
   <script src="../JS/mathlume-api.js"></script>
@@ -316,7 +324,15 @@
   function loseLife(message){if(gameOver||gameWon)return;flash("red");lives=Math.max(0,lives-1);combo=0;dano=Math.min(1,dano+1/startLives);atualizarCenario();updateHud();showFeedback(message,"#ff4136");
     if(lives<=0){if(boost.chance&&!chanceUsada){usarSegundaChance();return;}finish(false);}else sound("land");}
   function checkWin(){if(mode==="finito"&&spawned>=config[difficulty].count&&liveMeteors.size===0&&!gameOver&&!gameWon)finish(true);}
-  function finish(won){gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?TXT.win:TXT.icone;$("resultTitle").textContent=won?TXT.vitoria:TXT.derrota;$("resultSubtitle").textContent=won?`${TXT.fin} MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:TXT.perdeu;$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("rScore").textContent=score;$("rHits").textContent=totalCorrect;$("rLevel").textContent=level;$("rCombo").textContent=maxCombo;$("finalDetail").textContent=won?TXT.ganhou(config[difficulty].count):TXT.destruiu(totalCorrect);if(won)sound("levelup");salvarResultado(won);}
+  function finish(won) {gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?TXT.win:TXT.icone;$("resultTitle").textContent=won?TXT.vitoria:TXT.derrota;$("resultSubtitle").textContent=won?`${TXT.fin} MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:TXT.perdeu;$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("rScore").textContent=score;$("rHits").textContent=totalCorrect;$("rLevel").textContent=level;$("rCombo").textContent=maxCombo;$("finalDetail").textContent=won?TXT.ganhou(config[difficulty].count):TXT.destruiu(totalCorrect);if(won)sound("levelup");salvarResultado(won); $("temaGame").pause();
+  if (won) {
+      $("winGame").currentTime = 0;
+      $("winGame").play();
+    } 
+      else {
+    $("gameOver").currentTime = 0;
+    $("gameOver").play();
+  }}
   /* ===== Pontuação salva no Backend (ranking) ===== */
   function salvarResultado(won){
     const st=$("saveStatus"),API=window.MathLumeAPI;
@@ -340,11 +356,12 @@
   function closeSettings(){$("settingsBackdrop").classList.add("hidden");$("settingsPanel").classList.remove("open");}
   $("settingsMenu").addEventListener("click",openSettings);$("settingsGame").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("backSettings").addEventListener("click",closeSettings);document.querySelectorAll(".set-voltar").forEach(b=>b.addEventListener("click",closeSettings));$("settingsBackdrop").addEventListener("click",closeSettings);
   function setVolume(v){volume=Number(v);localStorage.setItem("mathlume_volume",String(volume));$("volumeRange").value=volume;$("volumeRange").style.setProperty("--p",volume+"%");$("volumeValue").textContent=volume;$("muteBtn").textContent=volume===0?"🔇":"🔊";document.querySelectorAll("[data-volume]").forEach(b=>b.classList.toggle("active",Number(b.dataset.volume)===volume));if(masterGain&&audioCtx)masterGain.gain.setTargetAtTime(volume/100,audioCtx.currentTime,.01);}
-  $("volumeRange").addEventListener("input",e=>setVolume(e.target.value));$("muteBtn").addEventListener("click",()=>setVolume(volume===0?70:0));document.querySelectorAll("[data-volume]").forEach(b=>b.addEventListener("click",()=>setVolume(b.dataset.volume)));
+  $("volumeRange").addEventListener("input",e=>setVolume(e.target.values));$("muteBtn").addEventListener("click",()=>setVolume(volume===0?70:0));document.querySelectorAll("[data-volume]").forEach(b=>b.addEventListener("click",()=>setVolume(b.dataset.volume)));
   if(OCE)$("answerInput").placeholder="Sua resposta...";else if(HAL||FLO||CID)$("answerInput").placeholder="Digite a resposta...";
   selectDifficulty(difficulty);selectMode(mode);setVolume(volume);desenharBoosters();atualizarMarca();mostrarJogador();if(window.MathLumeAPI)MathLumeAPI.restaurar().then(mostrarJogador);
   window.addEventListener("pageshow",e=>{if(e.persisted){if(window.MathLumeTemas&&MathLumeTemas.atual().id!==TEMA){location.reload();return;}ML.recarregar();desenharBoosters();atualizarMarca();}});
 })();
   </script>
+  <script src="../JS/sons.js"></script>
 </body>
 </html>
