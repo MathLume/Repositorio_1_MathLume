@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MathLume — Meteoros Matemáticos</title>
-  <!-- Tema equipado (Espaço / Oceano / Halloween / Floresta / Cidade / ...): carrega o CSS certo antes de renderizar -->
+  
   <script src="../JS/mathlume-dados.js"></script>
   <script>MathLumeTemas.aplicar();</script>
 </head>
@@ -85,6 +85,7 @@
       </div>
       <div class="selector-block">
         <span class="eyebrow"><svg class="ico t-oce" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="t-esp">ESCOLHA A DIFICULDADE</span><span class="t-oce">Dificuldade</span></span>
+<<<<<<< HEAD
         <div class="difficulty-options">
 
           <button class="difficulty-card easy" data-difficulty="facil" onclick="somBotao()"><span><span class="t-esp t-nohal t-nocid">🌱</span><span class="t-hal" hidden>🍬</span><span class="t-cid" hidden>🌍</span><span class="t-oce">🐙</span></span><strong>Fácil</strong><small>Soma e subtração<br><em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros lentos</em><em class="t-hal" hidden style="font-style:normal">Abóboras lentas</em><em class="t-flo" hidden style="font-style:normal">Chamas lentas</em><em class="t-cid" hidden style="font-style:normal">Slimes lentos</em></small><div class="dstars"><i class="on">★</i><i>★</i><i>★</i></div></button>
@@ -92,6 +93,9 @@
           <button class="difficulty-card hard" data-difficulty="dificil" onclick="somBotao()"><span><span class="t-esp t-nohal t-nocid">💀</span><span class="t-hal" hidden>🕷️</span><span class="t-cid" hidden>🛸</span><span class="t-oce">🦈</span></span><strong>Difícil</strong><small>Contas difíceis<br><em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros rápidos</em><em class="t-hal" hidden style="font-style:normal">Abóboras rápidas</em><em class="t-flo" hidden style="font-style:normal">Chamas rápidas</em><em class="t-cid" hidden style="font-style:normal">Slimes rápidos</em></small><div class="dstars"><i class="on">★</i><i class="on">★</i><i class="on">★</i></div></button>
           
         </div>
+=======
+        <button class="secondary-btn" id="difBtn" type="button" onclick="somBotao();window.location.href='dificuldade.html'"><b id="difAtual">🔥 Médio</b> <span style="opacity:.6">· <span class="t-esp">ALTERAR</span><span class="t-oce">Alterar</span> ›</span></button>
+>>>>>>> d9811b5 (tela externa de dificuldade)
       </div>
       <div class="selector-block" id="boosterBlock">
         <span class="eyebrow"><span class="t-oce">🧪 </span><span class="t-esp">BOOSTERS DA PARTIDA</span><span class="t-oce">Boosters da partida</span></span>
@@ -145,7 +149,11 @@
       <div class="settings-header"><button class="set-voltar" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><span>Voltar</span></button><div><span class="settings-symbol">⚙</span><div><strong>Configurações</strong><small>MATHLUME<span class="t-hal" hidden> 🎃</span><span class="t-flo" hidden> 🌲</span><span class="t-cid" hidden> 👾</span></small></div></div><button id="closeSettings">✕</button></div>
       <div class="settings-content">
         <div class="settings-section" onclick="somBotao()";><label><span class="t-esp">VOLUME DO SOM</span><span class="t-oce">Volume do Áudio</span></label><div class="volume-card"><div class="volume-top"><button id="muteBtn">🔊</button><strong><span id="volumeValue">70</span>%</strong></div><input type="range" min="0" max="100" value="70" id="volumeRange"><div class="volume-presets"><button data-volume="0">🔇</button><button data-volume="25">25</button><button data-volume="50">50</button><button data-volume="75">75</button><button data-volume="100">100</button></div></div></div>
+<<<<<<< HEAD
         <div class="settings-section"><label><span class="t-esp">DIFICULDADE</span><span class="t-oce">Nível de Dificuldade</span></label><div class="settings-difficulties"><button data-setting-difficulty="facil" onclick="somBotao()";><em class="t-esp t-nohal t-nocid">🌱</em><em class="t-hal" hidden>🍬</em><em class="t-cid" hidden>🌍</em><em class="t-oce">🐙</em> <span><b>Fácil</b><small>Soma e subtração · <em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros lentos</em><em class="t-hal" hidden style="font-style:normal">Abóboras lentas</em><em class="t-flo" hidden style="font-style:normal">Chamas lentas</em><em class="t-cid" hidden style="font-style:normal">Slimes lentos</em></small></span><i></i></button><button data-setting-difficulty="medio" onclick="somBotao()";><em class="t-esp t-nohal t-nocid">🔥</em><em class="t-hal" hidden>🦇</em><em class="t-cid" hidden>👽</em><em class="t-oce">🐡</em> <span><b>Médio</b><small>Todas as operações · Velocidade normal</small></span><i></i></button><button data-setting-difficulty="dificil" onclick="somBotao()";><em class="t-esp t-nohal t-nocid">💀</em><em class="t-hal" hidden>🕷️</em><em class="t-cid" hidden>🛸</em><em class="t-oce">🦈</em> <span><b>Difícil</b><small>Contas difíceis · <em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros rápidos</em><em class="t-hal" hidden style="font-style:normal">Abóboras rápidas</em><em class="t-flo" hidden style="font-style:normal">Chamas rápidas</em><em class="t-cid" hidden style="font-style:normal">Slimes rápidos</em></small></span><i></i></button></div></div>
+=======
+        <div class="settings-section"><label><span class="t-esp">DIFICULDADE</span><span class="t-oce">Nível de Dificuldade</span></label><div class="settings-difficulties"><button data-setting-difficulty="facil" onclick="somBotao()";><em class="t-esp t-nohal t-nocid">🌱</em><em class="t-hal" hidden>🍬</em><em class="t-cid" hidden>🌍</em><em class="t-oce">🐙</em> <span><b>Fácil</b><small>Soma e subtração · <em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros lentos</em><em class="t-hal" hidden style="font-style:normal">Abóboras lentas</em><em class="t-flo" hidden style="font-style:normal">Chamas lentas</em><em class="t-cid" hidden style="font-style:normal">Slimes lentos</em></small></span><i></i></button><button data-setting-difficulty="medio" onclick="somBotao()";><em class="t-esp t-nohal t-nocid">🔥</em><em class="t-hal" hidden>🦇</em><em class="t-cid" hidden>👽</em><em class="t-oce">🐡</em> <span><b>Médio</b><small>Todas as operações · Velocidade normal</small></span><i></i></button><button data-setting-difficulty="dificil" onclick="somBotao()";><em class="t-esp t-nohal t-nocid">💀</em><em class="t-hal" hidden>🕷️</em><em class="t-cid" hidden>🛸</em><em class="t-oce">🦈</em> <span><b>Difícil</b><small>Contas difíceis · <em class="t-esp t-nohal t-noflo t-nocid" style="font-style:normal">Meteoros rápidos</em><em class="t-hal" hidden style="font-style:normal">Abóboras rápidas</em><em class="t-flo" hidden style="font-style:normal">Chamas rápidas</em><em class="t-cid" hidden style="font-style:normal">Slimes rápidos</em></small></span><i></i></button></div><div class="menu-links" style="margin-top:8px"><a href="dificuldade.html" onclick="if(!document.getElementById('hud').classList.contains('hidden')&&!confirm('Sair da partida para abrir a tela de dificuldades? O progresso atual será perdido.'))return false;">⚙️ Abrir tela de dificuldades</a></div></div>
+>>>>>>> d9811b5 (tela externa de dificuldade)
         <p class="save-note">💾 Preferências salvas automaticamente no seu dispositivo.</p>
       </div>
       <div class="settings-footer"><button id="backSettings" onclick="somBotao()";>‹ Voltar</button></div>
@@ -194,7 +202,11 @@
   }
   function selectMode(value){mode=value;document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("selected",b.dataset.mode===mode));updateFiniteCount();}
   function selectDifficulty(value,fromSettings=false){difficulty=value;localStorage.setItem("mathlume_difficulty",value);document.querySelectorAll("[data-difficulty]").forEach(b=>b.classList.toggle("selected",b.dataset.difficulty===value));document.querySelectorAll("[data-setting-difficulty]").forEach(b=>{b.classList.toggle("selected",b.dataset.settingDifficulty===value);b.style.setProperty("--setting-color",config[value].color)});updateFiniteCount();if(fromSettings && gameActive){/* difficulty takes effect on newly spawned meteors */}}
+<<<<<<< HEAD
   function updateFiniteCount(){const c=config[difficulty];$("finiteCount").innerHTML=OCE?`${c.count} bolhas`:HAL?`${c.count} abóboras<br>Destrua todas!`:FLO?`${c.count} chamas<br>Extinga todas!`:CID?`${c.count} slimes<br>Bloqueie todos!`:`${c.count} meteoros<br>Destrua todos!`;$("menuSummary").textContent=`${c.emoji} ${c.label} · ${mode==="finito"?"🏁 Finito":"∞ Infinito"}`;}
+=======
+  function updateFiniteCount(){const c=config[difficulty];$("finiteCount").innerHTML=OCE?`${c.count} bolhas`:HAL?`${c.count} abóboras<br>Destrua todas!`:FLO?`${c.count} chamas<br>Extinga todas!`:CID?`${c.count} slimes<br>Bloqueie todos!`:`${c.count} meteoros<br>Destrua todos!`;$("menuSummary").textContent=`${c.emoji} ${c.label} · ${mode==="finito"?"🏁 Finito":"∞ Infinito"}`;$("difAtual").textContent=`${c.emoji} ${c.label}`;}
+>>>>>>> d9811b5 (tela externa de dificuldade)
   document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>selectMode(b.dataset.mode)));
   document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>selectDifficulty(b.dataset.difficulty)));
   document.querySelectorAll("[data-setting-difficulty]").forEach(b=>b.addEventListener("click",()=>selectDifficulty(b.dataset.settingDifficulty,true)));
@@ -360,6 +372,11 @@
   if(OCE)$("answerInput").placeholder="Sua resposta...";else if(HAL||FLO||CID)$("answerInput").placeholder="Digite a resposta...";
   selectDifficulty(difficulty);selectMode(mode);setVolume(volume);desenharBoosters();atualizarMarca();mostrarJogador();if(window.MathLumeAPI)MathLumeAPI.restaurar().then(mostrarJogador);
   window.addEventListener("pageshow",e=>{if(e.persisted){if(window.MathLumeTemas&&MathLumeTemas.atual().id!==TEMA){location.reload();return;}ML.recarregar();desenharBoosters();atualizarMarca();}});
+<<<<<<< HEAD
+=======
+  /* Dificuldade escolhida na tela externa (dificuldade.html) */
+  window.addEventListener("pageshow",()=>{const d=localStorage.getItem("mathlume_difficulty");if(d&&config[d]&&d!==difficulty)selectDifficulty(d);});
+>>>>>>> d9811b5 (tela externa de dificuldade)
 })();
   </script>
   <script src="../JS/sons.js"></script>
