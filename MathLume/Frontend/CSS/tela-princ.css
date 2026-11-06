@@ -175,3 +175,86 @@ a.card:hover .play-cta { filter: brightness(1.15); }
 .campo-dica.ruim { color: #fca5a5; }
 .modal input.campo-bom { border-color: rgba(34, 197, 94, .6); }
 .modal input.campo-ruim { border-color: rgba(239, 68, 68, .7); }
+
+/* ===== carrossel: slide 5 — tutorial de cadastro ===== */
+.slide[hidden] { display: none; }
+.g5 { background: linear-gradient(135deg, #4338ca, #7c3aed); }
+.slide-tutorial { justify-content: flex-start; padding: 20px 64px; gap: 10px; }
+.slide-tutorial h3 { font-size: 1.6rem; margin-bottom: 0; }
+
+.tut-stage { position: relative; width: 100%; max-width: 320px; height: 196px; flex-shrink: 0; border-radius: 16px; background: rgba(2, 6, 23, .55); border: 1px solid rgba(255, 255, 255, .15); text-align: left; }
+.tut-step { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transform: scale(.96); transition: opacity .35s ease, transform .35s ease; }
+.tut-step[data-step="1"] { justify-content: flex-start; }
+.slide-tutorial[data-passo="1"] [data-step="1"],
+.slide-tutorial[data-passo="2"] [data-step="2"],
+.slide-tutorial[data-passo="3"] [data-step="3"] { opacity: 1; transform: none; }
+
+/* mini navbar (passo 1) */
+.mini-nav { position: relative; width: 100%; height: 36px; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(168, 85, 247, .3); background: rgba(2, 6, 23, .7); border-radius: 16px 16px 0 0; }
+.mini-logo { font-size: .8rem; color: #fff; }
+.mini-logo b { font-weight: 400; color: #c084fc; }
+.mini-menu { display: flex; gap: 6px; }
+.mini-menu i, .mini-hero i { display: block; height: 5px; width: 22px; border-radius: 4px; background: rgba(255, 255, 255, .25); }
+.mini-login { padding: 4px 10px; border-radius: 6px; font-size: .68rem; color: #fff; background: linear-gradient(90deg, #9333ea, #db2777); }
+.mini-hero { width: 100%; padding: 56px 16px 0; display: flex; flex-direction: column; gap: 8px; }
+.mini-hero i { height: 7px; }
+
+/* mini janela de login/cadastro (passos 2 e 3) */
+.mini-modal { position: relative; width: 190px; padding: 10px 12px; display: flex; flex-direction: column; gap: 5px; border-radius: 12px; background: #0f172a; border: 1px solid rgba(168, 85, 247, .35); box-shadow: 0 10px 30px rgba(0, 0, 0, .4); }
+.mini-sub { font-size: .66rem; color: #9ca3af; margin-bottom: 2px; }
+.mini-label { font-size: .6rem; color: #d1d5db; line-height: 1; }
+.mini-campo { height: 18px; padding: 0 6px; display: flex; align-items: center; border-radius: 5px; background: #1e293b; border: 1px solid rgba(168, 85, 247, .25); }
+[data-step="2"] .mini-campo { height: 14px; }
+.mini-btn { margin-top: 2px; padding: 4px; border-radius: 6px; text-align: center; font-size: .64rem; color: #fff; background: linear-gradient(90deg, #9333ea, #db2777); }
+.mini-links { display: flex; justify-content: space-between; margin-top: 2px; padding-top: 5px; font-size: .58rem; color: #c084fc; border-top: 1px solid rgba(168, 85, 247, .2); }
+
+/* alvo destacado + seta animada */
+.tut-alvo { border-radius: 6px; animation: tut-pulso 1.2s ease-out infinite; }
+.mini-links .tut-alvo { padding: 0 3px; color: #fde047; }
+.tut-seta { position: absolute; width: 16px; height: 22px; fill: #fde047; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5)); }
+.seta-cima { right: 26px; top: 40px; animation: tut-seta-cima .8s ease-in-out infinite alternate; }
+.seta-esq { animation: tut-seta-esq .8s ease-in-out infinite alternate; }
+@keyframes tut-pulso { 0% { box-shadow: 0 0 0 0 rgba(253, 224, 71, .8); } 100% { box-shadow: 0 0 0 8px rgba(253, 224, 71, 0); } }
+@keyframes tut-seta-cima { from { transform: translateY(4px); } to { transform: translateY(-3px); } }
+@keyframes tut-seta-esq { from { transform: rotate(-90deg) translateY(4px); } to { transform: rotate(-90deg) translateY(-3px); } }
+
+/* passo 3: campos sendo preenchidos um por vez */
+.digita { font-style: normal; font-size: .62rem; color: #fff; white-space: nowrap; clip-path: inset(0 100% 0 0); }
+.slide-tutorial[data-passo="3"] .digita { animation: tut-digita .8s steps(12) var(--d) forwards; }
+.slide-tutorial[data-passo="3"] [data-step="3"] .mini-campo { animation: tut-foco 1s ease var(--d); }
+.seta-final { opacity: 0; }
+.slide-tutorial[data-passo="3"] .seta-final { animation: tut-aparece .3s ease 3.3s forwards, tut-seta-esq .8s ease-in-out 3.3s infinite alternate; }
+.slide-tutorial[data-passo="3"] .mini-btn-final { animation: tut-pulso 1.2s ease-out 3.3s infinite; }
+@keyframes tut-digita { to { clip-path: inset(0 0 0 0); } }
+@keyframes tut-foco { 0%, 100% { border-color: #a855f7; box-shadow: 0 0 0 2px rgba(168, 85, 247, .35); } }
+@keyframes tut-aparece { to { opacity: 1; } }
+
+/* legenda do passo + botão */
+.slide p.tut-legenda { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 22px; font-size: .9rem; max-width: none !important; }
+.tut-legenda b { color: #fde047; font-weight: 600; }
+.tut-num { width: 22px; height: 22px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: .75rem; font-weight: 600; color: #3b0764; background: #fde047; }
+.tut-cta { padding: 8px 20px; border: 0; border-radius: 999px; cursor: pointer; font-size: .9rem; color: #3b0764; font-weight: 600; background: #fff; transition: filter .2s; }
+.tut-cta:hover { filter: brightness(.9); }
+.tut-cta:focus-visible { outline: 2px solid #fde047; outline-offset: 2px; }
+
+/* botão Login de verdade destacado enquanto o passo 1 está na tela */
+.btn-login { position: relative; }
+.btn-login.destaque { animation: tut-pulso 1.2s ease-out infinite; }
+.btn-login.destaque::after { content: "Comece por aqui"; position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); padding: 4px 10px; border-radius: 6px; white-space: nowrap; font-size: .75rem; font-weight: 600; color: #3b0764; background: #fde047; pointer-events: none; }
+.btn-login.destaque::before { content: ""; position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top: 0; border-bottom-color: #fde047; }
+
+@media (max-width: 520px) {
+  .slide-tutorial { padding: 16px 52px; }
+  .slide-tutorial h3 { font-size: 1.35rem; }
+  .mini-modal { width: 150px; }
+  .seta-esq { right: -24px !important; }
+  .slide p.tut-legenda { font-size: .8rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tut-step { transition: none; }
+  .tut-alvo, .tut-seta, .btn-login.destaque, .slide-tutorial[data-passo="3"] .mini-btn-final { animation: none !important; }
+  .slide-tutorial[data-passo="3"] .seta-final { animation: none !important; opacity: 1; transform: rotate(-90deg); }
+  .seta-esq { transform: rotate(-90deg); }
+  .digita { clip-path: none; }
+  .slide-tutorial[data-passo="3"] .digita, .slide-tutorial[data-passo="3"] [data-step="3"] .mini-campo { animation: none; }
+}
