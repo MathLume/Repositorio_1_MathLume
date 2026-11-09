@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Verificar issues em "In Progress"
         id: dados
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.PROJECT_TOKEN }}
           script: |
@@ -212,7 +212,7 @@ jobs:
 
       # Usa o GITHUB_TOKEN padrao: os avisos saem como "github-actions" (Bot)
       - name: Verificar atraso das issues em "In Progress"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           EM_ANDAMENTO: ${{ steps.dados.outputs.em_andamento }}
         with:
