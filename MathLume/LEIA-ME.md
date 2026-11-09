@@ -2,83 +2,58 @@
 
 ```
 MathLume/
-├── Backend/            ← servidor + banco de dados (arquivo JSON)
-│   ├── server.js       ← API + serve a pasta Frontend (a "conexão")
-│   ├── db.js           ← lê/grava o banco.json (usuários e pontuações)
-│   ├── criar-admin.js  ← cria/promove ADM pelo terminal
-│   ├── .env.example    ← configurações (copie para .env)
-│   └── data/
-│       ├── banco.json  ← O BANCO: usuários + ranking. VAI PARA O GITHUB.
-│       └── sessoes.json← logins abertos no seu PC (fica fora do GitHub)
+├── Backend/             ← servidor + conexão com o banco (PostgreSQL no Neon)
+│   ├── server.js        ← API + serve a pasta Frontend
+│   ├── db.js            ← todo acesso ao banco passa por aqui
+│   ├── schema.sql       ← as tabelas (criadas sozinhas quando o servidor liga)
+│   ├── env.js           ← lê o arquivo .env
+│   ├── criar-admin.js   ← cria/promove ADM (ou troca a senha de um ADM)
+│   ├── importar-json.js ← copia o banco antigo (data/banco.json) para o Neon — usar 1 vez
+│   ├── .env.example     ← modelo de configuração (copie para .env)
+│   └── package.json     ← dependência: pg (driver do PostgreSQL)
 └── Frontend/
-    ├── HTML/           ← tela-princ, minigamemat, loja, personalizacao, TelaDeRank, admin
-    ├── CSS/            ← um .css por tela
-    └── JS/             ← mathlume-dados.js (loja/itens) e mathlume-api.js (fala com o Backend)
+    ├── HTML/            ← tela-princ, minigamemat, dificuldade, loja, personalizacao,
+    │                      TelaDeRank, TelaDeCarreira, admin
+    ├── CSS/             ← um .css por tela
+    ├── JS/              ← mathlume-api.js (fala com o Backend), mathlume-dados.js, sons.js
+    └── assets/efeitos_sonoros/ ← músicas e efeitos (.mp3 / .wav)
 ```
 
-## Como rodar
-Precisa do **Node.js 18 ou superior** (https://nodejs.org). Não precisa de `npm install`.
+## Banco de dados (Neon / PostgreSQL)
+Tabelas: `usuarios`, `pontuacoes` e `sessoes` (veja `Backend/schema.sql`).
+- Nome de usuário e e-mail não se repetem (maiúsculas/minúsculas contam como iguais) —
+  garantido pelo próprio banco, não só pelo código.
+- Senhas guardadas com scrypt + sal. Sessões guardam só o hash do token.
+- Excluir um usuário apaga as pontuações e sessões dele junto.
+- A conexão vem da variável `DATABASE_URL` (fica no `.env` local e no painel da hospedagem;
+  **nunca** no GitHub).
 
+## Rodar no seu computador
+Precisa do **Node.js 18+**.
 ```
-cd Backend
-node server.js
+cd MathLume/Backend
+copy .env.example .env      (no Windows; no Mac/Linux: cp .env.example .env)
+# abra o .env e cole a DATABASE_URL do Neon
+npm install                 (só na primeira vez)
+npm start
 ```
-Abra **http://localhost:3000**. Na primeira vez, o console mostra o login do ADM
-(`admin@mathlume.com` + senha). Para definir a sua, copie `.env.example` para `.env`
-e preencha `ADMIN_SENHA` antes de subir.
+Abra **http://localhost:3000**.
 
-## Como o ranking é compartilhado pelo GitHub (modo manual)
-O banco de dados é o arquivo `Backend/data/banco.json`. Tudo que acontece no jogo
-(cadastro, partidas, ADM) é gravado nele. Para os outros verem, basta commitar esse arquivo.
+## Fazer alterações depois de publicado
+1. Edite os arquivos e teste com `npm start`.
+2. `git add .` → `git commit -m "o que mudou"` → `git push`
+3. A hospedagem (Render) percebe o push e publica a nova versão sozinha em 1–3 minutos.
+   Os dados (contas e ranking) ficam no Neon e **não se perdem** com o deploy.
 
-**Você (cria a conta e joga):**
-```
-git pull                      # pega o ranking mais novo ANTES de jogar
-cd Backend && node server.js  # abre http://localhost:3000, cadastra, joga
-# (Ctrl+C para desligar o servidor)
-git add Backend/data/banco.json
-git commit -m "ranking: nova conta e pontuação"
-git push
-```
+Dica: para testar mudanças sem mexer nos dados reais, crie uma *branch* no Neon
+(Branches → Create branch) e use a URL dela no seu `.env` local.
 
-**Outra pessoa:**
-```
-git clone <url-do-repositorio>   # (ou git pull, se já tiver)
-cd MathLume/Backend && node server.js
-```
-Ela já vê sua pontuação no ranking, cria a conta dela, joga, e faz o mesmo
-`git add / commit / push` do `banco.json`.
-
-**Regras de ouro**
-- Sempre `git pull` **antes** de jogar e antes de dar `push`. Isso evita conflito.
-- Se o Git avisar conflito no `banco.json`: abra o arquivo, mantenha as linhas dos
-  dois lados (cada usuário/pontuação é uma linha), apague as marcas `<<<<<<<`, `=======`,
-  `>>>>>>>` e cuide para as vírgulas entre as linhas ficarem certas. O servidor recusa
-  ligar enquanto houver marca de conflito no arquivo, para não estragar o banco.
-- Os IDs são aleatórios (ex.: `a3f9c21b`), então duas pessoas cadastrando ao mesmo tempo
-  em PCs diferentes não geram ID repetido.
-- Se der `git pull` com o servidor ligado, ele relê o `banco.json` sozinho.
-- ⚠️ **Privacidade:** com o repositório **público**, qualquer um vê os e-mails e nomes
-  do `banco.json`. As senhas ficam criptografadas (scrypt com sal), não em texto, mas
-  ainda assim use senhas que não sejam as de outros sites. Se possível, deixe o
-  repositório **privado** e adicione as pessoas como colaboradoras.
-
-Quando quiser deixar automático (sem commit), o caminho é hospedar o `Backend` num
-servidor (Render, Railway, VPS...) ou trocar o `db.js` por um banco online. Como todo o
-acesso ao banco passa pelo `db.js`, só ele precisa mudar: o resto do jogo continua igual.
-
-## O que foi feito
-- **Cadastro / login** de usuário (senha com scrypt, sessão por token de 30 dias).
-  Ao clicar em "Criar usuário", a conta é gravada no `banco.json` e o jogador já entra logado.
-  Depois, entra com **e-mail + senha**. Nome de usuário e e-mail **não se repetem**
-  (maiúsculas/minúsculas contam como iguais: "Yasser" = "yasser"), e o formulário avisa
-  enquanto a pessoa digita se o nome ou o e-mail já estão em uso.
-- **Live Server / abrir o HTML direto**: funciona, desde que o `node server.js` esteja rodando
-  (o jogo manda os dados para http://localhost:3000).
-- **ADM**: criado na 1ª execução (se o banco.json ainda não tiver nenhum ADM); novos ADMs em `admin.html` ou `node criar-admin.js "nome" "email" "senha"`.
-- **Pontuação**: ao fim de cada partida logada, o mini-game envia a pontuação ao servidor.
-- **TelaDeRank.html**: pódio + lista, filtros por dificuldade e modo, "sua posição", atualiza a cada 30 s.
-  O ranking usa a **melhor pontuação** de cada jogador.
+## Comandos úteis
+| Comando (dentro de `Backend/`) | Para quê |
+|---|---|
+| `npm start` | liga o site |
+| `node criar-admin.js "nome" "email" "senha"` | cria ADM, ou promove/troca a senha se o e-mail já existir |
+| `node importar-json.js` | copia `data/banco.json` (banco antigo) para o Neon; pode repetir sem duplicar |
 
 ## API
 | Método | Rota | Quem |
@@ -89,11 +64,15 @@ acesso ao banco passa pelo `db.js`, só ele precisa mudar: o resto do jogo conti
 | POST | /api/pontuacoes | logado |
 | GET | /api/ranking?dificuldade=&modo= | todos |
 | GET/POST/DELETE | /api/admin/... | só ADM |
+| GET | /api/saude | verificação da hospedagem (não acessa o banco) |
 
-## Para publicar (importante)
-- O banco é **um arquivo** (`Backend/data/banco.json`). Hospedagem que apaga o disco a cada deploy
-  (ex.: plano grátis do Render) volta ao banco.json do último commit: use disco persistente/volume ou VPS.
-- Defina as variáveis do `.env` no painel da hospedagem (`ADMIN_SENHA`, `TRUST_PROXY=1` se houver proxy) e use HTTPS.
-- Limites conhecidos: o jogo roda no navegador, então a pontuação enviada só passa por checagem básica
-  (um jogador técnico ainda pode forjar). Recuperação de senha por e-mail e os **Lumes/itens da loja**
-  continuam locais (localStorage), ainda não estão no banco.
+## Cuidados ao trabalhar em equipe
+- Antes de dar `push`, procure por `<<<<<<<` no projeto: marcas de conflito do Git esquecidas
+  quebram a página (o JavaScript para de funcionar).
+- No servidor (Linux) maiúsculas importam: `Tela.HTML` e `Tela.html` são arquivos diferentes.
+  Escreva os links exatamente como o nome do arquivo.
+
+## Limites conhecidos
+- O jogo roda no navegador: a pontuação passa por checagem básica, mas um jogador técnico ainda pode forjar.
+- Lumes, itens da loja e personalização continuam no `localStorage` (por navegador), ainda não estão no banco.
+- Recuperação de senha por e-mail ainda não existe (o ADM pode excluir a conta, ou use `criar-admin.js` para ADMs).

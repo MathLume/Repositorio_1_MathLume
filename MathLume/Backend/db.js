@@ -1,95 +1,50 @@
 'use strict';
 /* ==========================================================
-   MathLume — banco de dados em ARQUIVO JSON (vai para o GitHub)
+   MathLume — banco de dados PostgreSQL (Neon)
 
-   Backend/data/banco.json   → usuários (e-mail, usuário, senha
-                               criptografada) + pontuações.
-                               ESTE arquivo é commitado: é ele que
-                               leva o ranking de um computador
-                               para o outro.
-   Backend/data/sessoes.json → logins abertos neste computador.
-                               NÃO vai para o GitHub (.gitignore).
-
-   • Não precisa instalar nada (Node 18+).
-   • Se o banco.json mudar enquanto o servidor está ligado
-     (ex.: você deu "git pull"), o servidor relê sozinho.
-   • IDs são aleatórios (não 1, 2, 3...) para que duas pessoas
-     cadastrando em computadores diferentes nunca gerem o mesmo ID.
+   • A conexão vem da variável DATABASE_URL (no .env local ou
+     no painel da hospedagem). Ela NUNCA vai para o GitHub.
+   • As tabelas estão em schema.sql e são criadas sozinhas
+     na primeira vez que o servidor liga.
+   • Todo o acesso ao banco passa por aqui: o server.js só
+     chama estas funções (todas assíncronas).
    ========================================================== */
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 const crypto = require('crypto');
+const { Pool } = require('pg');
 
-const DATA_DIR = path.join(__dirname, 'data');
-const ARQ_BANCO = process.env.DB_FILE || path.join(DATA_DIR, 'banco.json');
-const ARQ_SESSOES = path.join(DATA_DIR, 'sessoes.json');
-fs.mkdirSync(DATA_DIR, { recursive: true });
-
-/* ---------- leitura / gravação segura do JSON ---------- */
-function lerJson(arquivo, padrao) {
-  try {
-    const txt = fs.readFileSync(arquivo, 'utf8');
-    if (txt.includes('<<<<<<<') || txt.includes('>>>>>>>')) {
-      throw new Error('o arquivo tem marcas de conflito do Git (<<<<<<< / >>>>>>>). Resolva o conflito antes de ligar o servidor.');
-    }
-    return JSON.parse(txt);
-  } catch (e) {
-    if (e.code === 'ENOENT') return padrao;
-    console.error('\n❌ Não consegui ler ' + path.relative(process.cwd(), arquivo) + ': ' + e.message + '\n');
-    process.exit(1);
-  }
+const URL_BANCO = process.env.DATABASE_URL;
+if (!URL_BANCO) {
+  console.error('\n❌ Falta a variável DATABASE_URL (a "connection string" do Neon).');
+  console.error('   Local: copie .env.example para .env e cole a URL do Neon nela.');
+  console.error('   Hospedagem: cadastre DATABASE_URL nas variáveis de ambiente do painel.\n');
+  process.exit(1);
 }
+const local = /@(localhost|127\.0\.0\.1)(:|\/)/.test(URL_BANCO);
 
-function gravarJson(arquivo, dados, bonito) {
-  const tmp = arquivo + '.tmp';
-  // Um registro por linha: o diff do GitHub fica fácil de ler e conflitos ficam raros.
-  const txt = bonito ? formatarBanco(dados) : JSON.stringify(dados);
-  fs.writeFileSync(tmp, txt, 'utf8');
-  fs.renameSync(tmp, arquivo); // troca atômica: nunca deixa o arquivo pela metade
+const pool = new Pool({
+  connectionString: URL_BANCO,
+  ssl: local ? false : true,      // o Neon exige SSL
+  max: 5,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 15000  // o Neon "acorda" em ~1 s depois de parado
+});
+// O Neon desliga o banco ocioso e derruba conexões paradas: só registra, não derruba o site.
+pool.on('error', (e) => console.warn('⚠️  Conexão com o banco caiu (vai reconectar sozinho):', e.message));
+
+const q = async (sql, params) => (await pool.query(sql, params)).rows;
+const um = async (sql, params) => (await q(sql, params))[0] || null;
+
+const novoId = () => crypto.randomBytes(6).toString('hex'); // ex.: "a3f9c21b04e7"
+const DATA = (col) => "to_char(" + col + " AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS')";
+const COLS_USUARIO = 'id, usuario, email, papel, ' + DATA('criado_em') + ' AS criado_em';
+
+/* ---------- inicialização ---------- */
+async function iniciar() {
+  await pool.query(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
 }
-
-function formatarBanco(b) {
-  const linhas = (lista) => lista.length ? '\n    ' + lista.map((x) => JSON.stringify(x)).join(',\n    ') + '\n  ' : '';
-  return '{\n  "versao": 1,\n  "usuarios": [' + linhas(b.usuarios) + '],\n  "pontuacoes": [' + linhas(b.pontuacoes) + ']\n}\n';
-}
-
-/* ---------- o banco em memória (recarrega se o arquivo mudar) ---------- */
-let banco = null;
-let mtimeLido = 0;
-
-function mtime() { try { return fs.statSync(ARQ_BANCO).mtimeMs; } catch (e) { return 0; } }
-
-function dados() {
-  const m = mtime();
-  if (!banco || m !== mtimeLido) {
-    const lido = lerJson(ARQ_BANCO, { versao: 1, usuarios: [], pontuacoes: [] });
-    banco = { versao: 1, usuarios: lido.usuarios || [], pontuacoes: lido.pontuacoes || [] };
-    if (!m) salvar(); else mtimeLido = m;
-    avisarDuplicados();
-  }
-  return banco;
-}
-function salvar() {
-  gravarJson(ARQ_BANCO, banco, true);
-  mtimeLido = mtime();
-}
-
-/* Duas pessoas podem criar o mesmo nome/e-mail em PCs diferentes e o Git juntar os dois.
-   O servidor avisa no terminal para o ADM resolver (excluir um deles no painel). */
-function avisarDuplicados() {
-  for (const campo of ['usuario', 'email']) {
-    const vistos = new Map();
-    for (const u of banco.usuarios) {
-      const k = String(u[campo]).toLowerCase();
-      if (vistos.has(k)) console.warn('⚠️  banco.json tem ' + campo + ' repetido: "' + u[campo] + '" (IDs ' + vistos.get(k) + ' e ' + u.id + '). Exclua um deles no painel ADM.');
-      else vistos.set(k, u.id);
-    }
-  }
-}
-
-const novoId = () => crypto.randomBytes(4).toString('hex'); // ex.: "a3f9c21b"
-const agora = () => new Date().toISOString().slice(0, 19).replace('T', ' ');
-const igual = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
+const fechar = () => pool.end();
 
 /* ---------- senhas (scrypt + sal, nativo do Node) ---------- */
 function hashSenha(senha) {
@@ -106,129 +61,120 @@ function confereSenha(senha, guardado) {
 }
 
 /* ---------- usuários ---------- */
-const publico = (u) => u && ({ id: u.id, usuario: u.usuario, email: u.email, papel: u.papel, criado_em: u.criado_em });
-
-function porEmail(email)   { return dados().usuarios.find((u) => igual(u.email, email)) || null; }
-function porUsuario(nome)  { return dados().usuarios.find((u) => igual(u.usuario, nome)) || null; }
-function porId(id)         { return publico(dados().usuarios.find((u) => u.id === String(id))); }
-function contaAdmins()     { return dados().usuarios.filter((u) => u.papel === 'admin').length; }
-
 class ErroUnico extends Error { constructor(campo) { super('UNIQUE ' + campo); this.campo = campo; } }
 
-function criarUsuario({ usuario, email, senha, papel }) {
-  if (porEmail(email)) throw new ErroUnico('email');
-  if (porUsuario(usuario)) throw new ErroUnico('usuario');
-  const u = {
-    id: novoId(), usuario, email: String(email).toLowerCase(), senha_hash: hashSenha(senha),
-    papel: papel === 'admin' ? 'admin' : 'usuario', criado_em: agora()
-  };
-  dados().usuarios.push(u);
-  salvar();
-  return publico(u);
+// Converte o erro de "valor repetido" do Postgres (código 23505) em ErroUnico.
+function tratarUnico(e) {
+  if (e && e.code === '23505') {
+    const onde = (e.constraint || '') + ' ' + (e.detail || '');
+    throw new ErroUnico(/email/i.test(onde) ? 'email' : 'usuario');
+  }
+  throw e;
 }
 
-function renomearUsuario(id, nome) {
-  const outro = porUsuario(nome);
-  if (outro && outro.id !== id) throw new ErroUnico('usuario');
-  const u = dados().usuarios.find((x) => x.id === id);
-  if (u) { u.usuario = nome; salvar(); }
-  return publico(u);
+// Com senha_hash (usado no login). Não devolva isto para o navegador.
+const porEmail   = (email) => um('SELECT ' + COLS_USUARIO + ', senha_hash FROM usuarios WHERE lower(email) = lower($1)', [email]);
+const porUsuario = (nome)  => um('SELECT ' + COLS_USUARIO + ' FROM usuarios WHERE lower(usuario) = lower($1)', [nome]);
+const porId      = (id)    => um('SELECT ' + COLS_USUARIO + ' FROM usuarios WHERE id = $1', [String(id)]);
+const contaAdmins = async () => (await um("SELECT count(*)::int AS n FROM usuarios WHERE papel = 'admin'")).n;
+
+async function criarUsuario({ usuario, email, senha, papel }) {
+  try {
+    return await um(
+      'INSERT INTO usuarios (id, usuario, email, senha_hash, papel) VALUES ($1, $2, $3, $4, $5) RETURNING ' + COLS_USUARIO,
+      [novoId(), usuario, String(email).toLowerCase(), hashSenha(senha), papel === 'admin' ? 'admin' : 'usuario']
+    );
+  } catch (e) { tratarUnico(e); }
 }
 
-function promoverAdmin(id, senha) {
-  const u = dados().usuarios.find((x) => x.id === id);
-  if (!u) return false;
-  u.papel = 'admin';
-  if (senha) u.senha_hash = hashSenha(senha);
-  salvar();
-  return true;
+async function renomearUsuario(id, nome) {
+  try { return await um('UPDATE usuarios SET usuario = $2 WHERE id = $1 RETURNING ' + COLS_USUARIO, [id, nome]); }
+  catch (e) { tratarUnico(e); }
 }
 
-function excluirUsuario(id) {
-  const b = dados();
-  const antes = b.usuarios.length;
-  b.usuarios = b.usuarios.filter((u) => u.id !== id);
-  if (b.usuarios.length === antes) return false;
-  b.pontuacoes = b.pontuacoes.filter((p) => p.usuario_id !== id);
-  salvar();
-  return true;
+async function promoverAdmin(id, senha) {
+  const r = senha
+    ? await pool.query("UPDATE usuarios SET papel = 'admin', senha_hash = $2 WHERE id = $1", [id, hashSenha(senha)])
+    : await pool.query("UPDATE usuarios SET papel = 'admin' WHERE id = $1", [id]);
+  return r.rowCount > 0;
+}
+
+// As pontuações e sessões do usuário somem junto (ON DELETE CASCADE).
+async function excluirUsuario(id) {
+  return (await pool.query('DELETE FROM usuarios WHERE id = $1', [id])).rowCount > 0;
 }
 
 /* ---------- pontuações ---------- */
-function adicionarPontuacao(usuarioId, p) {
-  const reg = {
-    id: novoId(), usuario_id: usuarioId, pontos: p.pontos, nivel: p.nivel, combo_max: p.combo_max,
-    acertos: p.acertos, modo: p.modo, dificuldade: p.dificuldade, venceu: p.venceu ? 1 : 0, criado_em: agora()
-  };
-  dados().pontuacoes.push(reg);
-  salvar();
-  const melhor = Math.max(...dados().pontuacoes.filter((x) => x.usuario_id === usuarioId).map((x) => x.pontos));
-  return { id: reg.id, melhor };
+async function adicionarPontuacao(usuarioId, p) {
+  const r = await um(
+    `WITH nova AS (
+       INSERT INTO pontuacoes (id, usuario_id, pontos, nivel, combo_max, acertos, modo, dificuldade, venceu)
+       VALUES ($1, $2::varchar, $3, $4, $5, $6, $7, $8, $9) RETURNING id, pontos
+     )
+     SELECT nova.id, GREATEST(nova.pontos, COALESCE((SELECT max(pontos) FROM pontuacoes WHERE usuario_id = $2::varchar), 0))::int AS melhor
+     FROM nova`,
+    [novoId(), usuarioId, p.pontos, p.nivel, p.combo_max, p.acertos, p.modo, p.dificuldade, !!p.venceu]
+  );
+  return { id: r.id, melhor: r.melhor };
 }
 
-function zerarPontuacoesUsuario(id) {
-  dados().pontuacoes = dados().pontuacoes.filter((p) => p.usuario_id !== id);
-  salvar();
-}
-function zerarTodasPontuacoes() { dados().pontuacoes = []; salvar(); }
+const zerarPontuacoesUsuario = (id) => pool.query('DELETE FROM pontuacoes WHERE usuario_id = $1', [id]);
+const zerarTodasPontuacoes = () => pool.query('DELETE FROM pontuacoes');
 
 /* Melhor pontuação de cada jogador (com filtros opcionais). */
 function ranking(dificuldade, modo) {
-  const b = dados();
-  const nomes = new Map(b.usuarios.map((u) => [u.id, u.usuario]));
-  const por = new Map();
-  for (const p of b.pontuacoes) {
-    if (!nomes.has(p.usuario_id)) continue;
-    if (dificuldade && p.dificuldade !== dificuldade) continue;
-    if (modo && p.modo !== modo) continue;
-    let r = por.get(p.usuario_id);
-    if (!r) { r = { id: p.usuario_id, usuario: nomes.get(p.usuario_id), pontos: 0, nivel: 0, combo: 0, partidas: 0 }; por.set(p.usuario_id, r); }
-    r.pontos = Math.max(r.pontos, p.pontos);
-    r.nivel = Math.max(r.nivel, p.nivel);
-    r.combo = Math.max(r.combo, p.combo_max);
-    r.partidas++;
-  }
-  return [...por.values()].sort((a, c) => c.pontos - a.pontos || a.partidas - c.partidas || a.usuario.localeCompare(c.usuario));
+  return q(
+    `SELECT u.id, u.usuario,
+            max(p.pontos)::int    AS pontos,
+            max(p.nivel)::int     AS nivel,
+            max(p.combo_max)::int AS combo,
+            count(*)::int         AS partidas
+       FROM pontuacoes p
+       JOIN usuarios u ON u.id = p.usuario_id
+      WHERE ($1::text IS NULL OR p.dificuldade = $1::text)
+        AND ($2::text IS NULL OR p.modo = $2::text)
+      GROUP BY u.id, u.usuario
+      ORDER BY pontos DESC, partidas ASC, lower(u.usuario) ASC`,
+    [dificuldade || null, modo || null]
+  );
 }
 
 function listarUsuariosAdmin() {
-  const b = dados();
-  return b.usuarios.map((u) => {
-    const ps = b.pontuacoes.filter((p) => p.usuario_id === u.id);
-    return { ...publico(u), partidas: ps.length, melhor: ps.length ? Math.max(...ps.map((p) => p.pontos)) : 0 };
-  });
+  return q(
+    `SELECT u.id, u.usuario, u.email, u.papel, ${DATA('u.criado_em')} AS criado_em,
+            count(p.id)::int AS partidas, COALESCE(max(p.pontos), 0)::int AS melhor
+       FROM usuarios u
+       LEFT JOIN pontuacoes p ON p.usuario_id = u.id
+      GROUP BY u.id
+      ORDER BY u.criado_em`
+  );
 }
 
-/* ---------- sessões (só neste computador, fora do GitHub) ---------- */
+/* ---------- sessões (login por token, 30 dias) ---------- */
 const DIAS_SESSAO = 30;
 const sha = (t) => crypto.createHash('sha256').update(t).digest('hex');
-let sessoes = lerJson(ARQ_SESSOES, {});
-const salvarSessoes = () => gravarJson(ARQ_SESSOES, sessoes, false);
 
-function criarSessao(usuarioId) {
+async function criarSessao(usuarioId) {
   const token = crypto.randomBytes(32).toString('hex');
-  sessoes[sha(token)] = { usuario_id: usuarioId, expira_em: Date.now() + DIAS_SESSAO * 86400000 };
-  salvarSessoes();
+  await pool.query(
+    "INSERT INTO sessoes (token_hash, usuario_id, expira_em) VALUES ($1, $2, now() + make_interval(days => $3))",
+    [sha(token), usuarioId, DIAS_SESSAO]
+  );
   return token;
 }
 function usuarioDaSessao(token) {
   if (!token) return null;
-  const s = sessoes[sha(token)];
-  if (!s) return null;
-  if (s.expira_em < Date.now()) { encerrarSessao(token); return null; }
-  return porId(s.usuario_id) || null; // usuário apagado → sessão não vale mais
+  return um(
+    'SELECT u.id, u.usuario, u.email, u.papel, ' + DATA('u.criado_em') + ' AS criado_em' +
+    ' FROM sessoes s JOIN usuarios u ON u.id = s.usuario_id WHERE s.token_hash = $1 AND s.expira_em > now()',
+    [sha(token)]
+  );
 }
-function encerrarSessao(token) {
-  if (sessoes[sha(token)]) { delete sessoes[sha(token)]; salvarSessoes(); }
-}
-function limparSessoesExpiradas() {
-  const a = Date.now(); let mudou = false;
-  for (const k of Object.keys(sessoes)) if (sessoes[k].expira_em < a) { delete sessoes[k]; mudou = true; }
-  if (mudou) salvarSessoes();
-}
+const encerrarSessao = (token) => pool.query('DELETE FROM sessoes WHERE token_hash = $1', [sha(token)]);
+const limparSessoesExpiradas = () => pool.query('DELETE FROM sessoes WHERE expira_em <= now()');
 
 module.exports = {
-  ARQ_BANCO, hashSenha, confereSenha, ErroUnico,
+  iniciar, fechar, pool, hashSenha, confereSenha, ErroUnico,
   porEmail, porUsuario, porId, contaAdmins, criarUsuario, renomearUsuario, promoverAdmin, excluirUsuario,
   adicionarPontuacao, zerarPontuacoesUsuario, zerarTodasPontuacoes, ranking, listarUsuariosAdmin,
   criarSessao, usuarioDaSessao, encerrarSessao, limparSessoesExpiradas
