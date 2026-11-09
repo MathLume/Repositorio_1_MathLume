@@ -1,6 +1,8 @@
 """
 Verifica o GitHub Project da organizacao e comenta nas issues que estao em
 "In Progress" ou "Test" com o Target date vencido, marcando os assignees.
+Mantem a label "atrasada" enquanto a issue estiver atrasada e a remove quando
+ela volta para "Todo", vai para "Done" ou e fechada.
 Cada comentario e numerado: primeiro aviso, segundo aviso, terceiro aviso...
 A numeracao continua de onde parou mesmo quando o Target date e renegociado.
 Sem dependencias externas: usa apenas a biblioteca padrao do Python.
@@ -9,6 +11,8 @@ import json
 import os
 import re
 import sys
+import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, date
 from zoneinfo import ZoneInfo
@@ -25,6 +29,12 @@ DATE_FIELD = os.environ.get("DATE_FIELD", "Target date")
 INTERVALO_DIAS = int(os.environ.get("INTERVALO_DIAS", "2"))  # novo aviso a cada N dias
 # Modo teste: numero de uma issue para comentar agora, ignorando o intervalo
 ISSUE_TESTE = (os.environ.get("ISSUE_TESTE") or "").strip()
+
+# Label de atraso: colocada enquanto atrasada, retirada em Todo, Done ou issue fechada
+LABEL = {"name": "atrasada", "color": "5319E7",
+         "description": "Issue com Target date vencido"}
+STATUS_REMOVE_LABEL = {s.strip().lower() for s in
+                       os.environ.get("STATUS_REMOVE_LABEL", "Todo,Done").split(",")}
 
 MARCADOR = "<!-- alerta-atraso-bot -->"
 HOJE = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
@@ -54,6 +64,7 @@ query($org: String!, $number: Int!, $cursor: String, $status: String!, $data: St
               state
               repository { nameWithOwner }
               assignees(first: 20) { nodes { login } }
+              labels(first: 50) { nodes { name } }
               issueFieldValues(first: 20) {
                 nodes {
                   ... on IssueFieldDateValue {
@@ -143,6 +154,46 @@ def avisos_anteriores(repo, numero):
         pagina += 1
 
 
+_labels_ok = set()
+
+
+def garantir_label(repo):
+    """Cria a label "atrasada" no repositorio, se ainda nao existir."""
+    if repo in _labels_ok:
+        return
+    nome = urllib.parse.quote(LABEL["name"])
+    try:
+        api(f"https://api.github.com/repos/{repo}/labels/{nome}", token_para(repo))
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise
+        api(f"https://api.github.com/repos/{repo}/labels", token_para(repo), "POST", LABEL)
+    _labels_ok.add(repo)
+
+
+def tem_label(issue):
+    return any(l.get("name") == LABEL["name"]
+               for l in (issue.get("labels") or {}).get("nodes") or [])
+
+
+def colocar_label(repo, numero):
+    garantir_label(repo)
+    api(f"https://api.github.com/repos/{repo}/issues/{numero}/labels",
+        token_para(repo), "POST", {"labels": [LABEL["name"]]})
+    print(f"#{numero}: label '{LABEL['name']}' adicionada")
+
+
+def retirar_label(repo, numero, motivo):
+    nome = urllib.parse.quote(LABEL["name"])
+    try:
+        api(f"https://api.github.com/repos/{repo}/issues/{numero}/labels/{nome}",
+            token_para(repo), "DELETE")
+        print(f"#{numero}: label '{LABEL['name']}' removida ({motivo})")
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise
+
+
 def ordinal(n):
     return ORDINAIS[n - 1] if n <= len(ORDINAIS) else f"{n}º"
 
@@ -175,9 +226,18 @@ def main():
     for item in itens:
         issue = item.get("content") or {}
         status = (item.get("status") or {}).get("name")
-        if not issue.get("number") or issue.get("state") != "OPEN":
+        if not issue.get("number"):
             continue
         if ISSUE_TESTE and str(issue["number"]) != ISSUE_TESTE:
+            continue
+        repo = issue["repository"]["nameWithOwner"]
+        numero = issue["number"]
+
+        # Retira a label quando a issue foi fechada, voltou para Todo ou foi para Done
+        if issue.get("state") != "OPEN" or (status or "").lower() in STATUS_REMOVE_LABEL:
+            if tem_label(issue):
+                motivo = "issue fechada" if issue.get("state") != "OPEN" else f"status {status}"
+                retirar_label(repo, numero, motivo)
             continue
         # Prazo: campo do Project; se nao existir, usa o campo da propria issue
         prazo_txt = (item.get("prazo") or {}).get("date")
@@ -195,9 +255,11 @@ def main():
                 print(f"Teste: #{ISSUE_TESTE} ainda no prazo ({prazo_txt})")
             continue
 
-        repo = issue["repository"]["nameWithOwner"]
-        numero = issue["number"]
         dias = (HOJE - prazo).days
+
+        # Atrasada: garante a label, mesmo nos dias em que nao ha novo aviso
+        if not tem_label(issue):
+            colocar_label(repo, numero)
         anteriores = avisos_anteriores(repo, numero)
 
         # Primeiro aviso logo no 1o dia de atraso; depois, a cada INTERVALO_DIAS
