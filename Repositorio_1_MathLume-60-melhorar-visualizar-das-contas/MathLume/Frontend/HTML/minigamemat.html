@@ -7,6 +7,20 @@
   
   <script src="../JS/mathlume-dados.js"></script>
   <script>MathLumeTemas.aplicar();</script>
+  <style>
+    /* Símbolos das contas: um selo colorido por operação (vale para todos os cenários) */
+    .meteor .meteor-question .q-num{display:inline-block;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+    .meteor .meteor-question .q-op{display:inline-flex;align-items:center;justify-content:center;
+      min-width:1.35em;height:1.35em;margin:0 .22em;padding:0 .12em;border-radius:.4em;
+      font-family:"Segoe UI","Arial Rounded MT Bold",Arial,sans-serif;font-size:1.15em;font-weight:900;line-height:1;
+      color:#fff !important;text-shadow:0 1px 2px rgba(0,0,0,.45) !important;-webkit-text-stroke:0;
+      border:2px solid rgba(255,255,255,.9);box-shadow:0 0 10px var(--op-cor),0 2px 4px rgba(0,0,0,.45);
+      background:var(--op-cor);vertical-align:middle;transform:translateY(-.05em)}
+    .meteor .meteor-question .q-op.op-soma{--op-cor:#e11d2e}
+    .meteor .meteor-question .q-op.op-sub{--op-cor:#8b2fe0}
+    .meteor .meteor-question .q-op.op-mult{--op-cor:#1d6ff2}
+    .meteor .meteor-question .q-op.op-div{--op-cor:#12a14b;font-size:1.3em}
+  </style>
 </head>
 <body onload="musicaLobby()">
   <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
@@ -259,6 +273,9 @@
     else if(op==="-"){a=Math.floor(Math.random()*(hard?50:20))+(hard?20:10);b=1+Math.floor(Math.random()*a);answer=a-b;q=`${a} - ${b}`;}
     else if(op==="×"){a=2+Math.floor(Math.random()*(hard?12:9));b=2+Math.floor(Math.random()*(hard?12:9));answer=a*b;q=`${a} × ${b}`;}
     else{b=2+Math.floor(Math.random()*(hard?11:9));answer=2+Math.floor(Math.random()*(hard?11:9));a=b*answer;q=`${a} ÷ ${b}`;}
+    // Monta a conta com o símbolo destacado: adição=vermelho, subtração=roxo, multiplicação=azul, divisão=verde
+    const OP_INFO={"+":["op-soma","+","mais"],"-":["op-sub","−","menos"],"×":["op-mult","×","vezes"],"÷":["op-div","÷","dividido por"]}[op];
+    q=`<span class="q-num">${a}</span><span class="q-op ${OP_INFO[0]}" title="${OP_INFO[2]}" aria-label="${OP_INFO[2]}">${OP_INFO[1]}</span><span class="q-num">${b}</span>`;
     return {q,answer};
   }
   function spawnMeteor(){if(!gameActive||gameOver||gameWon)return;if(mode==="finito"&&spawned>=config[difficulty].count){checkWin();return;}if(liveMeteors.size>=3)return;
