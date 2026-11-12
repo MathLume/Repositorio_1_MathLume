@@ -161,21 +161,6 @@
     </div>
   </section>
 
-  <section class="section" id="ranking">
-    <div class="container">
-      <div class="section-title">
-        <h2>Por que escolher a <span class="grad">MathLume</span>?</h2>
-        <p>A plataforma que combina tecnologia de ponta com metodologias comprovadas de ensino.</p>
-      </div>
-      <div class="grid-2">
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#a855f7,#ec4899)">🎯</div><h3>Aprendizado Gamificado</h3><p>Sistema de pontos, conquistas e rankings para tornar o estudo mais divertido e engajante.</p></div>
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">📈</div><h3>Progresso Personalizado</h3><p>Trilhas de conhecimento adaptadas ao seu ritmo e nível de aprendizado.</p></div>
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#f97316,#ef4444)">🛡️</div><h3>Certificação Reconhecida</h3><p>Certificados validados e aceitos pelas principais instituições acadêmicas.</p></div>
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#22c55e,#10b981)">⚡</div><h3>Prática Interativa</h3><p>Exercícios dinâmicos e desafios que testam seu conhecimento em tempo real.</p></div>
-      </div>
-    </div>
-  </section>
-
   <footer>
     <div class="container">
       <div class="foot-grid">
@@ -549,7 +534,6 @@
     loginModal.addEventListener('click', function (e) { if (e.target === loginModal) showLogin(false); });
     function aplicarLogin() {
       document.getElementById('conquistas').style.display = 'none';
-      document.getElementById('jornada').before(document.getElementById('ranking'));
       document.getElementById('btnLogout').hidden = false;
       document.getElementById('linkAdmin').hidden = !MathLumeAPI.ehAdmin();
     }
@@ -557,7 +541,6 @@
       MathLumeAPI.sair();
       document.getElementById('linkAdmin').hidden = true;
       document.getElementById('conquistas').style.display = '';
-      document.getElementById('loja').after(document.getElementById('ranking'));
       document.getElementById('btnLogout').hidden = true;
       document.getElementById('btnLogin').textContent = 'Login';
       carrossel.tutorial(true);
