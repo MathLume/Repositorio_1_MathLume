@@ -403,3 +403,7 @@ button:active{transform:scale(.97)}
   #lives{font-size:13px;gap:1px}
   .settings-floating{top:12px;right:12px}
 }
+
+/* Sair da partida (engrenagem) */
+.settings-leave button{width:100%;padding:13px;border-radius:13px;background:rgba(255,65,54,.12);border:1px solid rgba(255,101,93,.45);color:#ff8a82;font-weight:900;letter-spacing:1.5px}
+.settings-leave small{display:block;margin-top:8px;font-size:10px;line-height:1.5;color:#ffffff62}

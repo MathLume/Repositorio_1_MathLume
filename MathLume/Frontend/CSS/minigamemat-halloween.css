@@ -61,7 +61,7 @@
    escondem os elementos do tema Oceano — o visual do tema
    Espaço continua exatamente como era.
    ===================================================== */
-.t-oce,.ocean-bg,.flash,.danger-strip,.dstars,.hud-exit,.set-voltar,.menu-summary,.brand-top,.answer-tip,.answer-icon{display:none!important}
+.t-oce,.ocean-bg,.flash,.danger-strip,.dstars,.set-voltar,.menu-summary,.brand-top,.answer-tip,.answer-icon{display:none!important}
 .fall-zone,.answer-input-wrap,.boost-row{display:contents}
 .settings-difficulties em{font-style:normal}
 
@@ -201,3 +201,11 @@ html,body{background:#0d0508}
 .save-note{background:rgba(255,140,0,.06);border-color:rgba(255,140,0,.14);color:rgba(255,200,100,.4)}
 .settings-footer{border-top-color:rgba(255,140,0,.1)}
 .settings-footer button{background:rgba(255,140,0,.18);border-color:rgba(255,140,0,.34);color:#ff9a00}
+
+/* Seta de voltar no HUD */
+.hud-exit{order:-1;display:flex;align-items:center;gap:4px;height:38px;padding:0 12px;border-radius:11px;border:1px solid rgba(255,140,0,.45);background:#ffffff12;color:#fff;font-size:12px;font-weight:800}
+.hud-exit .ico{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* Sair da partida (engrenagem) */
+.settings-leave button{width:100%;padding:13px;border-radius:13px;background:rgba(255,65,54,.12);border:1px solid rgba(255,101,93,.45);color:#ff8a82;font-weight:900;letter-spacing:1.5px}
+.settings-leave small{display:block;margin-top:8px;font-size:10px;line-height:1.5;color:#ffffff62}
