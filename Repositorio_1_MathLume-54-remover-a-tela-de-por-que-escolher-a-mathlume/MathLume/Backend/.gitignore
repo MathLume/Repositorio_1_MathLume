@@ -1,0 +1,7 @@
+.env
+node_modules/
+
+# Banco antigo em arquivo (antes do Neon). Depois de importar, pode apagar a pasta data/.
+data/sessoes.json
+data/*.tmp
+data/banco.json
