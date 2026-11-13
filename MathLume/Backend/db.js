@@ -173,9 +173,113 @@ function usuarioDaSessao(token) {
 const encerrarSessao = (token) => pool.query('DELETE FROM sessoes WHERE token_hash = $1', [sha(token)]);
 const limparSessoesExpiradas = () => pool.query('DELETE FROM sessoes WHERE expira_em <= now()');
 
+/* ---------- recuperação de senha administrativa ---------- */
+
+// Gera token aleatório e guarda somente seu hash.
+async function criarTokenRecuperacao(usuarioId) {
+  const token = crypto.randomBytes(32).toString('hex');
+  const tokenHash = sha(token);
+
+  const usuario = await porId(usuarioId);
+
+  if (!usuario || usuario.papel !== 'admin') {
+    throw new Error('Conta administrativa não encontrada.');
+  }
+
+  // Invalida solicitações anteriores.
+  await pool.query(
+    'DELETE FROM recuperacao_senhas WHERE usuario_id = $1',
+    [usuarioId]
+  );
+
+  await pool.query(
+    `INSERT INTO recuperacao_senhas
+      (usuario_id, token_hash, expira_em)
+     VALUES ($1, $2, now() + interval '15 minutes')`,
+    [usuarioId, tokenHash]
+  );
+
+  return token;
+}
+
+// Valida o token e atualiza a senha em uma única transação.
+async function redefinirSenhaAdmin(token, novaSenha) {
+  const tokenHash = sha(token);
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const resultado = await client.query(
+      `SELECT r.id, r.usuario_id
+         FROM recuperacao_senhas r
+         JOIN usuarios u ON u.id = r.usuario_id
+        WHERE r.token_hash = $1
+          AND r.expira_em > now()
+          AND r.utilizado_em IS NULL
+          AND u.papel = 'admin'
+        FOR UPDATE OF r`,
+      [tokenHash]
+    );
+
+    if (!resultado.rowCount) {
+      throw new Error('Link inválido ou expirado. Solicite outro.');
+    }
+
+    const usuarioId = resultado.rows[0].usuario_id;
+
+    await client.query(
+      'UPDATE usuarios SET senha_hash = $1 WHERE id = $2',
+      [hashSenha(novaSenha), usuarioId]
+    );
+
+    await client.query(
+      'UPDATE recuperacao_senhas SET utilizado_em = now() WHERE id = $1',
+      [resultado.rows[0].id]
+    );
+
+    // Encerra todas as sessões anteriores do administrador.
+    await client.query(
+      'DELETE FROM sessoes WHERE usuario_id = $1',
+      [usuarioId]
+    );
+
+    await client.query('COMMIT');
+    return true;
+
+  } catch (erro) {
+    await client.query('ROLLBACK');
+    throw erro;
+
+  } finally {
+    client.release();
+  }
+}
+
 module.exports = {
-  iniciar, fechar, pool, hashSenha, confereSenha, ErroUnico,
-  porEmail, porUsuario, porId, contaAdmins, criarUsuario, renomearUsuario, promoverAdmin, excluirUsuario,
-  adicionarPontuacao, zerarPontuacoesUsuario, zerarTodasPontuacoes, ranking, listarUsuariosAdmin,
-  criarSessao, usuarioDaSessao, encerrarSessao, limparSessoesExpiradas
+  iniciar,
+  fechar,
+  pool,
+  hashSenha,
+  confereSenha,
+  ErroUnico,
+  porEmail,
+  porUsuario,
+  porId,
+  contaAdmins,
+  criarUsuario,
+  renomearUsuario,
+  promoverAdmin,
+  excluirUsuario,
+  adicionarPontuacao,
+  zerarPontuacoesUsuario,
+  zerarTodasPontuacoes,
+  ranking,
+  listarUsuariosAdmin,
+  criarSessao,
+  usuarioDaSessao,
+  encerrarSessao,
+  limparSessoesExpiradas,
+  criarTokenRecuperacao,
+  redefinirSenhaAdmin
 };

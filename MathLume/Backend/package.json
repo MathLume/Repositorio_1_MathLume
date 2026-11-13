@@ -9,9 +9,12 @@
     "importar-json": "node importar-json.js"
   },
   "dependencies": {
+    "nodemailer": "^10.5.0",
     "pg": "^8.13.0"
   },
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "license": "UNLICENSED",
   "private": true
 }

@@ -39,3 +39,16 @@ CREATE TABLE IF NOT EXISTS sessoes (
   expira_em   TIMESTAMPTZ NOT NULL
 );
 CREATE INDEX IF NOT EXISTS sessoes_expira_idx ON sessoes (expira_em);
+-- Tokens de recuperação de senha dos administradores
+CREATE TABLE IF NOT EXISTS recuperacao_senhas (
+    id BIGSERIAL PRIMARY KEY,
+    usuario_id VARCHAR(16) NOT NULL
+        REFERENCES usuarios(id) ON DELETE CASCADE,
+    token_hash CHAR(64) NOT NULL UNIQUE,
+    expira_em TIMESTAMPTZ NOT NULL,
+    utilizado_em TIMESTAMPTZ,
+    criado_em TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS recuperacao_senhas_usuario_idx
+ON recuperacao_senhas (usuario_id);
