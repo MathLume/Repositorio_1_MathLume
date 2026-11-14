@@ -55,11 +55,6 @@
    escondem os elementos do tema Oceano — o visual do tema
    Espaço continua exatamente como era.
    ===================================================== */
-<<<<<<< HEAD
-.t-oce,.ocean-bg,.flash,.danger-strip,.dstars,.hud-exit,.set-voltar,.menu-summary,.brand-top,.answer-tip,.answer-icon{display:none!important}
-.fall-zone,.answer-input-wrap,.boost-row{display:contents}
-.settings-difficulties em{font-style:normal}
-=======
 .t-oce,.ocean-bg,.flash,.danger-strip,.dstars,.set-voltar,.menu-summary,.brand-top,.answer-tip,.answer-icon{display:none!important}
 .fall-zone,.answer-input-wrap,.boost-row{display:contents}
 .settings-difficulties em{font-style:normal}
@@ -71,4 +66,3 @@
 /* Sair da partida (engrenagem) */
 .settings-leave button{width:100%;padding:13px;border-radius:13px;background:rgba(255,65,54,.12);border:1px solid rgba(255,101,93,.45);color:#ff8a82;font-weight:900;letter-spacing:1.5px}
 .settings-leave small{display:block;margin-top:8px;font-size:10px;line-height:1.5;color:#ffffff62}
->>>>>>> 4e3e293 (Erro da tela de Minigame Principal Corrigido)
