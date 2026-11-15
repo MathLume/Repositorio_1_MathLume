@@ -5,25 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ranking — MathLume</title>
   <link rel="stylesheet" href="../CSS/TelaDeRank.css">
+  <link rel="stylesheet" href="../CSS/cabecalho.css">
 </head>
 <body>
   <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
-  <nav class="navbar">
-    <div class="container">
-      <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
-      <div class="menu" id="menu">
-        <a href="tela-princ.html">Início</a>
-        <a href="minigamemat.html">Mini-game</a>
-        <a href="TelaDeRank.html" class="ativo">Ranking</a>
-        <a href="loja.html">Loja</a>
-        <a href="personalizacao.html">Personalização</a>
-      </div>
-      <div class="nav-right">
-        <a href="tela-princ.html" class="user-pill" id="userPill">👤 Entrar</a>
-        <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
-      </div>
-    </div>
-  </nav>
+  <!-- cabeçalho igual em todas as telas: JS/cabecalho.js + CSS/cabecalho.css -->
+  <nav class="navbar" id="cabecalho" data-pagina="ranking"></nav>
+  <script src="../JS/cabecalho.js"></script>
 
   <header class="page-head container">
     <span class="badge">🏆 Ranking MathLume</span>
@@ -65,16 +53,13 @@
       var filtro = { dificuldade: '', modo: '' };
       var MEDALHAS = ['🥇', '🥈', '🥉'];
 
-      $('burger').addEventListener('click', function () { $('menu').classList.toggle('open'); });
-
       function esc(t) {
         return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
       }
       function fmt(n) { return Number(n).toLocaleString('pt-BR'); }
 
       function pill() {
-        var u = API.usuario();
-        $('userPill').textContent = API.logado() && u ? '👤 ' + u.usuario : '👤 Entrar';
+        MathLumeCabecalho.mostrarUsuario(API.logado() ? API.usuario() : null);
       }
 
       function pod(r, n) {
@@ -147,5 +132,6 @@
     })();
   </script>
   <script src="../JS/sons.js"></script>
+  <script src="../JS/curvatura.js"></script>
 </body>
 </html>

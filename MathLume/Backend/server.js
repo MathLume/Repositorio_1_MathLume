@@ -1,23 +1,17 @@
 'use strict';
 /* ==========================================================
-   MathLume — servidor (sem dependências externas)
+   MathLume — servidor
    • Serve a pasta ../Frontend  (é aqui que o Backend "conecta" ao Frontend)
    • Expõe a API em /api/...    (cadastro, login, ADM, pontuação, ranking)
-   Rodar:  node server.js   (ou: npm start)
+   • Banco: PostgreSQL no Neon (variável DATABASE_URL)
+   Rodar:  npm install  (só na 1ª vez)  e depois  npm start
    ========================================================== */
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-/* ---------- .env simples (sem biblioteca) ---------- */
-try {
-  fs.readFileSync(path.join(__dirname, '.env'), 'utf8').split(/\r?\n/).forEach((l) => {
-    const m = l.match(/^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*?)\s*$/i);
-    if (m && !l.trim().startsWith('#') && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
-  });
-} catch (e) { /* sem .env: tudo bem */ }
-
+require('./env'); // carrega o .env (DATABASE_URL, ADMIN_SENHA...)
 const banco = require('./db');
 const { confereSenha, criarUsuario, criarSessao, usuarioDaSessao, encerrarSessao, limparSessoesExpiradas } = banco;
 
@@ -27,14 +21,14 @@ const TRUST_PROXY = process.env.TRUST_PROXY === '1';
 const PAGINA_INICIAL = '/HTML/tela-princ.html';
 
 /* ---------- administrador inicial ---------- */
-function garantirAdmin() {
-  if (banco.contaAdmins() > 0) return;
+async function garantirAdmin() {
+  if (await banco.contaAdmins() > 0) return;
   const email = (process.env.ADMIN_EMAIL || 'admin@mathlume.com').toLowerCase();
   const usuario = process.env.ADMIN_USUARIO || 'admin';
   let senha = process.env.ADMIN_SENHA, gerada = false;
   if (!senha) { senha = crypto.randomBytes(6).toString('base64url'); gerada = true; }
   try {
-    criarUsuario({ usuario, email, senha, papel: 'admin' });
+    await criarUsuario({ usuario, email, senha, papel: 'admin' });
     console.log('\n🔐 Usuário ADM criado:');
     console.log('   e-mail: ' + email);
     console.log('   senha : ' + senha + (gerada ? '   (gerada agora — anote! não será mostrada de novo)' : ''));
@@ -43,8 +37,7 @@ function garantirAdmin() {
     console.error('Não foi possível criar o ADM inicial:', e.message);
   }
 }
-garantirAdmin();
-setInterval(limparSessoesExpiradas, 3600000).unref();
+setInterval(() => limparSessoesExpiradas().catch(() => {}), 3600000).unref();
 
 /* ---------- utilitários ---------- */
 class ErroHttp extends Error { constructor(status, msg) { super(msg); this.status = status; } }
@@ -90,13 +83,13 @@ function usuarioAtual(req) {
   const h = req.headers.authorization || '';
   return usuarioDaSessao(h.startsWith('Bearer ') ? h.slice(7) : '');
 }
-function exigeLogin(req) {
-  const u = usuarioAtual(req);
+async function exigeLogin(req) {
+  const u = await usuarioAtual(req);
   if (!u) throw new ErroHttp(401, 'Faça login para continuar.');
   return u;
 }
-function exigeAdmin(req) {
-  const u = exigeLogin(req);
+async function exigeAdmin(req) {
+  const u = await exigeLogin(req);
   if (u.papel !== 'admin') throw new ErroHttp(403, 'Apenas administradores podem fazer isso.');
   return u;
 }
@@ -113,9 +106,9 @@ function validarNovoUsuario(b) {
   return { usuario, email, senha };
 }
 
-function cadastrar(dados, papel) {
+async function cadastrar(dados, papel) {
   try {
-    return criarUsuario({ ...dados, papel });
+    return await criarUsuario({ ...dados, papel });
   } catch (e) {
     if (e instanceof banco.ErroUnico) {
       throw new ErroHttp(409, e.campo === 'email' ? 'Este e-mail já está cadastrado.' : 'Este nome de usuário já está em uso.');
@@ -135,18 +128,18 @@ rota('GET', '/api/saude', () => ({ ok: true }));
 
 rota('POST', '/api/cadastro', async (req) => {
   limitar('cad:' + ipDe(req), 15, 15 * 60000);
-  const user = cadastrar(validarNovoUsuario(await lerCorpo(req)), 'usuario');
-  return { status: 201, corpo: { usuario: publico(user), token: criarSessao(user.id) } };
+  const user = await cadastrar(validarNovoUsuario(await lerCorpo(req)), 'usuario');
+  return { status: 201, corpo: { usuario: publico(user), token: await criarSessao(user.id) } };
 });
 
 // Confere, enquanto a pessoa digita, se o usuário/e-mail já existem no banco.
-rota('GET', '/api/disponivel', (req, url) => {
+rota('GET', '/api/disponivel', async (req, url) => {
   limitar('disp:' + ipDe(req), 120, 60000);
   const usuario = String(url.searchParams.get('usuario') || '').trim();
   const email = String(url.searchParams.get('email') || '').trim().toLowerCase();
   return {
-    usuario: usuario ? !banco.porUsuario(usuario) : null,
-    email: email ? !banco.porEmail(email) : null
+    usuario: usuario ? !(await banco.porUsuario(usuario)) : null,
+    email: email ? !(await banco.porEmail(email)) : null
   };
 });
 
@@ -154,29 +147,32 @@ rota('POST', '/api/login', async (req) => {
   limitar('login:' + ipDe(req), 15, 15 * 60000);
   const b = await lerCorpo(req);
   const email = String(b.email || '').trim().toLowerCase();
-  const u = banco.porEmail(email);
+  const u = await banco.porEmail(email);
   if (!u || !confereSenha(String(b.senha || ''), u.senha_hash)) throw new ErroHttp(401, 'E-mail ou senha incorretos.');
-  return { usuario: publico(u), token: criarSessao(u.id) };
+  return { usuario: publico(u), token: await criarSessao(u.id) };
 });
 
-rota('POST', '/api/logout', (req) => {
+rota('POST', '/api/logout', async (req) => {
   const h = req.headers.authorization || '';
-  if (h.startsWith('Bearer ')) encerrarSessao(h.slice(7));
+  if (h.startsWith('Bearer ')) await encerrarSessao(h.slice(7));
   return { ok: true };
 });
 
-rota('GET', '/api/me', (req) => ({ usuario: publico(exigeLogin(req)) }));
+rota('GET', '/api/me', async (req) => ({ usuario: publico(await exigeLogin(req)) }));
 
 rota('PATCH', '/api/me', async (req) => {
-  const u = exigeLogin(req);
+  const u = await exigeLogin(req);
   const nome = String((await lerCorpo(req)).usuario || '').trim();
   if (nome.length < 3 || nome.length > 24 || !/^[\p{L}\p{N}_.-]+$/u.test(nome)) throw new ErroHttp(400, 'Usuário inválido (3 a 24 caracteres, sem espaços).');
-  try { return { usuario: publico(banco.renomearUsuario(u.id, nome)) }; }
-  catch (e) { throw new ErroHttp(409, 'Este nome de usuário já está em uso.'); }
+  try { return { usuario: publico(await banco.renomearUsuario(u.id, nome)) }; }
+  catch (e) {
+    if (e instanceof banco.ErroUnico) throw new ErroHttp(409, 'Este nome de usuário já está em uso.');
+    throw e;
+  }
 });
 
 rota('POST', '/api/pontuacoes', async (req) => {
-  const u = exigeLogin(req);
+  const u = await exigeLogin(req);
   limitar('pont:' + u.id, 60, 60000);
   const b = await lerCorpo(req);
   const pontos = int(b.pontos), nivel = int(b.nivel), combo = int(b.comboMax), acertos = int(b.acertos);
@@ -185,16 +181,16 @@ rota('POST', '/api/pontuacoes', async (req) => {
   if (!['finito', 'infinito'].includes(modo) || !['facil', 'medio', 'dificil'].includes(dif)) throw new ErroHttp(400, 'Modo ou dificuldade inválidos.');
   // Cada acerto vale no máximo 60 pts (30 de combo × 2 do booster). Barra números absurdos.
   if (pontos > acertos * 60 || pontos > 1000000 || nivel > 1000 || combo > acertos) throw new ErroHttp(400, 'Pontuação inconsistente.');
-  const r = banco.adicionarPontuacao(u.id, { pontos, nivel: Math.max(1, nivel), combo_max: combo, acertos, modo, dificuldade: dif, venceu: !!b.venceu });
+  const r = await banco.adicionarPontuacao(u.id, { pontos, nivel: Math.max(1, nivel), combo_max: combo, acertos, modo, dificuldade: dif, venceu: !!b.venceu });
   return { status: 201, corpo: { ok: true, id: r.id, novoRecorde: pontos >= r.melhor && pontos > 0, melhor: r.melhor } };
 });
 
-rota('GET', '/api/ranking', (req, url) => {
+rota('GET', '/api/ranking', async (req, url) => {
   const dif = ['facil', 'medio', 'dificil'].includes(url.searchParams.get('dificuldade')) ? url.searchParams.get('dificuldade') : null;
   const modo = ['finito', 'infinito'].includes(url.searchParams.get('modo')) ? url.searchParams.get('modo') : null;
   const limite = Math.min(100, Math.max(1, int(url.searchParams.get('limite')) || 50));
-  const todos = banco.ranking(dif, modo).map((r, i) => ({ posicao: i + 1, ...r }));
-  const u = usuarioAtual(req);
+  const todos = (await banco.ranking(dif, modo)).map((r, i) => ({ posicao: i + 1, ...r }));
+  const u = await usuarioAtual(req);
   const eu = u ? todos.find((r) => r.id === u.id) || null : null;
   return {
     ranking: todos.slice(0, limite).map((r) => ({ ...r, voce: !!(u && r.id === u.id) })),
@@ -203,33 +199,33 @@ rota('GET', '/api/ranking', (req, url) => {
 });
 
 /* ----- administração ----- */
-rota('GET', '/api/admin/usuarios', (req) => {
-  exigeAdmin(req);
-  return { usuarios: banco.listarUsuariosAdmin() };
+rota('GET', '/api/admin/usuarios', async (req) => {
+  await exigeAdmin(req);
+  return { usuarios: await banco.listarUsuariosAdmin() };
 });
 
 rota('POST', '/api/admin/usuarios', async (req) => {
-  exigeAdmin(req);
-  const user = cadastrar(validarNovoUsuario(await lerCorpo(req)), 'admin');
+  await exigeAdmin(req);
+  const user = await cadastrar(validarNovoUsuario(await lerCorpo(req)), 'admin');
   return { status: 201, corpo: { usuario: publico(user) } };
 });
 
-rota('DELETE', '/api/admin/usuarios/:id', (req, url, id) => {
-  const adm = exigeAdmin(req);
+rota('DELETE', '/api/admin/usuarios/:id', async (req, url, id) => {
+  const adm = await exigeAdmin(req);
   if (id === adm.id) throw new ErroHttp(400, 'Você não pode excluir a sua própria conta.');
-  if (!banco.excluirUsuario(id)) throw new ErroHttp(404, 'Usuário não encontrado.');
+  if (!(await banco.excluirUsuario(id))) throw new ErroHttp(404, 'Usuário não encontrado.');
   return { ok: true };
 });
 
-rota('DELETE', '/api/admin/usuarios/:id/pontuacoes', (req, url, id) => {
-  exigeAdmin(req);
-  banco.zerarPontuacoesUsuario(id);
+rota('DELETE', '/api/admin/usuarios/:id/pontuacoes', async (req, url, id) => {
+  await exigeAdmin(req);
+  await banco.zerarPontuacoesUsuario(id);
   return { ok: true };
 });
 
-rota('DELETE', '/api/admin/pontuacoes', (req) => {
-  exigeAdmin(req);
-  banco.zerarTodasPontuacoes();
+rota('DELETE', '/api/admin/pontuacoes', async (req) => {
+  await exigeAdmin(req);
+  await banco.zerarTodasPontuacoes();
   return { ok: true };
 });
 
@@ -257,7 +253,8 @@ async function tratarApi(req, res, url) {
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif',
-  '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.webp': 'image/webp', '.mp3': 'audio/mpeg', '.woff2': 'font/woff2'
+  '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.webp': 'image/webp', '.mp3': 'audio/mpeg', '.wav': 'audio/wav',
+  '.ogg': 'audio/ogg', '.mp4': 'video/mp4', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf'
 };
 
 function servirArquivo(req, res, url) {
@@ -271,18 +268,61 @@ function servirArquivo(req, res, url) {
       res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
       return res.end('<h1>404</h1><p>Página não encontrada. <a href="' + PAGINA_INICIAL + '">Voltar ao início</a></p>');
     }
-    res.writeHead(200, { 'Content-Type': MIME[path.extname(caminho).toLowerCase()] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
+    const ext = path.extname(caminho).toLowerCase();
+    const midia = /^\.(mp3|wav|ogg|mp4|png|jpe?g|gif|webp|svg|ico|woff2?|ttf)$/.test(ext);
+    const cab = {
+      'Content-Type': MIME[ext] || 'application/octet-stream',
+      // HTML/CSS/JS: sempre confere se mudou (deploy novo aparece na hora). Sons/imagens: guarda 1 dia.
+      'Cache-Control': midia ? 'public, max-age=86400' : 'no-cache',
+      'Last-Modified': st.mtime.toUTCString(),
+      'Accept-Ranges': 'bytes'
+    };
+    if (req.headers['if-modified-since'] && Math.floor(st.mtimeMs / 1000) <= Math.floor(Date.parse(req.headers['if-modified-since']) / 1000)) {
+      res.writeHead(304, cab); return res.end();
+    }
+    // Pedido de um pedaço do arquivo (o navegador faz isso com áudio, ex.: audio.currentTime = 0.2).
+    const r = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+    if (r && (r[1] || r[2])) {
+      let ini = r[1] ? Number(r[1]) : Math.max(0, st.size - Number(r[2]));
+      let fim = r[1] && r[2] ? Math.min(Number(r[2]), st.size - 1) : st.size - 1;
+      if (ini > fim || ini >= st.size) { res.writeHead(416, { 'Content-Range': 'bytes */' + st.size }); return res.end(); }
+      res.writeHead(206, { ...cab, 'Content-Range': 'bytes ' + ini + '-' + fim + '/' + st.size, 'Content-Length': fim - ini + 1 });
+      if (req.method === 'HEAD') return res.end();
+      return fs.createReadStream(caminho, { start: ini, end: fim }).pipe(res);
+    }
+    res.writeHead(200, { ...cab, 'Content-Length': st.size });
+    if (req.method === 'HEAD') return res.end();
     fs.createReadStream(caminho).pipe(res);
   });
 }
 
-http.createServer((req, res) => {
+const servidor = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
   if (url.pathname.startsWith('/api/')) return tratarApi(req, res, url);
   if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405); return res.end(); }
   servirArquivo(req, res, url);
-}).listen(PORT, () => {
-  console.log('✅ MathLume rodando em http://localhost:' + PORT);
-  console.log('   Frontend servido de: ' + FRONTEND);
-  console.log('   Banco de dados:      ' + banco.ARQ_BANCO + '  (commite este arquivo para salvar no GitHub)');
 });
+
+/* ---------- liga: cria as tabelas (se faltarem), garante o ADM e abre a porta ---------- */
+(async () => {
+  try {
+    await banco.iniciar();
+    await garantirAdmin();
+  } catch (e) {
+    console.error('\n❌ Não consegui conectar ao banco de dados: ' + e.message);
+    console.error('   Confira a DATABASE_URL (copie de novo do painel do Neon).\n');
+    process.exit(1);
+  }
+  servidor.listen(PORT, () => {
+    console.log('✅ MathLume rodando em http://localhost:' + PORT);
+    console.log('   Frontend servido de: ' + FRONTEND);
+    console.log('   Banco de dados:      PostgreSQL (Neon) conectado');
+  });
+})();
+
+// A hospedagem manda SIGTERM ao reiniciar/publicar: fecha tudo com calma.
+process.on('SIGTERM', () => {
+  setTimeout(() => process.exit(0), 5000).unref();
+  servidor.close(() => banco.fechar().finally(() => process.exit(0)));
+});
+process.on('unhandledRejection', (e) => console.error('Erro não tratado:', e));

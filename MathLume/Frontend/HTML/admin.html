@@ -6,25 +6,13 @@
   <title>Administração — MathLume</title>
   <link rel="stylesheet" href="../CSS/TelaDeRank.css">
   <link rel="stylesheet" href="../CSS/admin.css">
+  <link rel="stylesheet" href="../CSS/cabecalho.css">
 </head>
 <body>
   <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
-  <nav class="navbar">
-    <div class="container">
-      <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
-      <div class="menu" id="menu">
-        <a href="tela-princ.html">Início</a>
-        <a href="minigamemat.html">Mini-game</a>
-        <a href="TelaDeRank.html">Ranking</a>
-        <a href="loja.html">Loja</a>
-        <a href="admin.html" class="ativo">Admin</a>
-      </div>
-      <div class="nav-right">
-        <a href="tela-princ.html" class="user-pill" id="userPill">👤 Entrar</a>
-        <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
-      </div>
-    </div>
-  </nav>
+  <!-- cabeçalho igual em todas as telas: JS/cabecalho.js + CSS/cabecalho.css -->
+  <nav class="navbar" id="cabecalho" data-pagina="admin"></nav>
+  <script src="../JS/cabecalho.js"></script>
 
   <header class="page-head container">
     <span class="badge">🛡️ Administração</span>
@@ -68,7 +56,6 @@
     (function () {
       var API = window.MathLumeAPI;
       var $ = function (id) { return document.getElementById(id); };
-      $('burger').addEventListener('click', function () { $('menu').classList.toggle('open'); });
 
       function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
       function msg(id, tipo, texto) { var el = $(id); el.className = 'msg ' + tipo; el.textContent = texto; el.hidden = !texto; }
@@ -118,11 +105,9 @@
         }
       });
 
-      var u0 = API.usuario();
-      $('userPill').textContent = API.logado() && u0 ? '👤 ' + u0.usuario : '👤 Entrar';
       API.restaurar().then(function (u) {
+        MathLumeCabecalho.mostrarUsuario(u);
         if (!u) return bloquear('🔒 Faça login com uma conta de administrador para acessar este painel.');
-        $('userPill').textContent = '👤 ' + u.usuario;
         if (u.papel !== 'admin') return bloquear('⛔ Sua conta não tem permissão de administrador.');
         $('area').hidden = false;
         carregar();
@@ -130,5 +115,6 @@
     })();
   </script>
   <script src="../JS/sons.js"></script>
+  <script src="../JS/curvatura.js"></script>
 </body>
 </html>
