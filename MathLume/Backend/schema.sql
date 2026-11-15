@@ -19,7 +19,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS usuarios_email_unico   ON usuarios (lower(emai
 
 CREATE TABLE IF NOT EXISTS pontuacoes (
   id           VARCHAR(16) PRIMARY KEY,
-  usuario_id   VARCHAR(16) NOT NULL REFERENCES usuarios (id) ON DELETE CASCADE,
+  usuario_id   VARCHAR(17) NOT NULL REFERENCES usuarios (id) ON DELETE CASCADE,
   pontos       INTEGER     NOT NULL CHECK (pontos >= 0),
   nivel        INTEGER     NOT NULL DEFAULT 1 CHECK (nivel >= 0),
   combo_max    INTEGER     NOT NULL DEFAULT 0 CHECK (combo_max >= 0),
