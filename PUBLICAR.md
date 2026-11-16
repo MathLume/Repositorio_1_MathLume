@@ -1,81 +1,56 @@
-# Como publicar o MathLume (Neon + Render)
+# Como publicar o MathLume (Neon + Vercel)
 
-Arquitetura final:
+Arquitetura:
 ```
-Jogador (navegador) ──► Render (Node: server.js + Frontend)  ──►  Neon (PostgreSQL)
-                         https://mathlume.onrender.com            usuários, ranking, sessões
-GitHub ──push──► Render publica a nova versão sozinho
-```
-
-## 1. Neon — criar o banco (5 min)
-1. Crie a conta em **neon.com** (pode entrar com o GitHub).
-2. **Create project** → nome `mathlume` → Postgres na versão padrão →
-   região **AWS US East 2 (Ohio)** (fica perto do servidor do Render; isso importa mais que a distância do jogador).
-3. No painel do projeto, clique em **Connect** → deixe **Connection pooling** ligado →
-   copie a connection string (começa com `postgresql://` e tem `-pooler` no endereço).
-   Ela tem a senha do banco: **não cole em arquivos que vão para o GitHub**.
-
-Não precisa criar tabelas: o servidor cria sozinho (`Backend/schema.sql`).
-
-## 2. Ligar no seu PC e trazer os dados antigos (5 min)
-```
-cd MathLume/Backend
-copy .env.example .env          (Mac/Linux: cp .env.example .env)
-```
-Abra o `.env`, cole a URL do Neon em `DATABASE_URL=` e defina `ADMIN_SENHA=`.
-```
-npm install
-node importar-json.js           ← copia as contas e pontuações do banco.json para o Neon
-npm start                       ← abra http://localhost:3000 e teste login/ranking
-```
-Rode o `importar-json.js` **antes** do primeiro `npm start`, assim o ADM antigo é mantido.
-Se não lembrar a senha dele: `node criar-admin.js "admin" "admin@mathlume.com" "SenhaNova123"`.
-
-Confira no Neon: **Tables** → `usuarios` e `pontuacoes` devem mostrar os dados.
-
-Depois de conferir, apague `MathLume/Backend/data/banco.json` do repositório
-(ele tinha e-mails e hashes de senha em público) e faça o commit:
-```
-git add -A
-git commit -m "Banco migrado para o Neon (PostgreSQL)"
-git push
+Jogador (navegador) ──► Vercel ──┬─ CDN: arquivos do MathLume/Frontend (HTML, CSS, JS, sons)
+https://mathlume.vercel.app      └─ Função /api/... (api/index.js → MathLume/Backend/server.js) ──► Neon (PostgreSQL)
+                                                                                                  usuários, ranking, sessões
+GitHub ──push na main──► Vercel publica a nova versão sozinho
 ```
 
-## 3. Render — publicar o site (10 min)
-1. Crie a conta em **render.com** com o GitHub.
-2. **New → Web Service** → escolha o repositório do MathLume → branch `main`.
-3. Preencha:
-   | Campo | Valor |
-   |---|---|
-   | Root Directory | *(deixe vazio)* |
-   | Runtime / Language | Node |
-   | Build Command | `cd MathLume/Backend && npm install` |
-   | Start Command | `cd MathLume/Backend && npm start` |
-   | Region | Ohio (mesma região do Neon) |
-   | Instance Type | Free |
-4. **Environment Variables**:
-   | Nome | Valor |
-   |---|---|
-   | `DATABASE_URL` | a connection string do Neon |
-   | `ADMIN_SENHA` | uma senha forte (só usada se o banco não tiver nenhum ADM) |
-   | `TRUST_PROXY` | `1` |
-   | `NODE_VERSION` | `22` |
-   (Não crie `PORT`: o Render define sozinho.)
-5. Em **Advanced → Health Check Path**: `/api/saude`.
-6. **Create Web Service**. Em ~3 minutos o site fica em `https://<nome>.onrender.com`. HTTPS já vem pronto.
+## Arquivos que fazem o Vercel funcionar (raiz do repositório)
+| Arquivo | Para quê |
+|---|---|
+| `vercel.json` | diz ao Vercel: servir `MathLume/Frontend` como site, mandar `/api/...` para a função, abrir a tela inicial em `/` |
+| `api/index.js` | a função do Vercel; só repassa a chamada para as rotas de `MathLume/Backend/server.js` |
+| `package.json` / `package-lock.json` | dependências que o Vercel instala para a função (`pg`, `nodemailer`) |
+| `.vercelignore` | impede que `.env` e `node_modules` sejam enviados |
 
-## 4. Alterar o site depois
-Edite → teste com `npm start` → `git push`. O Render publica sozinho (Auto-Deploy fica ligado por padrão).
-Para testar sem mexer nos dados reais: crie uma branch no Neon e use a URL dela só no seu `.env`.
+O mesmo `server.js` continua funcionando no PC com `npm start` (veja `MathLume/LEIA-ME.md`).
 
-## Limites do plano grátis (bom para projeto de faculdade)
-- **Render Free**: o site "dorme" após 15 min sem visitas; a primeira visita depois disso demora ~1 min.
-  750 horas/mês por conta. Para tirar a espera, o plano pago mais barato resolve.
-- **Neon Free**: 1 GB de armazenamento por projeto e 100 CU-horas/mês; o banco
-  dorme após 5 min parado e acorda em ~1 s (o código já lida com isso).
-  Por isso a rota `/api/saude` não toca no banco: assim a checagem do Render não mantém o Neon acordado à toa.
+## Variáveis de ambiente (Vercel → projeto `mathlume` → Settings → Environment Variables)
+| Nome | Valor | Observação |
+|---|---|---|
+| `DATABASE_URL` | connection string **pooled** do Neon (tem `-pooler` no endereço) | tipo *Sensitive*; nunca coloque no GitHub |
+| `TRUST_PROXY` | `1` | o limite de tentativas de login enxerga o IP real de cada jogador |
+| `NODEJS_HELPERS` | `0` | o servidor lê o corpo das requisições sozinho |
+| `ADMIN_SENHA` | *(opcional)* | só é usada se o banco não tiver nenhum ADM |
+
+Mudou uma variável? Ela só vale a partir da **próxima** publicação (Deployments → ⋯ → Redeploy).
+
+## Publicar uma alteração
+1. Edite e teste no PC: `cd MathLume/Backend` → `npm start` → http://localhost:3000
+2. Crie uma branch, faça o commit e abra um Pull Request no GitHub.
+   O Vercel gera um **link de prévia** do PR (só membros do time Vercel conseguem abrir).
+3. Ao juntar o PR na `main`, o Vercel publica em **https://mathlume.vercel.app** em 1–2 minutos.
+   Os dados (contas e ranking) ficam no Neon e **não se perdem** com a publicação.
+
+Para testar sem mexer nos dados reais: crie uma *branch* no Neon e use a URL dela só no seu `.env`.
+
+## Neon — criar o banco (só se for recomeçar do zero)
+1. Conta em **neon.com** → **Create project** → região **AWS US East 2 (Ohio)**
+   (a função do Vercel roda em Cleveland, `cle1`, ao lado do Neon — definido no `vercel.json`).
+2. **Connect** → deixe **Connection pooling** ligado → copie a connection string.
+3. Não precisa criar tabelas: o servidor cria sozinho (`MathLume/Backend/schema.sql`).
+
+## Limites do plano grátis (bom para projeto de faculdade e testes)
+- **Vercel Hobby**: ~100 GB de tráfego/mês. Cada visita completa baixa ~14 MB (quase tudo são as
+  músicas `temaGame.mp3` e `temaLob.mp3`), o que dá alguns milhares de visitas por mês.
+  Uso pessoal / não comercial.
+- **Neon Free**: 1 GB de armazenamento por projeto (hoje usamos ~8 MB) e 100 CU-horas/mês.
+  O banco dorme quando fica parado e acorda em ~1 s (o código já lida com isso).
+  A rota `/api/saude` não toca no banco, para não acordar o Neon à toa.
 
 ## Opcional
-- **Domínio próprio** (ex.: mathlume.com.br): compre no registro.br e, no Render, vá em
-  Settings → Custom Domains e siga as instruções de DNS.
-- **Repositório privado**: o Render publica repositórios privados também; recomendado para um projeto com contas de usuários.
+- **Domínio próprio** (ex.: mathlume.com.br): compre no registro.br e, no Vercel,
+  Settings → Domains → Add, seguindo as instruções de DNS.

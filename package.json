@@ -1,0 +1,17 @@
+{
+  "name": "mathlume",
+  "version": "2.0.0",
+  "description": "MathLume no Vercel: Frontend estático (MathLume/Frontend) + API (api/index.js) com banco PostgreSQL no Neon",
+  "private": true,
+  "scripts": {
+    "build": "echo \"Frontend estático: nada para compilar\""
+  },
+  "dependencies": {
+    "nodemailer": "^10.5.0",
+    "pg": "^8.13.0"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "license": "UNLICENSED"
+}

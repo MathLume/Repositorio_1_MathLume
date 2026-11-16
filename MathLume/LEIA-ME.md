@@ -1,9 +1,11 @@
 # MathLume — Backend + Frontend
 
+Na raiz do repositório ficam `vercel.json`, `api/index.js` e `package.json`, usados só na
+publicação no Vercel (veja `PUBLICAR.md`). O resto do projeto:
 ```
 MathLume/
 ├── Backend/             ← servidor + conexão com o banco (PostgreSQL no Neon)
-│   ├── server.js        ← API + serve a pasta Frontend
+│   ├── server.js        ← API + serve a pasta Frontend (no PC); no Vercel só a API
 │   ├── db.js            ← todo acesso ao banco passa por aqui
 │   ├── schema.sql       ← as tabelas (criadas sozinhas quando o servidor liga)
 │   ├── env.js           ← lê o arquivo .env
@@ -20,7 +22,7 @@ MathLume/
 ```
 
 ## Banco de dados (Neon / PostgreSQL)
-Tabelas: `usuarios`, `pontuacoes` e `sessoes` (veja `Backend/schema.sql`).
+Tabelas: `usuarios`, `pontuacoes`, `sessoes` e `recuperacao_senhas` (veja `Backend/schema.sql`).
 - Nome de usuário e e-mail não se repetem (maiúsculas/minúsculas contam como iguais) —
   garantido pelo próprio banco, não só pelo código.
 - Senhas guardadas com scrypt + sal. Sessões guardam só o hash do token.
@@ -42,7 +44,8 @@ Abra **http://localhost:3000**.
 ## Fazer alterações depois de publicado
 1. Edite os arquivos e teste com `npm start`.
 2. `git add .` → `git commit -m "o que mudou"` → `git push`
-3. A hospedagem (Render) percebe o push e publica a nova versão sozinha em 1–3 minutos.
+3. A hospedagem (Vercel) percebe o push na `main` e publica a nova versão sozinha em 1–2 minutos
+   em https://mathlume.vercel.app.
    Os dados (contas e ranking) ficam no Neon e **não se perdem** com o deploy.
 
 Dica: para testar mudanças sem mexer nos dados reais, crie uma *branch* no Neon

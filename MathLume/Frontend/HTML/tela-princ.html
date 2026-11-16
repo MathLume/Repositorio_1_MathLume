@@ -455,11 +455,11 @@
     function aplicarLogin() {
       document.getElementById('conquistas').style.display = 'none';
       document.getElementById('btnLogout').hidden = false;
-      document.getElementById('linkAdmin').hidden = !MathLumeAPI.ehAdmin();
+      MathLumeCabecalho.atualizarAdmin();
     }
     function aplicarLogout() {
       MathLumeAPI.sair();
-      document.getElementById('linkAdmin').hidden = true;
+      MathLumeCabecalho.atualizarAdmin();
       document.getElementById('conquistas').style.display = '';
       document.getElementById('btnLogout').hidden = true;
       btnLoginEl.textContent = 'Login';
