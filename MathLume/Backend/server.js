@@ -4,7 +4,8 @@
    • Serve a pasta ../Frontend  (é aqui que o Backend "conecta" ao Frontend)
    • Expõe a API em /api/...    (cadastro, login, ADM, pontuação, ranking)
    • Banco: PostgreSQL no Neon (variável DATABASE_URL)
-   Rodar:  npm install  (só na 1ª vez)  e depois  npm start
+   Rodar no PC:  npm install  (só na 1ª vez)  e depois  npm start
+   No Vercel:    /api/index.js (raiz do repositório) usa apiVercel() daqui (ver /vercel.json)
    ========================================================== */
 const http = require('http');
 const fs = require('fs');
@@ -296,33 +297,61 @@ function servirArquivo(req, res, url) {
   });
 }
 
-const servidor = http.createServer((req, res) => {
+/* ---------- preparo do banco: cria as tabelas (se faltarem) e garante o ADM ----------
+   Roda uma vez por processo. No Vercel, cada "instância" da função roda isto
+   na primeira requisição (tudo é IF NOT EXISTS, então não apaga nada). */
+let preparo = null;
+function preparar() {
+  if (!preparo) preparo = (async () => { await banco.iniciar(); await garantirAdmin(); })()
+    .catch((e) => { preparo = null; throw e; }); // se falhar, tenta de novo na próxima
+  return preparo;
+}
+
+/* ---------- função do Vercel: só a API (/api/...) ----------
+   O Frontend no Vercel é servido direto pela CDN (ver vercel.json). */
+async function apiVercel(req, res) {
   const url = new URL(req.url, 'http://localhost');
-  if (url.pathname.startsWith('/api/')) return tratarApi(req, res, url);
-  if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405); return res.end(); }
-  servirArquivo(req, res, url);
-});
-
-/* ---------- liga: cria as tabelas (se faltarem), garante o ADM e abre a porta ---------- */
-(async () => {
-  try {
-    await banco.iniciar();
-    await garantirAdmin();
-  } catch (e) {
-    console.error('\n❌ Não consegui conectar ao banco de dados: ' + e.message);
-    console.error('   Confira a DATABASE_URL (copie de novo do painel do Neon).\n');
-    process.exit(1);
+  // O vercel.json reescreve /api/QUALQUER-COISA para /api/index?__rota=QUALQUER-COISA.
+  const rotaOriginal = url.searchParams.get('__rota');
+  if (rotaOriginal !== null) { url.pathname = '/api/' + rotaOriginal; url.searchParams.delete('__rota'); }
+  try { await preparar(); }
+  catch (e) {
+    console.error('Banco indisponível:', e.message);
+    return responder(res, 503, { erro: 'Banco de dados indisponível. Tente de novo em instantes.' });
   }
-  servidor.listen(PORT, () => {
-    console.log('✅ MathLume rodando em http://localhost:' + PORT);
-    console.log('   Frontend servido de: ' + FRONTEND);
-    console.log('   Banco de dados:      PostgreSQL (Neon) conectado');
-  });
-})();
+  return tratarApi(req, res, url);
+}
 
-// A hospedagem manda SIGTERM ao reiniciar/publicar: fecha tudo com calma.
-process.on('SIGTERM', () => {
-  setTimeout(() => process.exit(0), 5000).unref();
-  servidor.close(() => banco.fechar().finally(() => process.exit(0)));
-});
+module.exports = { apiVercel, preparar };
+
+/* ---------- servidor local (npm start): API + Frontend na mesma porta ---------- */
+if (require.main === module) {
+  const servidor = http.createServer((req, res) => {
+    const url = new URL(req.url, 'http://localhost');
+    if (url.pathname.startsWith('/api/')) return tratarApi(req, res, url);
+    if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405); return res.end(); }
+    servirArquivo(req, res, url);
+  });
+
+  (async () => {
+    try {
+      await preparar();
+    } catch (e) {
+      console.error('\n❌ Não consegui conectar ao banco de dados: ' + e.message);
+      console.error('   Confira a DATABASE_URL (copie de novo do painel do Neon).\n');
+      process.exit(1);
+    }
+    servidor.listen(PORT, () => {
+      console.log('✅ MathLume rodando em http://localhost:' + PORT);
+      console.log('   Frontend servido de: ' + FRONTEND);
+      console.log('   Banco de dados:      PostgreSQL (Neon) conectado');
+    });
+  })();
+
+  // A hospedagem manda SIGTERM ao reiniciar/publicar: fecha tudo com calma.
+  process.on('SIGTERM', () => {
+    setTimeout(() => process.exit(0), 5000).unref();
+    servidor.close(() => banco.fechar().finally(() => process.exit(0)));
+  });
+}
 process.on('unhandledRejection', (e) => console.error('Erro não tratado:', e));

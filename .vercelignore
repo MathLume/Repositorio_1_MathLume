@@ -1,0 +1,5 @@
+# Não envia para o Vercel: senhas locais e pacotes (o Vercel instala sozinho)
+.env
+**/.env
+node_modules
+**/node_modules

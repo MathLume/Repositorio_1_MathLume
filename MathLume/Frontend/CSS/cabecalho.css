@@ -54,7 +54,11 @@ html { scroll-padding-top: 96px; }
   transition: color .2s, background .25s, border-color .25s, transform .2s;
 }
 .nav-ic { display: block; width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; filter: saturate(.85) drop-shadow(0 0 0 transparent); transition: transform .25s, filter .25s; }
-.nav-ic.nav-ic-largo { width: 34px; } /* o ícone do Início (π com anel) é mais largo que alto */
+.nav-ic.nav-ic-largo { width: 34px; }
+.nav-ic.nav-ic-emoji { width: auto; height: auto; font-size: 1.05rem; line-height: 1; }
+/* link Admin na barra: só aparece para administradores */
+.menu a.nav-link[hidden] { display: none; }
+.menu a.nav-link.nav-admin { color: #f3e8ff; border-color: rgba(192, 132, 252, .35); background: rgba(126, 34, 206, .18); } /* o ícone do Início (π com anel) é mais largo que alto */
 /* linha de luz que cresce embaixo ao passar o mouse */
 .menu a.nav-link::after {
   content: ""; position: absolute; left: 50%; bottom: 3px; width: 0; height: 2px; border-radius: 2px;
