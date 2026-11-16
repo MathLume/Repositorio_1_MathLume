@@ -34,13 +34,18 @@
     { id: 'ranking', href: 'TelaDeRank.html', ic: 'icone-ranking.svg', txt: 'Ranking' },
     { id: 'loja', href: 'loja.html', ic: 'icone-loja.svg', txt: 'Loja' },
     { id: 'jogar', href: 'minigamemat.html', jogar: true, txt: 'Jogar' },
-    { id: 'personalizacao', href: 'personalizacao.html', ic: 'icone-personalizacao.svg', txt: 'Personalização' }
+    { id: 'personalizacao', href: 'personalizacao.html', ic: 'icone-personalizacao.svg', txt: 'Personalização' },
+    // só aparece para administradores (ver atualizarAdmin)
+    { id: 'admin', href: 'admin.html', emoji: '🛡️', txt: 'Admin', soAdmin: true }
   ];
   var menuHtml = LINKS.map(function (l) {
     if (l.jogar) return '<a href="' + l.href + '" class="nav-jogar"><span class="ic" aria-hidden="true">▶</span>' + l.txt + '</a>';
     var ativo = l.id === pagina;
-    return '<a href="' + l.href + '" class="nav-link' + (ativo ? ' ativo' : '') + '"' + (ativo ? ' aria-current="page"' : '') + '>' +
-      '<img class="nav-ic' + (l.largo ? ' nav-ic-largo' : '') + '" src="' + IC + l.ic + '" alt="" aria-hidden="true">' + l.txt + '</a>';
+    var icone = l.emoji
+      ? '<span class="nav-ic nav-ic-emoji" aria-hidden="true">' + l.emoji + '</span>'
+      : '<img class="nav-ic' + (l.largo ? ' nav-ic-largo' : '') + '" src="' + IC + l.ic + '" alt="" aria-hidden="true">';
+    return '<a href="' + l.href + '" class="nav-link' + (ativo ? ' ativo' : '') + (l.soAdmin ? ' nav-admin' : '') + '"' +
+      (l.soAdmin ? ' id="navAdmin" hidden' : '') + (ativo ? ' aria-current="page"' : '') + '>' + icone + l.txt + '</a>';
   }).join('');
 
   var REGUA = ['π/2', 'π', '3π/2', '2π', '5π/2', '3π', '7π/2', '4π', '9π/2', '5π', '11π/2', '6π', '13π/2', '7π'];
@@ -200,7 +205,14 @@
 
   /* Login: na tela inicial quem cuida é a própria página (janela de login/cadastro).
      Nas outras telas mostra o nome de quem está logado e leva para a tela inicial. */
-  function atualizarAdmin() { var u = usuarioSalvo(); $('linkAdmin').hidden = !(u && u.papel === 'admin'); }
+  // Mostra o acesso ao painel Admin (na barra e no ⚙️ Sobre nós) só para administradores.
+  // Quem decide de verdade é o servidor: as rotas /api/admin recusam quem não é ADM.
+  function atualizarAdmin() {
+    var u = usuarioSalvo(), adm = !!(u && u.papel === 'admin');
+    try { if (!localStorage.getItem('mathlume_token')) adm = false; } catch (e) { /* sem armazenamento */ }
+    $('linkAdmin').hidden = !adm;
+    $('navAdmin').hidden = !adm;
+  }
   atualizarAdmin();
   function mostrarUsuario(u) {
     var nome = u && u.usuario;
