@@ -6,8 +6,10 @@
   <title>Personalização — MathLume</title>
   <link rel="stylesheet" href="../CSS/personalizacao.css">
 </head>
-<body>
+<body data-tema="espaco">
   <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
+  <div class="fundo" aria-hidden="true"></div>
+
   <nav class="navbar">
     <div class="container">
       <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
@@ -20,38 +22,72 @@
       </div>
       <div class="nav-right">
         <a href="loja.html#moedas" class="saldo" id="saldoLink" title="Comprar Lumes">🪙 <b id="saldo">0</b> Lumes</a>
+        <button class="gear" id="abrirAudio" type="button" aria-label="Configurações de áudio" title="Áudio" onclick="somBotao()">⚙</button>
         <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
       </div>
     </div>
   </nav>
 
-  <header class="page-head container">
-    <span class="badge">🎨 Personalização</span>
-    <h1>Deixe o jogo com a <span class="grad">sua cara</span></h1>
-    <p>Equipe o que você já comprou. Tudo aqui é estético e não muda o desempenho no jogo.</p>
-  </header>
+  <div class="app">
+    <header class="page-head container">
+      <span class="badge">🎨 Personalização</span>
+      <h1>Deixe o jogo com a <span class="grad">sua cara</span></h1>
+      <p>Escolha o cenário, o bloco que cai e a explosão de cada acerto. Tudo aqui é estético e não muda o seu desempenho.</p>
+    </header>
 
-  <main class="container">
     <div class="tabs" role="tablist">
-      <button class="tab active" data-aba="temas" role="tab" type="button" onclick="somBotao()">🎭 Tema do jogo</button>
-      <button class="tab" data-aba="blocos" role="tab" type="button" onclick="somBotao()">☄️ Bloco de cálculo</button>
-      <button class="tab" data-aba="explosoes" role="tab" type="button" onclick="somBotao()">🎉 Explosão de acerto</button>
+      <button class="tab active" data-aba="temas" role="tab" type="button" onclick="somBotao()">🎨 Tema do jogo</button>
+      <button class="tab" data-aba="blocos" role="tab" type="button" onclick="somBotao()">🧮 Bloco de cálculo</button>
+      <button class="tab" data-aba="explosoes" role="tab" type="button" onclick="somBotao()">💥 Explosão de acerto</button>
     </div>
 
-    <div class="stage" id="stage" aria-label="Prévia do visual equipado">
-      <div class="stage-bloco"><span class="ico" id="stageIcone">☄️</span><b>7 × 8</b></div>
-      <div class="stage-exp" id="stageExp">🎉</div>
+    <div class="palco-lista container">
+      <aside class="lateral">
+        <div class="stage cena" id="stage" aria-label="Prévia do visual equipado">
+          <div id="stageBloco"></div>
+          <div id="stageExp"></div>
+        </div>
+        <p class="legenda" id="legenda"></p>
+      </aside>
+
+      <main class="lista">
+        <section class="aba active" id="aba-temas" role="tabpanel"><div class="grid" id="grid-temas"></div></section>
+        <section class="aba" id="aba-blocos" role="tabpanel"><div class="grid" id="grid-blocos"></div></section>
+        <section class="aba" id="aba-explosoes" role="tabpanel"><div class="grid" id="grid-explosoes"></div></section>
+      </main>
     </div>
-    <p class="legenda" id="legenda"></p>
 
-    <section class="aba active" id="aba-temas" role="tabpanel"><div class="grid" id="grid-temas"></div></section>
-    <section class="aba" id="aba-blocos" role="tabpanel"><div class="grid" id="grid-blocos"></div></section>
-    <section class="aba" id="aba-explosoes" role="tabpanel"><div class="grid" id="grid-explosoes"></div></section>
-  </main>
+    <footer class="rodape">
+      <div class="container"><a href="loja.html">🛍️ Ir para a Loja</a> • <a href="minigamemat.html">▶ Jogar</a> • <a href="tela-princ.html">Início</a></div>
+    </footer>
+  </div>
 
-  <footer class="rodape">
-    <div class="container"><a href="loja.html">🛍️ Ir para a Loja</a> • <a href="minigamemat.html">▶ Jogar</a> • <a href="tela-princ.html">Início</a></div>
-  </footer>
+  <!-- Painel de áudio: mesmos controles e mesma preferência (mathlume_volume) do mini-game -->
+  <div id="audioWrap">
+    <div class="a-backdrop" id="aBackdrop"></div>
+    <aside class="a-panel" id="aPanel" aria-label="Configurações de áudio">
+      <div class="a-head">
+        <span class="sim">⚙</span>
+        <div><strong>Configurações</strong><small>MATHLUME</small></div>
+        <button id="fecharAudio" type="button" aria-label="Fechar" onclick="somBotao()">✕</button>
+      </div>
+      <div class="a-body">
+        <label>VOLUME DO SOM</label>
+        <div class="vol-card">
+          <div class="vol-top"><button id="muteBtn" type="button">🔊</button><strong><span id="volValue">70</span>%</strong></div>
+          <input type="range" min="0" max="100" value="70" id="volRange" aria-label="Volume">
+          <div class="vol-presets">
+            <button type="button" data-vol="0">🔇</button>
+            <button type="button" data-vol="25">25</button>
+            <button type="button" data-vol="50">50</button>
+            <button type="button" data-vol="75">75</button>
+            <button type="button" data-vol="100">100</button>
+          </div>
+        </div>
+        <p class="a-note">💾 O volume é salvo no seu dispositivo e vale também dentro do mini-game.</p>
+      </div>
+    </aside>
+  </div>
 
   <div class="toast" id="toast" role="status"></div>
 
@@ -64,20 +100,18 @@
       var CATS = ['blocos', 'explosoes'];
       var ABAS = ['temas'].concat(CATS);
 
-      var menu = $('menu');
-      $('burger').addEventListener('click', function () { menu.classList.toggle('open'); });
+      $('burger').addEventListener('click', function () { $('menu').classList.toggle('open'); });
 
+      /* ---------- abas ---------- */
       function mostrarAba(nome) {
         if (ABAS.indexOf(nome) < 0) nome = 'temas';
         ABAS.forEach(function (c) {
           var ativa = c === nome;
           $('aba-' + c).classList.toggle('active', ativa);
           var t = document.querySelector('[data-aba="' + c + '"]');
-          if (t) {
-            t.classList.toggle('active', ativa);
-            t.setAttribute('aria-selected', String(ativa));
-          }
+          if (t) { t.classList.toggle('active', ativa); t.setAttribute('aria-selected', String(ativa)); }
         });
+        document.querySelector('.lista').scrollTop = 0;
       }
       document.querySelectorAll('.tab').forEach(function (t) {
         t.addEventListener('click', function () { location.hash = t.dataset.aba; });
@@ -93,28 +127,77 @@
         toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2500);
       }
 
-      function card(cat, it) {
-        var tem = ML.possui(cat, it.id);
-        var eq = ML.estado().equipado[cat] === it.id;
-        var btn;
-        if (eq) btn = '<button class="btn" type="button" disabled>✓ Equipado</button>';
-        else if (tem) btn = '<button class="btn" type="button" data-equipar="' + cat + '" data-id="' + it.id + '">Equipar</button>';
-        else btn = '<a class="btn ouro" href="loja.html#personalizacao">🔒 Comprar na loja · ' + ML.fmt(it.preco) + ' Lumes</a>';
-        return '<article class="item' + (eq ? ' equipado' : '') + (tem ? '' : ' bloqueado') + '">' +
-               '<div class="prev">' + it.emoji + '</div>' +
-               '<div class="corpo"><h3>' + it.nome + '</h3><p>' + it.desc + '</p>' + btn + '</div></article>';
+      /* ---------- emblemas: os mesmos elementos que caem no jogo ---------- */
+      var Q = '<b>7 × 8</b>';
+      function temaEmb(id) {
+        if (id === 'oceano') return '<div class="emb"><div class="bubble"><span class="peixe">🐟</span><small>QUANTO É?</small>' + Q + '</div></div>';
+        if (id === 'halloween') return '<div class="emb"><div class="pumpkin"><i class="pk-eye l"></i><i class="pk-eye r"></i>' + Q + '</div></div>';
+        if (id === 'floresta') return '<div class="emb"><div class="flame">' + Q + '</div></div>';
+        if (id === 'cidade') return '<div class="emb"><div class="slime"><i class="sl-eye l"></i><i class="sl-eye r"></i>' + Q + '</div><div class="slime-gota"></div></div>';
+        return '<div class="emb"><div class="rock">' + Q + '</div><div class="rock-tail"></div></div>';
+      }
+      function blocoEmb(it) {
+        if (it.id === 'meteoro') return temaEmb('espaco');
+        return '<div class="emb"><div class="bolaw"><span class="ico">' + it.emoji + '</span>' + Q + '</div></div>';
       }
 
-      function cardTema(t) {
-        var tem = T.possui(t.id);
-        var eq = T.atual().id === t.id;
-        var btn;
-        if (eq) btn = '<button class="btn" type="button" disabled>✓ Equipado</button>';
-        else if (tem) btn = '<button class="btn" type="button" data-equipar-tema="' + t.id + '">Equipar</button>';
-        else btn = '<a class="btn ouro" href="loja.html#personalizacao">🔒 Comprar na loja · ' + ML.fmt(t.preco) + ' Lumes</a>';
+      function p(x, y, s, c, extra) {
+        return '<i class="' + (extra || '') + '" style="--x:' + x + 'em;--y:' + y + 'em;--s:' + s + 'em;--c:' + c + ';--r:' + ((x * 37 + y * 23) % 90) + 'deg"></i>';
+      }
+      function emo(x, y, s, e) { return '<span style="--x:' + x + 'em;--y:' + y + 'em;--s:' + s + 'em">' + e + '</span>'; }
+      function explosaoEmb(id) {
+        var h = '', i, a, cores;
+        if (id === 'ketchup') {
+          cores = ['#dc2626', '#b91c1c', '#ef4444', '#991b1b'];
+          h += p(0, 0, 3.6, '#dc2626', 'gota');
+          for (i = 0; i < 11; i++) { a = i * 6.2832 / 11; h += p((Math.cos(a) * (3.2 + (i % 3) * .9)).toFixed(2), (Math.sin(a) * (2.5 + (i % 3) * .7)).toFixed(2), (.8 + (i % 4) * .35).toFixed(2), cores[i % 4], 'gota'); }
+        } else if (id === 'fantasmas') {
+          h = emo(-3.6, -1.8, 2.8, '👻') + emo(3.2, -2.4, 2.2, '👻') + emo(-1.2, 2.4, 2.4, '👻') + emo(3.8, 2, 1.8, '👻');
+        } else if (id === 'naves') {
+          h = emo(-3.6, -.8, 2.4, '🛸') + emo(3.4, -2, 2.8, '🛸') + emo(.2, 2.6, 2.2, '🛸');
+        } else if (id === 'moedas') {
+          h = emo(-3.8, 1.2, 2.2, '🪙') + emo(-1.8, -2.4, 2.4, '🪙') + emo(.4, .4, 2.8, '🪙') + emo(2.2, -2, 2.2, '🪙') + emo(3.8, 1.6, 2.4, '🪙') + emo(-.4, 3, 2, '🪙');
+        } else {
+          cores = ['#f472b6', '#facc15', '#38bdf8', '#4ade80', '#a78bfa', '#fb923c'];
+          for (i = 0; i < 16; i++) { a = i * 6.2832 / 16; h += p((Math.cos(a) * (3 + (i % 3) * 1.1)).toFixed(2), (Math.sin(a) * (2.3 + (i % 3) * .8)).toFixed(2), (.8 + (i % 2) * .4).toFixed(2), cores[i % 6]); }
+        }
+        return '<div class="burst">' + h + '</div>';
+      }
+
+      /* ---------- informações reais de gameplay de cada tema ---------- */
+      var INFO = {
+        espaco:    ['Cai: Meteoros', 'Meta: destrua todos os meteoros', 'Céu roxo estrelado'],
+        oceano:    ['Cai: Bolhas', 'Responda antes da zona de perigo', 'Algas, corais e peixes'],
+        halloween: ['Cai: Abóboras', 'Meta: destrua todas as abóboras', 'Vidas em morcegos 🦇'],
+        floresta:  ['Cai: Chamas', 'Meta: extinga todas as chamas', 'Acertar faz chover 🌧️'],
+        cidade:    ['Cai: Slimes', 'Meta: bloqueie todos os slimes', 'Acerto solta faíscas ⚡']
+      };
+      function chips(id) {
+        return '<div class="chips">' + (INFO[id] || []).map(function (c) { return '<span>' + c + '</span>'; }).join('') + '</div>';
+      }
+
+      /* ---------- cartas ---------- */
+      function botao(eq, tem, attr, preco) {
+        if (eq) return '<button class="btn" type="button" disabled>✓ Equipado</button>';
+        if (tem) return '<button class="btn" type="button" ' + attr + '>Equipar</button>';
+        return '<a class="btn ouro" href="loja.html#personalizacao">🔒 Comprar na loja · ' + ML.fmt(preco) + ' Lumes</a>';
+      }
+      function carta(eq, tem, prevClasse, prevStyle, emblema, titulo, desc, extra, btn) {
         return '<article class="item' + (eq ? ' equipado' : '') + (tem ? '' : ' bloqueado') + '">' +
-               '<div class="prev" style="background:' + t.preview + '">' + t.emoji + '</div>' +
-               '<div class="corpo"><h3>Tema ' + t.nome + '</h3><p>' + t.desc + '</p>' + btn + '</div></article>';
+               '<div class="prev ' + prevClasse + '" style="' + prevStyle + '">' + emblema + (tem ? '' : '<span class="cadeado">🔒</span>') + '</div>' +
+               '<div class="corpo"><h3>' + titulo + '</h3><p>' + desc + '</p>' + extra + btn + '</div></article>';
+      }
+
+      function card(cat, it) {
+        var tem = ML.possui(cat, it.id), eq = ML.estado().equipado[cat] === it.id;
+        var emb = cat === 'blocos' ? blocoEmb(it) : explosaoEmb(it.id);
+        return carta(eq, tem, '', '', emb, it.nome, it.desc, '',
+                     botao(eq, tem, 'data-equipar="' + cat + '" data-id="' + it.id + '"', it.preco));
+      }
+      function cardTema(t) {
+        var tem = T.possui(t.id), eq = T.atual().id === t.id;
+        return carta(eq, tem, 'cena cena-' + t.id, 'background:' + t.preview, temaEmb(t.id), 'Tema ' + t.nome, t.desc, chips(t.id),
+                     botao(eq, tem, 'data-equipar-tema="' + t.id + '"', t.preco));
       }
 
       function render() {
@@ -125,9 +208,11 @@
         });
         $('grid-temas').innerHTML = T.catalogo.map(cardTema).join('');
         var b = ML.equipado('blocos'), x = ML.equipado('explosoes'), tm = T.atual();
+        document.body.setAttribute('data-tema', tm.id);
+        $('stage').className = 'stage cena cena-' + tm.id;
         $('stage').style.background = tm.preview;
-        $('stageIcone').textContent = b.emoji;
-        $('stageExp').textContent = x.emoji;
+        $('stageBloco').innerHTML = b.id === 'meteoro' ? temaEmb(tm.id) : blocoEmb(b); // no jogo, o bloco padrão assume a forma do tema
+        $('stageExp').innerHTML = explosaoEmb(x.id);
         $('legenda').textContent = 'Equipado: Tema ' + tm.nome + ' • ' + b.nome + ' • ' + x.nome;
       }
 
@@ -144,8 +229,40 @@
         if (ML.equipar(b.dataset.equipar, b.dataset.id)) { render(); toast('✓ ' + it.nome + ' equipado!'); }
       });
 
-      window.addEventListener('pageshow', function (e) { if (e.persisted) { ML.recarregar(); render(); } });
+      /* ---------- áudio (mesma chave e mesmos controles do mini-game) ---------- */
+      var VOL_KEY = 'mathlume_volume';
+      var volume = (function () {
+        var raw = null;
+        try { raw = localStorage.getItem(VOL_KEY); } catch (e) {}
+        var v = raw === null ? 70 : Number(raw);
+        return isNaN(v) ? 70 : Math.max(0, Math.min(100, v));
+      })();
 
+      function setVolume(v) {
+        volume = Math.max(0, Math.min(100, Number(v)));
+        try { localStorage.setItem(VOL_KEY, String(volume)); } catch (e) {}
+        $('volRange').value = volume;
+        $('volRange').style.setProperty('--p', volume + '%');
+        $('volValue').textContent = volume;
+        $('muteBtn').textContent = volume === 0 ? '🔇' : '🔊';
+        document.querySelectorAll('[data-vol]').forEach(function (b) { b.classList.toggle('active', Number(b.dataset.vol) === volume); });
+        $('botoes').volume = volume / 100;   // som dos cliques desta tela
+        window.sfxOn = volume > 0;           // sons.js respeita isso
+      }
+      function abrirAudio() { $('audioWrap').classList.add('a-open'); }
+      function fecharAudio() { $('audioWrap').classList.remove('a-open'); }
+      $('abrirAudio').addEventListener('click', abrirAudio);
+      $('fecharAudio').addEventListener('click', fecharAudio);
+      $('aBackdrop').addEventListener('click', fecharAudio);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fecharAudio(); });
+      $('volRange').addEventListener('input', function (e) { setVolume(e.target.value); });
+      $('volRange').addEventListener('change', function () { somBotao(); });
+      $('muteBtn').addEventListener('click', function () { setVolume(volume === 0 ? 70 : 0); });
+      document.querySelectorAll('[data-vol]').forEach(function (b) { b.addEventListener('click', function () { setVolume(b.dataset.vol); somBotao(); }); });
+
+      window.addEventListener('pageshow', function (e) { if (e.persisted) { ML.recarregar(); render(); setVolume(volume); } });
+
+      setVolume(volume);
       render();
       mostrarAba(location.hash.slice(1));
     })();

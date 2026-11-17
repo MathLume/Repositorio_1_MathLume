@@ -5,28 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MathLume</title>
   <link rel="stylesheet" href="../CSS/tela-princ.css">
+  <link rel="stylesheet" href="../CSS/cabecalho.css">
 </head>
 <body>
   <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
-  <nav class="navbar">
-    <div class="container">
-      <a href="#inicio" class="logo">Math<span>Lume</span></a>
-      <div class="menu" id="menu">
-        <a href="#inicio">Início</a>
-        <a href="TelaDeRank.html">Ranking</a>
-        <a href="loja.html">Loja</a>
-        <a href="#conquistas">Conquistas</a>
-        <a href="personalizacao.html">Personalização</a>
-        <a href="admin.html" id="linkAdmin" hidden>Admin</a>
-      </div>
-      <div class="nav-right">
-        <button class="btn-login" id="btnLogin" type="button" onclick="somBotao()">Login</button>
-        <button class="btn-login" id="btnLogout" type="button" hidden onclick="somBotao()">Sair</button>
-        <button class="gear" id="btnGear" type="button" aria-label="Configurações" aria-expanded="false" onclick="somBotao()">⚙️</button>
-        <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
-      </div>
-    </div>
-  </nav>
+  <!-- cabeçalho igual em todas as telas: JS/cabecalho.js + CSS/cabecalho.css -->
+  <nav class="navbar" id="cabecalho" data-pagina="inicio"></nav>
+  <script src="../JS/cabecalho.js"></script>
 
   <section class="hero" id="inicio">
     <div class="container">
@@ -161,27 +146,12 @@
     </div>
   </section>
 
-  <section class="section" id="ranking">
-    <div class="container">
-      <div class="section-title">
-        <h2>Por que escolher a <span class="grad">MathLume</span>?</h2>
-        <p>A plataforma que combina tecnologia de ponta com metodologias comprovadas de ensino.</p>
-      </div>
-      <div class="grid-2">
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#a855f7,#ec4899)">🎯</div><h3>Aprendizado Gamificado</h3><p>Sistema de pontos, conquistas e rankings para tornar o estudo mais divertido e engajante.</p></div>
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">📈</div><h3>Progresso Personalizado</h3><p>Trilhas de conhecimento adaptadas ao seu ritmo e nível de aprendizado.</p></div>
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#f97316,#ef4444)">🛡️</div><h3>Certificação Reconhecida</h3><p>Certificados validados e aceitos pelas principais instituições acadêmicas.</p></div>
-        <div class="feature"><div class="ico" style="background:linear-gradient(135deg,#22c55e,#10b981)">⚡</div><h3>Prática Interativa</h3><p>Exercícios dinâmicos e desafios que testam seu conhecimento em tempo real.</p></div>
-      </div>
-    </div>
-  </section>
-
   <footer>
     <div class="container">
       <div class="foot-grid">
         <div><div class="logo" style="margin-bottom:16px">Math<span>Lume</span></div><p class="muted" style="font-size:.9rem">Transformando educação através da tecnologia.</p></div>
         <div><h4>Plataforma</h4><ul><li><a href="loja.html">Loja</a></li></ul></div>
-        <div><h4>Comunidade</h4><ul><li><a href="TelaDeRank.html">Ranking</a></li><li><a href="#conquistas">Conquistas</a></li><li><a href="personalizacao.html">Personalização</a></li></ul></div>
+        <div><h4>Comunidade</h4><ul><li><a href="TelaDeRank.html">Ranking</a></li><li><a href="minigamemat.html">Jogar</a></li><li><a href="personalizacao.html">Personalização</a></li></ul></div>
         <div><h4>Suporte</h4><ul><li><a href="#">Central de Ajuda</a></li><li><a href="#">Contato</a></li><li><a href="#">FAQ</a></li></ul></div>
       </div>
       <div class="foot-bottom">
@@ -190,40 +160,6 @@
       </div>
     </div>
   </footer>
-
-  <aside class="panel" id="panel" aria-hidden="true">
-    <div class="panel-head">
-      <strong>⚙️ Configurações</strong>
-      <button class="close" data-close="panel" type="button" aria-label="Fechar" onclick="somBotao()">✕</button>
-    </div>
-    <div class="tabs">
-      <button class="tab active" data-tab="sobre" type="button" onclick="somBotao()">Sobre Nós</button>
-      <button class="tab" data-tab="som" type="button" onclick="somBotao()">Som</button>
-    </div>
-
-    <div class="tab-body active" id="tab-sobre">
-      <p class="muted" style="margin-bottom:16px;font-size:.9rem">A MathLume nasceu para tornar o aprendizado mais divertido e acessível. Conheça quem participa do projeto:</p>
-      <div class="member"><div class="avatar">A</div><div><strong>Nome do Integrante 1</strong><span>Função / Cargo</span></div></div>
-      <div class="member"><div class="avatar">B</div><div><strong>Nome do Integrante 2</strong><span>Função / Cargo</span></div></div>
-      <div class="member"><div class="avatar">C</div><div><strong>Nome do Integrante 3</strong><span>Função / Cargo</span></div></div>
-      <div class="member"><div class="avatar">D</div><div><strong>Nome do Integrante 4</strong><span>Função / Cargo</span></div></div>
-    </div>
-
-    <div class="tab-body" id="tab-som">
-      <div class="opt">
-        <div><strong>🎵 Música de fundo</strong><span>Melodia ambiente suave</span></div>
-        <label class="switch"><input type="checkbox" id="musicToggle"><i></i></label>
-      </div>
-      <div class="opt col">
-        <div><strong>🔊 Volume da música</strong></div>
-        <input type="range" id="volume" min="0" max="100" value="40">
-      </div>
-      <div class="opt">
-        <div><strong>🔔 Sons de clique</strong><span>Efeito ao apertar botões</span></div>
-        <label class="switch"><input type="checkbox" id="sfxToggle" checked ><i></i></label>
-      </div>
-    </div>
-  </aside>
 
   <div class="overlay" id="loginModal" aria-hidden="true">
     <div class="modal">
@@ -286,16 +222,11 @@
     </div>
     <button class="user-item" id="btnChangePhoto" type="button" onclick="somBotao()">🖼️ Alterar foto de usuário</button>
     <input type="file" id="photoInput" accept="image/*" hidden>
-    <label for="userNameInput">Nome de usuário</label>
-    <input id="userNameInput" type="text" maxlength="24" placeholder="Seu nome de usuário">
-    <button class="btn-main" id="btnSaveName" type="button" style="width:100%;margin-top:8px;padding:12px" onclick="somBotao()">Salvar</button>
+    <button class="btn-sair-menu" id="btnLogout" type="button" hidden onclick="somBotao()"><span aria-hidden="true">🚪</span>Sair da conta</button>
   </div>
 
   <script src="../JS/mathlume-api.js"></script>
   <script>
-    var menu = document.getElementById('menu');
-    document.getElementById('burger').addEventListener('click', function () { menu.classList.toggle('open'); });
-    menu.addEventListener('click', function () { menu.classList.remove('open'); });
 
     /* ---- carrossel do topo: passa sozinho + slide tutorial de cadastro ---- */
     var carrossel = (function () {
@@ -399,29 +330,13 @@
       };
     })();
 
-    var panelEl = document.getElementById('panel');
-    var gear = document.getElementById('btnGear');
     var loginModal = document.getElementById('loginModal');
 
+    /* o painel ⚙️ (Configurações) vem do cabeçalho compartilhado: JS/cabecalho.js */
     function togglePanel(open) {
-      panelEl.classList.toggle('open', open);
-      panelEl.setAttribute('aria-hidden', String(!open));
-      gear.setAttribute('aria-expanded', String(open));
-      if (open) toggleUserMenu(false);
+      if (open) MathLumeCabecalho.abrirPainel(); else MathLumeCabecalho.fecharPainel();
     }
-    gear.addEventListener('click', function (e) { e.stopPropagation(); togglePanel(!panelEl.classList.contains('open')); });
-    document.addEventListener('click', function (e) {
-      if (!panelEl.contains(e.target) && e.target !== gear) togglePanel(false);
-    });
-    document.querySelector('[data-close="panel"]').addEventListener('click', function () { togglePanel(false); });
-
-    document.querySelectorAll('.tab').forEach(function (t) {
-      t.addEventListener('click', function () {
-        document.querySelectorAll('.tab, .tab-body').forEach(function (el) { el.classList.remove('active'); });
-        t.classList.add('active');
-        document.getElementById('tab-' + t.dataset.tab).classList.add('active');
-      });
-    });
+    document.addEventListener('cabecalho:painel', function (e) { if (e.detail.aberto) toggleUserMenu(false); });
 
     function showLogin(open) { loginModal.classList.toggle('open', open); }
 
@@ -443,17 +358,8 @@
     function atualizarPerfil() {
       var av = document.getElementById('userAvatar');
       document.getElementById('userNameShow').textContent = usuario;
-      document.getElementById('userNameInput').value = usuario;
       if (fotoUrl) { av.style.backgroundImage = 'url("' + fotoUrl + '")'; av.textContent = ''; }
       else { av.style.backgroundImage = ''; av.textContent = usuario.charAt(0).toUpperCase(); }
-    }
-    function salvarNome() {
-      var v = document.getElementById('userNameInput').value.trim();
-      if (!v || !logado) return;
-      MathLumeAPI.mudarNome(v).then(function (u) {
-        usuario = u.usuario;
-        atualizarPerfil();
-      }, function (err) { alert(err.message); });
     }
     document.getElementById('btnChangePhoto').addEventListener('click', function () { document.getElementById('photoInput').click(); });
     document.getElementById('photoInput').addEventListener('change', function (e) {
@@ -464,8 +370,6 @@
       atualizarPerfil();
       e.target.value = '';
     });
-    document.getElementById('btnSaveName').addEventListener('click', salvarNome);
-    document.getElementById('userNameInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') salvarNome(); });
     document.addEventListener('click', function (e) {
       if (!userMenu.contains(e.target) && e.target !== btnLoginEl) toggleUserMenu(false);
     });
@@ -538,6 +442,7 @@
     });
 
     btnLoginEl.addEventListener('click', function () {
+      somBotao();
       togglePanel(false);
       if (logado) { toggleUserMenu(!userMenu.classList.contains('open')); return; }
       showView('login');
@@ -549,17 +454,17 @@
     loginModal.addEventListener('click', function (e) { if (e.target === loginModal) showLogin(false); });
     function aplicarLogin() {
       document.getElementById('conquistas').style.display = 'none';
-      document.getElementById('jornada').before(document.getElementById('ranking'));
       document.getElementById('btnLogout').hidden = false;
-      document.getElementById('linkAdmin').hidden = !MathLumeAPI.ehAdmin();
+      MathLumeCabecalho.atualizarAdmin();
     }
     function aplicarLogout() {
       MathLumeAPI.sair();
-      document.getElementById('linkAdmin').hidden = true;
+      MathLumeCabecalho.atualizarAdmin();
       document.getElementById('conquistas').style.display = '';
-      document.getElementById('loja').after(document.getElementById('ranking'));
       document.getElementById('btnLogout').hidden = true;
-      document.getElementById('btnLogin').textContent = 'Login';
+      btnLoginEl.textContent = 'Login';
+      btnLoginEl.classList.remove('com-nome');
+      btnLoginEl.removeAttribute('title');
       carrossel.tutorial(true);
       document.getElementById('loginForm').reset();
       logado = false;
@@ -572,7 +477,10 @@
       logado = true;
       usuario = u.usuario;
       atualizarPerfil();
-      document.getElementById('btnLogin').textContent = 'Olá! 👋';
+      // o botão do topo mostra o nome do usuário (nome longo é cortado com "…"; o nome inteiro aparece ao passar o mouse)
+      btnLoginEl.textContent = usuario;
+      btnLoginEl.classList.add('com-nome');
+      btnLoginEl.title = usuario;
       carrossel.tutorial(false);
       aplicarLogin();
     }
@@ -589,40 +497,8 @@
     MathLumeAPI.restaurar().then(function (u) { if (u) entrouComo(u); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { togglePanel(false); showLogin(false); toggleUserMenu(false); } });
 
-    var AC = window.AudioContext || window.webkitAudioContext;
-    var ctx = null, master = null, musicTimer = null, sfxOn = true;
-    var notes = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 392.0, 329.63];
-
-    function initAudio() {
-      if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
-      ctx = new AC();
-      master = ctx.createGain();
-      master.gain.value = document.getElementById('volume').value / 100 * 0.25;
-      master.connect(ctx.destination);
-    }
-    function tone(freq, dur, vol, dest) {
-      var o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
-      o.type = 'sine'; o.frequency.value = freq;
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(vol, t + 0.05);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + 0.05);
-    }
-    function startMusic() {
-      initAudio(); stopMusic();
-      var i = 0;
-      musicTimer = setInterval(function () {
-        var n = notes[Math.floor(Math.random() * notes.length)];
-        tone(n, 1.8, 0.5, master);
-        if (i++ % 4 === 0) tone(n / 2, 3, 0.4, master);
-      }, 700);
-    }
-    function stopMusic() { if (musicTimer) clearInterval(musicTimer); musicTimer = null; }
-
-    document.getElementById('musicToggle').addEventListener('change', function (e) { e.target.checked ? startMusic() : stopMusic(); });
-    document.getElementById('volume').addEventListener('input', function (e) { if (master) master.gain.value = e.target.value / 100 * 0.25; });
-    document.getElementById('sfxToggle').addEventListener('change', function (e) { sfxOn = e.target.checked; });
   </script>
   <script src="../JS/sons.js"></script>
+  <script src="../JS/curvatura.js"></script>
 </body>
 </html>
