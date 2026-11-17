@@ -191,3 +191,140 @@ html,body{background:#020510}
 /* Sair da partida (engrenagem) */
 .settings-leave button{width:100%;padding:13px;border-radius:13px;background:rgba(255,65,54,.12);border:1px solid rgba(255,101,93,.45);color:#ff8a82;font-weight:900;letter-spacing:1.5px}
 .settings-leave small{display:block;margin-top:8px;font-size:10px;line-height:1.5;color:#ffffff62}
+/* =====================================================
+   CIDADE v2 — camada viva
+   ===================================================== */
+
+/* Esconde o desenho antigo (SVG); mantém as manchas de slime */
+.cid-city svg{display:none}
+.cid-splat{bottom:7vh}
+
+/* Vidas: cruz vermelha */
+#lives{color:#ff3b3b;font-size:18px;text-shadow:0 0 10px rgba(255,40,40,.7);letter-spacing:2px}
+
+/* ---- Cena ---- */
+.cv-cidade{position:absolute;inset:0;overflow:hidden;
+  filter:saturate(calc(1 - var(--dirt,0) * .6)) hue-rotate(calc(var(--dirt,0) * 45deg));transition:filter 1s}
+.cv-ceu{position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 115%,rgba(255,130,60,.38),transparent 60%),
+             linear-gradient(180deg,#020618 0%,#0a1640 42%,#2d1f63 74%,#8a4a63 100%)}
+.cv-lua{position:absolute;top:9vh;right:12vw;width:46px;height:46px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fffdf0,#e6dfb8 60%,#b9b086);box-shadow:0 0 46px rgba(255,240,200,.45)}
+.cv-estrelas{position:absolute;left:0;right:0;top:0;height:50%;
+  background-image:radial-gradient(1px 1px at 12% 20%,#fff,transparent),radial-gradient(1px 1px at 37% 8%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 61% 30%,#bff,transparent),radial-gradient(1px 1px at 84% 14%,#fff,transparent),
+    radial-gradient(1px 1px at 92% 40%,#fff,transparent),radial-gradient(1px 1px at 25% 42%,#fff,transparent);
+  animation:cvPisca 4s ease-in-out infinite}
+@keyframes cvPisca{50%{opacity:.4}}
+
+/* ---- Camadas de prédios (profundidade) ---- */
+.cv-camada{position:absolute;left:-40px;right:-40px;display:flex;align-items:flex-end;gap:2px}
+.cv-far{opacity:.5;filter:blur(.7px) brightness(.8)}
+.cv-mid{opacity:.85}
+.cv-near{z-index:1}
+
+/* ---- Prédio: textura base ---- */
+.cv-pred{position:relative;flex:0 0 auto;border-radius:3px 3px 0 0;background-color:var(--c1);
+  background-image:repeating-linear-gradient(180deg,transparent 0 18px,rgba(0,0,0,.22) 18px 19px)}
+.cv-pred.tijolo{background-image:repeating-linear-gradient(0deg,transparent 0 7px,rgba(0,0,0,.35) 7px 8px),
+  repeating-linear-gradient(90deg,transparent 0 14px,rgba(0,0,0,.28) 14px 15px)}
+.cv-pred.vidro{background-image:repeating-linear-gradient(115deg,rgba(255,255,255,.1) 0 6px,transparent 6px 16px),
+  linear-gradient(90deg,rgba(0,0,0,.25),transparent 60%)}
+.cv-pred.concreto{background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.5px),
+  linear-gradient(90deg,rgba(255,255,255,.08),transparent 35%,rgba(0,0,0,.35));background-size:6px 6px,auto}
+/* Janelas: grade de luzes (interseção de duas listras) */
+.cv-pred::before{content:"";position:absolute;inset:0;background:var(--wc);opacity:.92;
+  -webkit-mask-image:repeating-linear-gradient(90deg,transparent 0 2px,#000 2px 6px,transparent 6px 9px),
+                     repeating-linear-gradient(180deg,transparent 0 3px,#000 3px 8px,transparent 8px 11px);
+  -webkit-mask-composite:source-in;
+  mask-image:repeating-linear-gradient(90deg,transparent 0 2px,#000 2px 6px,transparent 6px 9px),
+             repeating-linear-gradient(180deg,transparent 0 3px,#000 3px 8px,transparent 8px 11px);
+  mask-composite:intersect}
+.cv-pred.apagado::before{opacity:.12}
+.cv-pred.pisca::before{animation:cvJanela 3.2s ease-in-out var(--janela-dly,0s) infinite}
+@keyframes cvJanela{0%,100%{opacity:.92}50%{opacity:.25}}
+
+/* Detalhes do topo */
+.cv-antena{position:absolute;top:-30px;left:50%;width:2px;height:32px;margin-left:-1px;background:#94a3b8}
+.cv-antena::after{content:"";position:absolute;top:-3px;left:-3px;width:8px;height:8px;border-radius:50%;
+  background:#ff3b3b;box-shadow:0 0 10px #ff3b3b;animation:cvPisca 1.4s infinite}
+.cv-caixa-dagua{position:absolute;top:-22px;right:14%;width:18px;height:22px;border-radius:4px 4px 2px 2px;
+  background:linear-gradient(#6b4a2b,#3f2a17)}
+
+/* ---- Fachadas e placas (camada perto) ---- */
+.cv-fachada{position:absolute;left:0;right:0;bottom:0;height:11vh;background:linear-gradient(#141829,#0a0c18);border-top:2px solid #334155}
+.cv-vitrine{position:absolute;left:10%;right:10%;bottom:8%;height:58%;border-radius:3px;
+  background:linear-gradient(135deg,rgba(255,220,140,.9),rgba(255,160,70,.55) 60%,#2a1708);box-shadow:0 0 16px rgba(255,180,90,.35)}
+.cv-toldo{position:absolute;left:4%;right:4%;top:-7px;height:10px;border-radius:0 0 6px 6px;opacity:.95;
+  background:repeating-linear-gradient(90deg,var(--cor) 0 8px,rgba(255,255,255,.85) 8px 16px)}
+.cv-placa{position:absolute;left:50%;top:-30px;transform:translateX(-50%);white-space:nowrap;
+  padding:2px 7px;border-radius:6px;background:rgba(0,0,0,.6);border:1.5px solid var(--cor);color:#fff;
+  font:900 9px/1.2 Nunito,sans-serif;letter-spacing:.5px;box-shadow:0 0 12px var(--cor)}
+.cv-placa .gira{display:inline-block;animation:cvGira 4s linear infinite}
+.cv-placa .bob{display:inline-block;animation:bob 1.6s ease-in-out infinite}
+.cv-placa.neon{text-shadow:0 0 6px var(--cor);animation:cvNeon 2.4s steps(1) infinite}
+@keyframes cvGira{to{transform:rotate(360deg)}}
+@keyframes cvNeon{0%,18%,22%,60%,100%{opacity:1}20%,58%{opacity:.35}}
+
+/* ---- Rua, carros e pedestres ---- */
+.cv-rua{position:absolute;left:0;right:0;bottom:0;height:8vh;z-index:2;overflow:hidden;
+  background:linear-gradient(#262a3a,#12131c);border-top:3px solid #4b5563}
+.cv-faixa{position:absolute;left:0;right:0;top:50%;height:3px;opacity:.8;
+  background:repeating-linear-gradient(90deg,#facc15 0 28px,transparent 28px 56px)}
+.cv-carro{position:absolute;top:var(--faixa,40%);font-size:26px;line-height:1;
+  animation:cvAnda var(--t,12s) linear var(--d,0s) infinite;filter:drop-shadow(0 0 4px rgba(255,240,190,.55))}
+.cv-carro.esq{animation-name:cvAndaEsq}
+.cv-carro span,.cv-pedestre span{display:inline-block}
+.cv-carro.esq span,.cv-pedestre.esq span{transform:scaleX(-1)}
+.cv-pedestre{position:absolute;bottom:8vh;font-size:18px;line-height:1;
+  animation:cvAnda var(--t,30s) linear var(--d,0s) infinite}
+.cv-pedestre.esq{animation-name:cvAndaEsq}
+@keyframes cvAnda{from{transform:translateX(-12vw)}to{transform:translateX(112vw)}}
+@keyframes cvAndaEsq{from{transform:translateX(112vw)}to{transform:translateX(-12vw)}}
+
+/* ---- Céu: aviões, helicóptero, pássaros ---- */
+.cv-ar{position:absolute;inset:0;pointer-events:none}
+.cv-aviao{position:absolute;top:var(--y);left:0;font-size:24px;opacity:.9;
+  animation:cvAnda var(--t) linear var(--d) infinite}
+.cv-aviao span{display:inline-block;filter:drop-shadow(0 0 3px #fff)}
+.cv-aviao::before{content:"";position:absolute;right:100%;top:50%;width:70px;height:1px;
+  background:linear-gradient(to left,rgba(255,255,255,.5),transparent)}
+.cv-heli{position:absolute;top:var(--y);left:0;font-size:30px;animation:cvAnda var(--t) linear var(--d) infinite}
+.cv-heli span{display:inline-block;animation:cvSobe 1.4s ease-in-out infinite;filter:drop-shadow(0 0 4px #fff8)}
+.cv-heli::after{content:"";position:absolute;left:50%;top:100%;width:0;height:0;
+  margin-left:-30px;border-left:30px solid transparent;border-right:30px solid transparent;
+  border-top:60vh solid rgba(255,250,200,.06)}
+@keyframes cvSobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.cv-bando{position:absolute;top:var(--y);left:0;display:flex;gap:10px;font-size:14px;
+  animation:cvAnda var(--t) linear var(--d) infinite}
+.cv-bando span{display:inline-block;animation:cvBate .6s ease-in-out infinite alternate}
+.cv-bando span:nth-child(2){margin-top:-12px}
+.cv-bando span:nth-child(3){margin-top:-4px}
+@keyframes cvBate{from{transform:translateY(0) scaleY(1)}to{transform:translateY(-4px) scaleY(.7)}}
+
+/* ---- Ambulância (sobe de nível) ---- */
+.cv-ambulancia{position:absolute;bottom:9vh;left:0;font-size:44px;z-index:6;pointer-events:none;
+  animation:cvPassa 3.4s linear forwards;filter:drop-shadow(0 0 12px rgba(255,40,40,.7))}
+.cv-ambulancia::after{content:"✚";position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  color:#ff2a2a;font-size:18px;text-shadow:0 0 8px #ff2a2a;animation:cvPisca .3s steps(2) infinite}
+@keyframes cvPassa{from{transform:translateX(-15vw)}to{transform:translateX(115vw)}}
+
+/* ---- Ajustes para celular ---- */
+@media(max-width:480px){
+  .cv-placa{font-size:7px;padding:1px 4px}
+  .cv-carro{font-size:20px}
+  .cv-aviao,.cv-heli{font-size:18px}
+}
+
+/* =====================================================
+   CIDADE v3 — correção de corte
+   1) o jogo ocupava min-height:650px, maior que janelas baixas, e o body
+      com overflow:hidden escondia a parte de baixo (painel de resposta)
+   2) a cidade sobe 22vh para a rua e as lojas ficarem acima do painel
+   ===================================================== */
+.game-shell{height:100vh;height:100dvh;min-height:0}
+
+/* chão escuro atrás do painel de resposta */
+#cidBg::before{content:"";position:absolute;left:0;right:0;bottom:0;height:22vh;z-index:0;
+  background:linear-gradient(180deg,#0a0f22,#04060f)}
+#cidBg .cv-cidade{bottom:22vh;top:0}
