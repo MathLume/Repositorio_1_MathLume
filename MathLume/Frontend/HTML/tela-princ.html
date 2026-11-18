@@ -107,41 +107,36 @@
     </div>
   </section>
 
-  <section class="section" id="loja">
+  <section class="section lj" id="loja">
+    <div class="lj-fundo" aria-hidden="true"><span class="lj-orb o1"></span><span class="lj-orb o2"></span><span class="lj-orb o3"></span></div>
     <div class="container">
-      <div class="section-title">
-        <h2>Troque seus <span style="background:linear-gradient(90deg,#facc15,#fb923c);-webkit-background-clip:text;background-clip:text;color:transparent">XP na Loja</span></h2>
-        <p>Use seus pontos de experiência para desbloquear avatares exclusivos, temas personalizados e power-ups incríveis!</p>
+      <div class="section-title lj-titulo">
+        <span class="badge">🛍️ Loja MathLume</span>
+        <h2>Deixe o mini-game <span class="lj-ouro">com a sua cara</span></h2>
+        <p>Use seus <b class="star">🪙 Lumes</b> para trocar o cenário do jogo, o visual dos blocos de cálculo, as explosões de acerto e ativar boosters.</p>
       </div>
-      <div class="grid-3" style="margin-bottom:40px">
-        <div class="card">
-          <div class="cover" style="background:linear-gradient(135deg,#7e22ce,#312e81)">🚀<span class="tag">Novo</span></div>
-          <div class="body">
-            <div class="row"><h3>Avatar Galáctico</h3><span class="xp">⚡ 500 XP</span></div>
-            <p>Avatar exclusivo com animações premium e efeitos especiais</p>
-            <span class="small">1.2k adquiridos</span>
-          </div>
-        </div>
-        <div class="card" style="background:rgba(131,24,67,.25);border-color:rgba(236,72,153,.2)">
-          <div class="cover" style="background:linear-gradient(135deg,#be185d,#4c1d95)">🌆<span class="tag" style="background:#ec4899;color:#fff">Popular</span></div>
-          <div class="body">
-            <div class="row"><h3>Tema Cyberpunk</h3><span class="xp">⚡ 750 XP</span></div>
-            <p>Interface futurista com neon e animações cyberpunk</p>
-            <span class="small">3.5k adquiridos</span>
-          </div>
-        </div>
-        <div class="card" style="background:rgba(8,51,68,.35);border-color:rgba(6,182,212,.2)">
-          <div class="cover" style="background:linear-gradient(135deg,#0e7490,#1e3a8a)">🔋<span class="tag" style="background:#06b6d4;color:#fff">Limitado</span></div>
-          <div class="body">
-            <div class="row"><h3>XP Boost 2x</h3><span class="xp">⚡ 300 XP</span></div>
-            <p>Ganhe XP em dobro por 24 horas em todas as atividades</p>
-            <span class="small">8.9k adquiridos</span>
-          </div>
-        </div>
+
+      <div class="lj-grid" id="ljDestaques">
+        <!-- preenchido a partir do catálogo real (mathlume-dados.js) -->
       </div>
-      <div class="center">
-        <a href="loja.html" class="btn-main btn-gold">🛍️ Visitar Loja Completa</a>
-        <p class="muted" style="margin-top:16px;font-size:.9rem">💰 Você possui <span class="star">0 XP</span> disponível • Faça login para começar a acumular!</p>
+
+      <div class="lj-vitrine" aria-label="Todos os itens da loja">
+        <div class="lj-trilho" id="ljTrilho"></div>
+      </div>
+
+      <div class="lj-painel">
+        <div class="lj-saldo">
+          <span class="lj-moeda" aria-hidden="true">🪙</span>
+          <div>
+            <small>Seu saldo</small>
+            <strong><span id="ljSaldo">0</span> Lumes</strong>
+          </div>
+        </div>
+        <p class="lj-aviso">ℹ️ O XP das partidas ainda não pode ser trocado na loja. Por enquanto, as compras são feitas com <b>Lumes</b>.</p>
+        <div class="lj-acoes">
+          <a href="loja.html" class="btn-main btn-gold lj-cta" onclick="somBotao()">🛍️ Explorar a loja completa</a>
+          <a href="loja.html#moedas" class="lj-recarga" onclick="somBotao()">Recarregar Lumes · <span id="ljPacoteMin">a partir de R$ 10,00</span></a>
+        </div>
       </div>
     </div>
   </section>
@@ -225,6 +220,86 @@
     <button class="btn-sair-menu" id="btnLogout" type="button" hidden onclick="somBotao()"><span aria-hidden="true">🚪</span>Sair da conta</button>
   </div>
 
+  <script src="../JS/mathlume-dados.js"></script>
+  <script>
+    /* Vitrine "Loja" da tela inicial — usa o catálogo e o saldo reais de mathlume-dados.js */
+    (function () {
+      var ML = window.MathLume, T = window.MathLumeTemas;
+      var grid = document.getElementById('ljDestaques');
+      if (!ML || !T || !grid) return;
+
+      function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+      // 3 destaques reais — um de cada tipo de compra
+      var DESTAQUES = [
+        { tipo: 'tema', id: 'halloween', selo: '🎨 Tema do jogo', aba: 'personalizacao', cor: '#fb923c',
+          particulas: '🦇 🌕 🦇' },
+        { tipo: 'explosoes', id: 'naves', selo: '💥 Explosão de acerto', aba: 'personalizacao', cor: '#22d3ee',
+          fundo: 'radial-gradient(circle at 50% 120%,#0e7490 0%,#1e1b4b 55%,#0b0620 100%)', particulas: '✨ 🛸 ✨' },
+        { tipo: 'boosters', id: 'chance', selo: '⚡ Booster', aba: 'boosters', cor: '#f472b6',
+          fundo: 'radial-gradient(circle at 50% 120%,#be185d 0%,#4c1d95 55%,#1e0b3a 100%)', particulas: '❤️ ✚ ❤️' }
+      ];
+
+      function dados(d) {
+        if (d.tipo === 'tema') {
+          var t = T.item(d.id);
+          return t && { nome: t.nome, emoji: t.emoji, desc: t.desc, preco: t.preco, fundo: t.preview, tem: T.possui(t.id) };
+        }
+        var it = ML.item(d.tipo, d.id);
+        if (!it) return null;
+        var r = { nome: it.nome, emoji: it.emoji, desc: it.desc, preco: it.preco, fundo: d.fundo };
+        if (d.tipo === 'boosters') r.qtd = ML.estado().boosters[it.id] || 0;
+        else r.tem = ML.possui(d.tipo, it.id);
+        return r;
+      }
+
+      function card(d, i) {
+        var x = dados(d);
+        if (!x) return '';
+        var status = x.tem ? '<span class="lj-status ok">✓ Já é seu</span>'
+                   : (x.qtd ? '<span class="lj-status">Você tem ' + x.qtd + '</span>' : '');
+        return '<a class="lj-card" href="loja.html#' + d.aba + '" style="--c:' + d.cor + ';--i:' + i + '" onclick="somBotao()">' +
+                 '<div class="lj-capa" style="background:' + x.fundo + '">' +
+                   '<span class="lj-selo">' + d.selo + '</span>' + status +
+                   '<span class="lj-part" aria-hidden="true"><span>' + d.particulas.split(' ').join('</span><span>') + '</span></span>' +
+                   '<span class="lj-emoji" aria-hidden="true">' + x.emoji + '</span>' +
+                 '</div>' +
+                 '<div class="lj-corpo">' +
+                   '<h3>' + esc(x.nome) + '</h3>' +
+                   '<p>' + esc(x.desc) + '</p>' +
+                   '<div class="lj-rodape">' +
+                     '<span class="lj-preco">🪙 ' + ML.fmt(x.preco) + ' <small>Lumes</small></span>' +
+                     '<span class="lj-ver">' + (x.tem ? 'Equipar' : 'Ver na loja') + ' →</span>' +
+                   '</div>' +
+                 '</div>' +
+               '</a>';
+      }
+
+      function chips() {
+        var lista = [];
+        T.catalogo.forEach(function (t) { if (t.preco > 0) lista.push({ e: t.emoji, n: 'Tema ' + t.nome, p: t.preco }); });
+        ['blocos', 'explosoes', 'boosters'].forEach(function (c) {
+          ML.catalogo[c].forEach(function (it) { if (it.preco > 0) lista.push({ e: it.emoji, n: it.nome, p: it.preco }); });
+        });
+        var html = lista.map(function (c) {
+          return '<span class="lj-chip"><b>' + c.e + '</b>' + esc(c.n) + '<i>🪙 ' + ML.fmt(c.p) + '</i></span>';
+        }).join('');
+        return html + html.replace(/class="lj-chip"/g, 'class="lj-chip" aria-hidden="true"'); // duplicado para o loop contínuo
+      }
+
+      function render() {
+        grid.innerHTML = DESTAQUES.map(card).join('');
+        document.getElementById('ljTrilho').innerHTML = chips();
+        document.getElementById('ljSaldo').textContent = ML.fmt(ML.estado().lumes);
+        var min = ML.catalogo.pacotes.reduce(function (m, p) { return p.preco < m ? p.preco : m; }, Infinity);
+        if (isFinite(min)) document.getElementById('ljPacoteMin').textContent = 'a partir de ' + ML.brl(min);
+      }
+
+      render();
+      // voltou da loja pelo botão "voltar": atualiza saldo e itens comprados
+      window.addEventListener('pageshow', function (e) { if (e.persisted) { ML.recarregar(); render(); } });
+    })();
+  </script>
   <script src="../JS/mathlume-api.js"></script>
   <script>
 

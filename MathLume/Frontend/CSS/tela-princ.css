@@ -225,3 +225,86 @@ a.card:hover .play-cta { filter: brightness(1.15); }
   .digita { clip-path: none; }
   .slide-tutorial[data-passo="3"] .digita, .slide-tutorial[data-passo="3"] [data-step="3"] .mini-campo { animation: none; }
 }
+
+/* =====================================================
+   LOJA na tela inicial (seção #loja, classes lj-*)
+   Os cards e o trilho são montados pelo script da página
+   a partir do catálogo real (JS/mathlume-dados.js).
+   ===================================================== */
+.lj { position: relative; overflow: hidden; }
+.lj > .container { position: relative; z-index: 1; }
+.lj-fundo { position: absolute; inset: 0; pointer-events: none; }
+.lj-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .45; animation: ljBoia 14s ease-in-out infinite alternate; }
+.lj-orb.o1 { width: 340px; height: 340px; left: -80px; top: 8%; background: #a855f7; }
+.lj-orb.o2 { width: 300px; height: 300px; right: -60px; top: 30%; background: #f97316; opacity: .3; animation-delay: -5s; }
+.lj-orb.o3 { width: 260px; height: 260px; left: 40%; bottom: -120px; background: #06b6d4; opacity: .3; animation-delay: -9s; }
+@keyframes ljBoia { to { transform: translate(40px, -30px) scale(1.1); } }
+
+.lj-titulo { margin-bottom: 44px; }
+.lj-ouro { background: linear-gradient(90deg, #facc15, #fb923c); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* 3 destaques */
+.lj-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-bottom: 32px; }
+.lj-card { --c: #a855f7; display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: rgba(30, 16, 60, .7);
+  border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  transition: transform .3s, box-shadow .3s, border-color .3s; animation: ljEntra .6s calc(var(--i, 0) * .12s) both; }
+.lj-card:hover { transform: translateY(-6px); border-color: var(--c); box-shadow: 0 16px 40px color-mix(in srgb, var(--c) 30%, transparent); }
+.lj-card:focus-visible { outline: 2px solid var(--c); outline-offset: 3px; }
+@keyframes ljEntra { from { opacity: 0; transform: translateY(18px); } }
+
+.lj-capa { position: relative; height: 170px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.lj-emoji { font-size: 4rem; position: relative; z-index: 1; filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .45)); transition: transform .35s; }
+.lj-card:hover .lj-emoji { transform: scale(1.15) rotate(-6deg); }
+.lj-selo, .lj-status { position: absolute; top: 12px; z-index: 2; padding: 4px 11px; border-radius: 999px; font-size: .72rem; font-weight: 600; backdrop-filter: blur(6px); }
+.lj-selo { left: 12px; background: rgba(10, 6, 25, .6); color: #fff; border: 1px solid rgba(255, 255, 255, .18); }
+.lj-status { right: 12px; background: rgba(250, 204, 21, .9); color: #1a1033; }
+.lj-status.ok { background: rgba(34, 197, 94, .9); color: #052e16; }
+.lj-part { position: absolute; inset: 0; display: flex; justify-content: space-around; align-items: flex-end; pointer-events: none; }
+.lj-part span { font-size: 1.1rem; opacity: .7; animation: ljSobe 4s linear infinite; }
+.lj-part span:nth-child(2) { animation-delay: -1.3s; }
+.lj-part span:nth-child(3) { animation-delay: -2.6s; }
+@keyframes ljSobe { from { transform: translateY(30px); opacity: 0; } 20% { opacity: .8; } to { transform: translateY(-170px); opacity: 0; } }
+
+.lj-corpo { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
+.lj-corpo h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
+.lj-corpo p { color: #9ca3af; font-size: .9rem; line-height: 1.5; flex: 1; margin-bottom: 16px; }
+.lj-rodape { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.lj-preco { color: #facc15; font-weight: 700; }
+.lj-preco small { font-weight: 500; color: #fde68a; opacity: .8; }
+.lj-ver { font-size: .85rem; color: var(--c); font-weight: 600; transition: transform .25s; }
+.lj-card:hover .lj-ver { transform: translateX(4px); }
+
+/* trilho com todos os itens (rola sozinho) */
+.lj-vitrine { overflow: hidden; margin-bottom: 32px; padding: 6px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.lj-trilho { display: flex; gap: 12px; width: max-content; animation: ljRola 60s linear infinite; }
+.lj-vitrine:hover .lj-trilho { animation-play-state: paused; }
+@keyframes ljRola { to { transform: translateX(-50%); } }
+.lj-chip { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; padding: 8px 14px; border-radius: 999px; font-size: .88rem;
+  background: rgba(88, 28, 135, .35); border: 1px solid rgba(168, 85, 247, .25); color: #e9d5ff; }
+.lj-chip b { font-size: 1.05rem; }
+.lj-chip i { font-style: normal; color: #facc15; font-weight: 600; }
+
+/* saldo + botões */
+.lj-painel { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px 28px; padding: 22px 26px; border-radius: 18px;
+  background: rgba(30, 16, 60, .65); border: 1px solid rgba(250, 204, 21, .22); }
+.lj-saldo { display: flex; align-items: center; gap: 14px; }
+.lj-moeda { font-size: 2.2rem; animation: ljGira 3.5s ease-in-out infinite; }
+@keyframes ljGira { 50% { transform: rotateY(180deg); } }
+.lj-saldo small { display: block; color: #9ca3af; font-size: .8rem; }
+.lj-saldo strong { font-size: 1.35rem; color: #facc15; }
+.lj-aviso { flex: 1 1 260px; margin: 0; color: #9ca3af; font-size: .85rem; line-height: 1.5; }
+.lj-acoes { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.lj-cta { white-space: nowrap; }
+.lj-recarga { font-size: .82rem; color: #fde68a; text-decoration: underline; text-underline-offset: 3px; opacity: .85; }
+.lj-recarga:hover { opacity: 1; }
+
+@media (max-width: 900px) {
+  .lj-grid { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
+  .lj-painel { flex-direction: column; text-align: center; }
+  .lj-saldo { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lj-orb, .lj-part span, .lj-trilho, .lj-moeda, .lj-card { animation: none; }
+}
