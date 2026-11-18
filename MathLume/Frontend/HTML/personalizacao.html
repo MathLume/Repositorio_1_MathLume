@@ -5,28 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Personalização — MathLume</title>
   <link rel="stylesheet" href="../CSS/personalizacao.css">
+  <link rel="stylesheet" href="../CSS/cabecalho.css">
 </head>
 <body data-tema="espaco">
   <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
   <div class="fundo" aria-hidden="true"></div>
 
-  <nav class="navbar">
-    <div class="container">
-      <a href="tela-princ.html" class="logo">Math<span>Lume</span></a>
-      <div class="menu" id="menu">
-        <a href="tela-princ.html">Início</a>
-        <a href="minigamemat.html">Mini-game</a>
-        <a href="TelaDeRank.html">Ranking</a>
-        <a href="loja.html">Loja</a>
-        <a href="personalizacao.html" class="ativo">Personalização</a>
-      </div>
-      <div class="nav-right">
-        <a href="loja.html#moedas" class="saldo" id="saldoLink" title="Comprar Lumes">🪙 <b id="saldo">0</b> Lumes</a>
-        <button class="gear" id="abrirAudio" type="button" aria-label="Configurações de áudio" title="Áudio" onclick="somBotao()">⚙</button>
-        <button class="burger" id="burger" type="button" aria-label="Menu" onclick="somBotao()">☰</button>
-      </div>
-    </div>
+  <!-- cabeçalho igual em todas as telas: JS/cabecalho.js + CSS/cabecalho.css -->
+  <nav class="navbar" id="cabecalho" data-pagina="personalizacao">
+    <a data-manter href="loja.html#moedas" class="saldo" id="saldoLink" title="Comprar Lumes">🪙 <b id="saldo">0</b> Lumes</a>
   </nav>
+  <script src="../JS/cabecalho.js"></script>
 
   <div class="app">
     <header class="page-head container">
@@ -62,32 +51,7 @@
     </footer>
   </div>
 
-  <!-- Painel de áudio: mesmos controles e mesma preferência (mathlume_volume) do mini-game -->
-  <div id="audioWrap">
-    <div class="a-backdrop" id="aBackdrop"></div>
-    <aside class="a-panel" id="aPanel" aria-label="Configurações de áudio">
-      <div class="a-head">
-        <span class="sim">⚙</span>
-        <div><strong>Configurações</strong><small>MATHLUME</small></div>
-        <button id="fecharAudio" type="button" aria-label="Fechar" onclick="somBotao()">✕</button>
-      </div>
-      <div class="a-body">
-        <label>VOLUME DO SOM</label>
-        <div class="vol-card">
-          <div class="vol-top"><button id="muteBtn" type="button">🔊</button><strong><span id="volValue">70</span>%</strong></div>
-          <input type="range" min="0" max="100" value="70" id="volRange" aria-label="Volume">
-          <div class="vol-presets">
-            <button type="button" data-vol="0">🔇</button>
-            <button type="button" data-vol="25">25</button>
-            <button type="button" data-vol="50">50</button>
-            <button type="button" data-vol="75">75</button>
-            <button type="button" data-vol="100">100</button>
-          </div>
-        </div>
-        <p class="a-note">💾 O volume é salvo no seu dispositivo e vale também dentro do mini-game.</p>
-      </div>
-    </aside>
-  </div>
+  <!-- Som: fica no painel ⚙️ do cabeçalho (JS/cabecalho.js + JS/sons.js), igual nas outras telas -->
 
   <div class="toast" id="toast" role="status"></div>
 
@@ -99,8 +63,6 @@
       var $ = function (id) { return document.getElementById(id); };
       var CATS = ['blocos', 'explosoes'];
       var ABAS = ['temas'].concat(CATS);
-
-      $('burger').addEventListener('click', function () { $('menu').classList.toggle('open'); });
 
       /* ---------- abas ---------- */
       function mostrarAba(nome) {
@@ -229,44 +191,13 @@
         if (ML.equipar(b.dataset.equipar, b.dataset.id)) { render(); toast('✓ ' + it.nome + ' equipado!'); }
       });
 
-      /* ---------- áudio (mesma chave e mesmos controles do mini-game) ---------- */
-      var VOL_KEY = 'mathlume_volume';
-      var volume = (function () {
-        var raw = null;
-        try { raw = localStorage.getItem(VOL_KEY); } catch (e) {}
-        var v = raw === null ? 70 : Number(raw);
-        return isNaN(v) ? 70 : Math.max(0, Math.min(100, v));
-      })();
+      window.addEventListener('pageshow', function (e) { if (e.persisted) { ML.recarregar(); render(); } });
 
-      function setVolume(v) {
-        volume = Math.max(0, Math.min(100, Number(v)));
-        try { localStorage.setItem(VOL_KEY, String(volume)); } catch (e) {}
-        $('volRange').value = volume;
-        $('volRange').style.setProperty('--p', volume + '%');
-        $('volValue').textContent = volume;
-        $('muteBtn').textContent = volume === 0 ? '🔇' : '🔊';
-        document.querySelectorAll('[data-vol]').forEach(function (b) { b.classList.toggle('active', Number(b.dataset.vol) === volume); });
-        $('botoes').volume = volume / 100;   // som dos cliques desta tela
-        window.sfxOn = volume > 0;           // sons.js respeita isso
-      }
-      function abrirAudio() { $('audioWrap').classList.add('a-open'); }
-      function fecharAudio() { $('audioWrap').classList.remove('a-open'); }
-      $('abrirAudio').addEventListener('click', abrirAudio);
-      $('fecharAudio').addEventListener('click', fecharAudio);
-      $('aBackdrop').addEventListener('click', fecharAudio);
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fecharAudio(); });
-      $('volRange').addEventListener('input', function (e) { setVolume(e.target.value); });
-      $('volRange').addEventListener('change', function () { somBotao(); });
-      $('muteBtn').addEventListener('click', function () { setVolume(volume === 0 ? 70 : 0); });
-      document.querySelectorAll('[data-vol]').forEach(function (b) { b.addEventListener('click', function () { setVolume(b.dataset.vol); somBotao(); }); });
-
-      window.addEventListener('pageshow', function (e) { if (e.persisted) { ML.recarregar(); render(); setVolume(volume); } });
-
-      setVolume(volume);
       render();
       mostrarAba(location.hash.slice(1));
     })();
   </script>
   <script src="../JS/sons.js"></script>
+  <script src="../JS/curvatura.js"></script>
 </body>
 </html>
