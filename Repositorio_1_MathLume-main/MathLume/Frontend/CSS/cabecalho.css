@@ -1,0 +1,420 @@
+/* ==========================================================
+   Cabeçalho do MathLume (igual em todas as telas)
+   Barra de cima + engrenagem + painel de Configurações.
+   Usado junto com JS/cabecalho.js. Carregue DEPOIS do CSS da página.
+   ========================================================== */
+/* ---------- Barra superior: fundo com grade, ondas, fórmulas e régua de π ---------- */
+html { scroll-padding-top: 96px; }
+.navbar {
+  --nav-h: 88px; --regua-h: 17px;
+  position: fixed; top: 0; width: 100%; height: var(--nav-h); z-index: 50;
+  background:
+    linear-gradient(rgba(168, 85, 247, .07) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, rgba(168, 85, 247, .07) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, rgba(23, 12, 66, .94), rgba(30, 14, 78, .94) 50%, rgba(20, 14, 64, .94));
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 30px rgba(2, 6, 23, .55);
+}
+/* linha degradê na base da barra */
+.navbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, #ff6ac1, #c084fc 30%, #ffe27a 55%, #5ee7ff 80%, #6366f1); box-shadow: 0 0 10px rgba(192, 132, 252, .6); }
+.navbar .container { position: relative; z-index: 1; height: calc(100% - var(--regua-h) - 3px); display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1400px; }
+
+.nav-fundo { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.nav-onda { position: absolute; left: 0; top: 0; width: 200%; height: calc(100% - var(--regua-h) - 3px); animation: ondaCorre 24s linear infinite; }
+.nav-onda path { fill: none; vector-effect: non-scaling-stroke; transition: d .7s ease; }
+.onda-principal { stroke: url(#ondaCor); stroke-width: 2.5; opacity: .9; }
+.onda-sombra { stroke: url(#ondaCor); stroke-width: 10; opacity: .18; filter: blur(4px); }
+.onda-pontilhada { stroke: rgba(255, 255, 255, .16); stroke-width: 1.2; stroke-dasharray: 3 7; }
+@keyframes ondaCorre { to { transform: translateX(-50%); } }
+.nav-formula { position: absolute; font: italic 500 .9rem/1 "Cambria Math", "Times New Roman", serif; color: rgba(216, 180, 254, .16); white-space: nowrap; }
+.nav-formula sup { font-size: .65em; }
+.nav-estrela { position: absolute; font-size: 15px; line-height: 1; text-shadow: 0 0 8px currentColor; animation: estrelaPisca 2.8s ease-in-out infinite; }
+.nav-estrela:nth-of-type(2n) { animation-delay: -1.4s; font-size: 11px; }
+@keyframes estrelaPisca { 0%, 100% { opacity: .9; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
+.nav-ponto { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #5ee7ff; box-shadow: 0 0 6px #5ee7ff; opacity: .7; }
+/* régua com as marcas π/2, π, 3π/2 ... */
+.nav-regua { position: absolute; left: 0; right: 0; bottom: 3px; height: var(--regua-h); display: flex; border-top: 1px solid rgba(196, 181, 253, .18); background: rgba(10, 6, 35, .35); }
+.nav-regua span { flex: 1; position: relative; padding-left: 4px; font: 500 .62rem/var(--regua-h) system-ui, sans-serif; color: rgba(196, 181, 253, .55); border-left: 1px solid rgba(196, 181, 253, .3); }
+.nav-regua span::after { content: ""; position: absolute; left: 50%; top: 0; height: 4px; border-left: 1px solid rgba(196, 181, 253, .2); }
+
+/* logo com o π */
+.logo.logo-nav { display: inline-flex; align-items: center; gap: 10px; font-size: 1.9rem; font-weight: 800; letter-spacing: -0.03em; color: #fff; text-shadow: 0 2px 12px rgba(0, 0, 0, .35); flex-shrink: 0; }
+.logo-nav img { height: 40px; width: auto; filter: drop-shadow(0 0 8px rgba(255, 176, 46, .45)); }
+.logo.logo-nav span { background: linear-gradient(90deg, #ffb02e, #ff8a5c 35%, #ff6ac1); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.logo { font-size: 1.5rem; letter-spacing: -0.02em; }
+.logo span { color: #c084fc; }
+.menu { display: flex; gap: 8px; padding: 5px; border-radius: 999px; background: rgba(15, 23, 42, .55); border: 1px solid rgba(168, 85, 247, .18); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05); }
+.menu a { color: #d1d5db; transition: color .2s; }
+
+/* ---------- Links do menu (Início, Ranking, Loja, Personalização) ---------- */
+.menu a.nav-link {
+  position: relative; display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: 999px; font-size: .92rem; font-weight: 500;
+  border: 1px solid transparent;
+  transition: color .2s, background .25s, border-color .25s, transform .2s;
+}
+.nav-ic { display: block; width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; filter: saturate(.85) drop-shadow(0 0 0 transparent); transition: transform .25s, filter .25s; }
+.nav-ic.nav-ic-largo { width: 34px; } /* o ícone do Início (π com anel) é mais largo que alto */
+/* linha de luz que cresce embaixo ao passar o mouse */
+.menu a.nav-link::after {
+  content: ""; position: absolute; left: 50%; bottom: 3px; width: 0; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, #c084fc, #f0abfc); box-shadow: 0 0 8px rgba(192, 132, 252, .9);
+  transform: translateX(-50%); transition: width .25s ease;
+}
+.menu a.nav-link:hover, .menu a.nav-link:focus-visible {
+  color: #fff; background: rgba(168, 85, 247, .14); border-color: rgba(192, 132, 252, .3);
+  transform: translateY(-1px);
+}
+.menu a.nav-link:hover::after, .menu a.nav-link:focus-visible::after { width: 40%; }
+.menu a.nav-link:hover .nav-ic, .menu a.nav-link:focus-visible .nav-ic { transform: scale(1.18) rotate(-6deg); filter: saturate(1.1) drop-shadow(0 0 6px rgba(216, 180, 254, .8)); }
+.menu a.nav-link.ativo { color: #f3e8ff; background: rgba(168, 85, 247, .1); }
+.menu a.nav-link.ativo .nav-ic { filter: saturate(1); }
+.menu a:focus-visible { outline: 2px solid #c084fc; outline-offset: 2px; }
+
+/* ---------- Destaque do "Jogar" no menu: roxo/lilás, brilhante e animado ---------- */
+.menu { align-items: center; }
+.menu a.nav-jogar {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 20px; border-radius: 999px;
+  color: #fff; font-weight: 700; letter-spacing: .03em;
+  text-shadow: 0 0 8px rgba(255, 255, 255, .7), 0 1px 2px rgba(76, 29, 149, .6);
+  border: 1px solid rgba(225, 200, 255, .8);
+  /* purpurina (pontinhos de luz) + fundo roxo/lilás metálico em movimento */
+  background:
+    radial-gradient(circle at 14% 30%, rgba(255,255,255,.9) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 32% 78%, rgba(255,255,255,.6) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 58% 22%, rgba(255,255,255,.75) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 76% 70%, rgba(255,255,255,.55) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 90% 35%, rgba(255,255,255,.85) 0 1px, transparent 1.6px),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 3px, transparent 3px 7px),
+    linear-gradient(110deg, #9333ea, #a855f7 30%, #d8b4fe 50%, #7e22ce 70%, #9333ea);
+  background-size: auto, auto, auto, auto, auto, auto, 260% 100%;
+  box-shadow: 0 0 10px rgba(147, 51, 234, .7), 0 0 24px rgba(168, 85, 247, .45), inset 0 1px 0 rgba(255, 255, 255, .45);
+  animation: jogarFluxo 3.5s ease-in-out infinite alternate, jogarPulso 1.8s ease-in-out infinite;
+  transition: transform .2s ease;
+}
+/* faixa de luz que atravessa o botão */
+.menu a.nav-jogar::before {
+  content: ""; position: absolute; z-index: -1; top: -20%; left: -70%;
+  width: 45%; height: 140%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .75), transparent);
+  transform: skewX(-20deg);
+  animation: jogarBrilho 2.6s ease-in-out infinite;
+}
+.menu a.nav-jogar .ic { font-size: .72em; filter: drop-shadow(0 0 4px #fff); }
+.menu a.nav-jogar:hover, .menu a.nav-jogar:focus-visible {
+  color: #fff; transform: translateY(-1px) scale(1.08);
+  box-shadow: 0 0 14px rgba(147, 51, 234, .95), 0 0 36px rgba(168, 85, 247, .7), 0 0 60px rgba(192, 132, 252, .4), inset 0 1px 0 rgba(255, 255, 255, .5);
+}
+@keyframes jogarFluxo {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0% 50%; }
+  to   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 14px 0, 100% 50%; }
+}
+@keyframes jogarPulso {
+  0%, 100% { box-shadow: 0 0 8px rgba(147, 51, 234, .6), 0 0 18px rgba(168, 85, 247, .35), inset 0 1px 0 rgba(255, 255, 255, .45); }
+  50%      { box-shadow: 0 0 14px rgba(147, 51, 234, .95), 0 0 34px rgba(168, 85, 247, .6), 0 0 54px rgba(192, 132, 252, .3), inset 0 1px 0 rgba(255, 255, 255, .45); }
+}
+@keyframes jogarBrilho {
+  0%       { left: -70%; }
+  55%, 100% { left: 130%; }
+}
+.btn-login { padding: 8px 24px; border: 0; border-radius: 8px; color: #fff; cursor: pointer; background: linear-gradient(90deg, #9333ea, #db2777); }
+.burger { display: none; background: none; border: 0; color: #fff; font-size: 1.6rem; cursor: pointer; }
+/* as outras telas tinham uma barra mais baixa: ajusta borda e espaço do título */
+.navbar { border-bottom: 0; }
+.navbar ~ .page-head { padding-top: 132px; }
+
+@media (max-width: 1300px) and (min-width: 1101px) {
+  .logo.logo-nav { font-size: 1.6rem; }
+  .menu a.nav-link { padding: 7px 11px; }
+}
+@media (max-width: 1100px) and (min-width: 901px) {
+  .logo.logo-nav { font-size: 1.4rem; gap: 6px; }
+  .logo-nav img { height: 30px; }
+  .menu { gap: 4px; }
+  .menu a.nav-link { padding: 7px 10px; font-size: .86rem; gap: 5px; }
+  .menu a.nav-jogar { padding: 7px 16px; }
+}
+@media (max-width: 900px) {
+  .menu { display: none; }
+  .burger { display: block; }
+  .logo.logo-nav { font-size: 1.5rem; gap: 8px; }
+  .logo-nav img { height: 32px; }
+  .nav-formula { display: none; }
+  .nav-regua span:nth-child(n+8) { display: none; }
+  .menu.open { display: flex; flex-direction: column; position: absolute; top: calc(100% + var(--regua-h) + 3px); left: 0; right: 0; padding: 16px 24px; gap: 14px; background: rgba(15, 23, 42, .97); }
+  .menu.open { align-items: stretch; gap: 6px; border-radius: 0 0 18px 18px; border: 0; border-bottom: 1px solid rgba(168, 85, 247, .25); }
+  .menu.open a.nav-link { padding: 10px 14px; font-size: 1rem; }
+  .menu.open a.nav-jogar { justify-content: center; padding: 10px 20px; }
+}
+
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.gear { width: 46px; height: 46px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; background: rgba(15, 10, 45, .75); border: 1.5px solid rgba(94, 231, 255, .55); box-shadow: 0 0 14px rgba(94, 231, 255, .25), inset 0 0 10px rgba(168, 85, 247, .25); transition: transform .4s, background .2s, box-shadow .2s; }
+.gear:hover { background: rgba(30, 20, 80, .85); box-shadow: 0 0 20px rgba(94, 231, 255, .45), inset 0 0 10px rgba(168, 85, 247, .35); transform: rotate(90deg); }
+/* ícone de engrenagem (imagem): não captura o clique, assim o botão continua sendo o alvo */
+.gear img { width: 28px; height: 28px; display: block; pointer-events: none; }
+
+/* ---------- Painel ⚙️ Configurações: mesmo visual "vivo" do cabeçalho ---------- */
+.panel {
+  position: fixed; top: 96px; right: 16px; z-index: 60;
+  width: 350px; max-width: calc(100vw - 32px); max-height: calc(100vh - 112px); overflow-y: auto;
+  padding: 0 18px 18px; border-radius: 20px;
+  background:
+    linear-gradient(rgba(168, 85, 247, .07) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, rgba(168, 85, 247, .07) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(165deg, #1b0e4c, #150b3e 55%, #0f0930);
+  border: 1px solid rgba(192, 132, 252, .38);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, .55), 0 0 26px rgba(168, 85, 247, .28), inset 0 0 30px rgba(94, 231, 255, .05);
+  opacity: 0; transform: translateY(-10px) scale(.98); transform-origin: top right; pointer-events: none;
+  transition: opacity .22s, transform .22s;
+  scrollbar-width: thin; scrollbar-color: rgba(192, 132, 252, .45) transparent;
+}
+.panel.open { opacity: 1; transform: none; pointer-events: auto; }
+
+/* topo = pedaço do cabeçalho: grade, curva andando, estrelas, f(x) e régua de π (fica preso ao rolar) */
+.panel-topo {
+  position: sticky; top: 0; z-index: 3; height: 84px; margin: 0 -18px 14px; overflow: hidden;
+  border-radius: 19px 19px 0 0;
+  background:
+    linear-gradient(rgba(168, 85, 247, .08) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, rgba(168, 85, 247, .08) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, #170c42, #1e0e4e 50%, #140e40);
+  box-shadow: 0 8px 20px rgba(2, 6, 23, .45);
+}
+.panel-topo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, #ff6ac1, #c084fc 30%, #ffe27a 55%, #5ee7ff 80%, #6366f1); box-shadow: 0 0 10px rgba(192, 132, 252, .6); }
+.panel-fx { position: absolute; right: 12px; bottom: 12px; z-index: 1; padding: 2px 9px; border-radius: 999px; font: italic 500 .78rem/1.4 "Cambria Math", "Times New Roman", serif; color: rgba(233, 213, 255, .85); background: rgba(15, 10, 45, .7); border: 1px solid rgba(94, 231, 255, .35); box-shadow: 0 0 10px rgba(94, 231, 255, .15); }
+.panel-fx b { color: #ffe27a; font-weight: 600; }
+.panel-fx sup { font-size: .7em; }
+.panel-head { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: 14px 14px 0 18px; }
+.panel-head strong { font-size: 1.05rem; text-shadow: 0 2px 10px rgba(0, 0, 0, .7), 0 0 14px rgba(168, 85, 247, .5); }
+.close { background: none; border: 0; color: #9ca3af; font-size: 1.1rem; cursor: pointer; }
+.close:hover { color: #fff; }
+.panel .close { width: 34px; height: 34px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; font-size: .95rem; background: rgba(15, 10, 45, .75); border: 1.5px solid rgba(94, 231, 255, .5); box-shadow: 0 0 12px rgba(94, 231, 255, .22), inset 0 0 8px rgba(168, 85, 247, .25); transition: transform .35s, box-shadow .2s; }
+.panel .close:hover { transform: rotate(90deg); box-shadow: 0 0 18px rgba(94, 231, 255, .45), inset 0 0 8px rgba(168, 85, 247, .35); }
+
+/* Configuração geral: lista visível; cada item abre a sua seção */
+.cfg-head-esq { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.cfg-voltar { width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; border: 1.5px solid rgba(94, 231, 255, .5); background: rgba(15, 10, 45, .75); color: #fff; font-size: 1.3rem; line-height: 1; cursor: pointer; box-shadow: 0 0 10px rgba(94, 231, 255, .2); transition: transform .2s, box-shadow .2s; }
+.cfg-voltar[hidden] { display: none; }
+.cfg-voltar:hover { transform: translateX(-2px); box-shadow: 0 0 16px rgba(94, 231, 255, .4); }
+.cfg-label { display: inline-flex; align-items: center; gap: 6px; margin: 2px 0 6px; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: linear-gradient(90deg, #ffb02e, #ff6ac1 45%, #c084fc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.cfg-label::before { content: "✦"; color: #ffe27a; -webkit-text-fill-color: #ffe27a; text-shadow: 0 0 8px #ffe27a; }
+.cfg-menu { display: none; flex-direction: column; gap: 8px; }
+.cfg-menu.active { display: flex; }
+.cfg-item {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px;
+  border-radius: 14px; border: 1px solid rgba(192, 132, 252, .25);
+  background: linear-gradient(135deg, rgba(34, 16, 88, .85), rgba(21, 11, 62, .85));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+  color: #fff; font: inherit; text-align: left; cursor: pointer;
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+.cfg-item:hover, .cfg-item:focus-visible { border-color: rgba(236, 72, 153, .6); box-shadow: 0 0 18px rgba(168, 85, 247, .38), inset 0 1px 0 rgba(255, 255, 255, .08); transform: translateX(3px); }
+.cfg-item:focus-visible { outline: 2px solid #f9a8d4; outline-offset: 2px; }
+/* ícone no mesmo estilo da engrenagem do topo, com brilho pulsando */
+/* ícones próprios (assets/icones/icone-sobre|som|curvatura.svg) */
+/* moldura iluminada: fundo escuro com brilho no centro + anel ciano, para o ícone saltar do fundo */
+.cfg-ic {
+  position: relative; width: 54px; height: 54px; flex-shrink: 0; padding: 2px;
+  display: flex; align-items: center; justify-content: center; border-radius: 15px;
+  background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, .16), rgba(94, 231, 255, .1) 38%, rgba(12, 6, 38, .95) 72%);
+  border: 1.5px solid rgba(94, 231, 255, .6);
+  box-shadow: 0 0 0 3px rgba(12, 6, 38, .85), 0 0 16px rgba(94, 231, 255, .35), inset 0 0 12px rgba(168, 85, 247, .4);
+  transition: border-color .3s, box-shadow .3s;
+}
+.cfg-ic img { width: 100%; height: 100%; display: block; filter: saturate(1.3) brightness(1.15) drop-shadow(0 0 3px rgba(255, 255, 255, .45)) drop-shadow(0 2px 4px rgba(10, 4, 35, .8)); transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), filter .3s; }
+.cfg-item:hover .cfg-ic, .cfg-item:focus-visible .cfg-ic { border-color: rgba(255, 106, 193, .85); box-shadow: 0 0 0 3px rgba(12, 6, 38, .85), 0 0 22px rgba(255, 106, 193, .45), inset 0 0 14px rgba(168, 85, 247, .55); }
+.cfg-item:hover .cfg-ic img, .cfg-item:focus-visible .cfg-ic img { transform: translateY(-2px) scale(1.12) rotate(-6deg); filter: saturate(1.4) brightness(1.25) drop-shadow(0 0 5px rgba(255, 255, 255, .6)) drop-shadow(0 4px 6px rgba(10, 4, 35, .8)); }
+.cfg-txt { flex: 1; min-width: 0; }
+.cfg-txt strong { display: block; font-weight: 600; }
+.cfg-txt small { display: block; font-size: .78rem; color: #b8aee0; }
+.cfg-seta { color: #f9a8d4; font-size: 1.4rem; line-height: 1; text-shadow: 0 0 8px rgba(249, 168, 212, .6); transition: transform .25s; }
+.cfg-item:hover .cfg-seta { transform: translateX(3px); }
+
+/* ---------- Formas geométricas "voando" (fundo do topo do painel e dos itens) ----------
+   paradas, inclinadas na direção do voo, com rastro atrás; ao passar o mouse elas avançam e giram */
+/* título do painel com o mesmo ícone que abre aquela parte (engrenagem / ícone do item) */
+.cfg-titulo { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.cfg-titulo img { width: 34px; height: 34px; flex-shrink: 0; display: block; padding: 3px; border-radius: 10px; background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, .16), rgba(12, 6, 38, .95) 72%); border: 1.5px solid rgba(94, 231, 255, .6); box-shadow: 0 0 12px rgba(94, 231, 255, .35); filter: saturate(1.3) brightness(1.15); }
+
+.formas { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+/* boiando: vai e volta de um lado para o outro com acelerações diferentes (não linear).
+   Usa a propriedade "translate", separada do "transform", então soma com o voo do hover */
+.forma { animation: boiar var(--dur, 7s) ease-in-out var(--atraso, 0s) infinite; }
+.forma svg { animation: balancar calc(var(--dur, 7s) * .8) ease-in-out var(--atraso, 0s) infinite alternate; }
+@keyframes boiar {
+  0%, 100% { translate: 0 0; }
+  22% { translate: var(--ax) calc(var(--ay) * -1); }
+  48% { translate: calc(var(--ax) * -.7) calc(var(--ay) * .6); }
+  71% { translate: calc(var(--ax) * .45) var(--ay); }
+  88% { translate: calc(var(--ax) * -.35) calc(var(--ay) * -.4); }
+}
+@keyframes balancar { from { rotate: -10deg; } to { rotate: 12deg; } }
+.panel-topo .formas { z-index: 0; }
+.forma { position: absolute; width: var(--s); height: var(--s); color: var(--cor); opacity: .72; transform: rotate(var(--voo)); transition: transform .7s cubic-bezier(.22, 1, .36, 1), opacity .3s; }
+.forma svg { display: block; width: 100%; height: 100%; overflow: visible; fill: currentColor; fill-opacity: .16; stroke: currentColor; stroke-width: 2.2; stroke-linejoin: round; filter: drop-shadow(0 0 3px currentColor); transform: rotate(var(--giro)); transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
+/* rastro do voo: duas linhas finas atrás da forma */
+.forma::before, .forma::after { content: ""; position: absolute; right: calc(100% + 3px); height: 1.5px; border-radius: 2px; background: linear-gradient(90deg, transparent, currentColor); transform: translateY(-50%); transition: width .7s cubic-bezier(.22, 1, .36, 1); }
+.forma::before { top: 50%; width: calc(var(--s) * 1.8); opacity: .6; }
+.forma::after { top: 15%; width: var(--s); opacity: .3; }
+.forma:nth-child(2), .forma:nth-child(2) svg { transition-delay: .04s; }
+.forma:nth-child(3), .forma:nth-child(3) svg { transition-delay: .08s; }
+.forma:nth-child(4), .forma:nth-child(4) svg { transition-delay: .12s; }
+.forma:nth-child(5), .forma:nth-child(5) svg { transition-delay: .16s; }
+.forma:nth-child(6), .forma:nth-child(6) svg { transition-delay: .2s; }
+.cfg-item:hover .forma, .cfg-item:focus-visible .forma, .panel-topo:hover .forma { opacity: .95; transform: rotate(var(--voo)) translateX(14px); }
+.cfg-item:hover .forma svg, .cfg-item:focus-visible .forma svg, .panel-topo:hover .forma svg { transform: rotate(calc(var(--giro) + 120deg)); }
+.cfg-item:hover .forma::before, .cfg-item:focus-visible .forma::before, .panel-topo:hover .forma::before { width: calc(var(--s) * 3); }
+.cfg-item:hover .forma::after, .cfg-item:focus-visible .forma::after, .panel-topo:hover .forma::after { width: calc(var(--s) * 1.8); }
+@media (prefers-reduced-motion: reduce) {
+  .forma, .forma svg, .forma::before, .forma::after { transition: none; animation: none; }
+}
+
+/* ---------- Gráficos do painel: parados; ao passar o mouse a função é "plotada" ----------
+   a linha se desenha da esquerda para a direita e um ponto de luz percorre a curva */
+.grafico svg { overflow: visible; }
+.grafico path { fill: none; }
+.grafico .onda-principal { stroke: url(#curvaCorMini); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .95; stroke-dasharray: 1 1; }
+.grafico .onda-sombra { stroke: url(#curvaCorMini); stroke-width: 7; opacity: .2; filter: blur(2.5px); stroke-dasharray: 1 1; }
+.grafico .onda-pontilhada { stroke: rgba(255, 255, 255, .18); stroke-width: 1; stroke-dasharray: 2 4; transition: stroke .3s; }
+.grafico .eixo { stroke: rgba(196, 181, 253, .14); stroke-width: 1; }
+.grafico-ponto { fill: #fff; opacity: 0; filter: drop-shadow(0 0 3px #ffe27a) drop-shadow(0 0 6px #ff6ac1); }
+.grafico.plotando .onda-principal, .grafico.plotando .onda-sombra { animation: plotar .9s linear both; }
+.grafico.plotando .grafico-ponto { animation: pontoPlot .9s linear both; }
+@keyframes plotar { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes pontoPlot { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
+/* ao passar o mouse a curva espelhada (pontilhada) acende */
+.curva-btn:hover .onda-pontilhada, .curva-previa:hover .onda-pontilhada { stroke: rgba(127, 240, 255, .5); }
+.tab-body { display: none; }
+.tab-body.active { display: block; animation: cfgFade .2s ease; }
+/* volume geral */
+.vol-topo { display: flex; justify-content: space-between; align-items: center; }
+.vol-topo b { color: #f9a8d4; font-weight: 600; font-size: .9rem; }
+.vol-linha { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.vol-btn { width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%; border: 1px solid rgba(168, 85, 247, .35); background: rgba(168, 85, 247, .12); color: #fff; font-size: 1.1rem; line-height: 1; cursor: pointer; }
+.vol-btn:hover { background: rgba(168, 85, 247, .3); }
+.member { display: flex; align-items: center; gap: 12px; padding: 10px; margin-bottom: 8px; border-radius: 14px; background: linear-gradient(135deg, rgba(34, 16, 88, .7), rgba(21, 11, 62, .7)); border: 1px solid rgba(192, 132, 252, .22); transition: border-color .25s, box-shadow .25s, transform .25s; }
+.member:hover { border-color: rgba(236, 72, 153, .5); box-shadow: 0 0 14px rgba(168, 85, 247, .3); transform: translateX(3px); }
+.member .avatar { box-shadow: 0 0 0 2px rgba(15, 10, 45, .9), 0 0 0 3.5px rgba(94, 231, 255, .55), 0 0 12px rgba(94, 231, 255, .3); }
+.member strong { display: block; font-weight: 500; }
+.member span, .opt span { display: block; font-size: .8rem; color: #9ca3af; }
+/* botão Admin dentro do painel ⚙️ (só aparece para administradores) */
+.admin-btn { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 12px; border-radius: 12px; color: #fff; background: linear-gradient(135deg, rgba(126, 34, 206, .35), rgba(76, 29, 149, .35)); border: 1px solid rgba(192, 132, 252, .45); box-shadow: 0 0 14px rgba(168, 85, 247, .2); transition: background .2s, box-shadow .2s, transform .2s; }
+.admin-btn[hidden] { display: none; }
+.admin-btn > span:first-child { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border-radius: 50%; background: rgba(168, 85, 247, .3); }
+.admin-btn strong { display: block; font-weight: 600; }
+.admin-btn small { display: block; font-size: .78rem; color: #c4b5fd; }
+.admin-btn .seta { margin-left: auto; font-size: 1.4rem; color: #d8b4fe; transition: transform .2s; }
+.admin-btn:hover, .admin-btn:focus-visible { background: linear-gradient(135deg, rgba(147, 51, 234, .5), rgba(91, 33, 182, .5)); box-shadow: 0 0 22px rgba(168, 85, 247, .45); transform: translateY(-1px); }
+.admin-btn:hover .seta { transform: translateX(3px); }
+.admin-btn:focus-visible { outline: 2px solid #c084fc; outline-offset: 2px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; background: linear-gradient(135deg, #a855f7, #ec4899); flex-shrink: 0; }
+.opt { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(168, 85, 247, .12); }
+.opt.col { flex-direction: column; align-items: stretch; }
+.opt strong { font-weight: 500; }
+input[type=range] { width: 100%; accent-color: #c084fc; }
+/* aba Curvatura: escolha da função do fundo do cabeçalho */
+.curva-topo { border-bottom: 0; padding-top: 0; }
+.curvas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.curva-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; padding: 8px 4px 6px; border-radius: 12px; border: 1px solid rgba(168, 85, 247, .2); background: rgba(168, 85, 247, .08); color: #d1d5db; font: italic 500 .8rem/1.2 "Cambria Math", "Times New Roman", serif; cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s; }
+.curva-btn .curva-nome { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.curva-btn sup { font-size: .7em; }
+/* gráficos do painel com o mesmo visual do cabeçalho: grade, degradê, brilho, pontilhado e régua de π */
+.curva-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.curva-previa, .curva-mini {
+  position: relative; display: block; overflow: hidden;
+  background:
+    linear-gradient(rgba(168, 85, 247, .09) 1px, transparent 1px) 0 0 / 11px 11px,
+    linear-gradient(90deg, rgba(168, 85, 247, .09) 1px, transparent 1px) 0 0 / 11px 11px,
+    linear-gradient(90deg, #170c42, #1e0e4e 50%, #140e40);
+}
+.curva-previa::after, .curva-mini::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, #ff6ac1, #c084fc 30%, #ffe27a 55%, #5ee7ff 80%, #6366f1); box-shadow: 0 0 6px rgba(192, 132, 252, .6); }
+.curva-previa { height: 78px; margin-bottom: 12px; border-radius: 14px; border: 1px solid rgba(168, 85, 247, .3); box-shadow: 0 6px 20px rgba(2, 6, 23, .5); }
+.curva-previa svg { position: absolute; left: 0; top: 0; width: 100%; height: calc(100% - 17px); }
+.curva-previa-regua { position: absolute; left: 0; right: 0; bottom: 2px; height: 15px; display: flex; border-top: 1px solid rgba(196, 181, 253, .18); background: rgba(10, 6, 35, .35); }
+.curva-previa-regua span { flex: 1; padding-left: 4px; font: 500 .6rem/15px system-ui, sans-serif; color: rgba(196, 181, 253, .6); border-left: 1px solid rgba(196, 181, 253, .3); }
+.curva-mini { width: 100%; height: 46px; border-radius: 9px; }
+.curva-mini svg { position: absolute; left: 0; top: 0; width: 100%; height: calc(100% - 12px); }
+.curva-mini .eixo { stroke: rgba(196, 181, 253, .12); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.curva-regua { position: absolute; left: 0; right: 0; bottom: 2px; height: 10px; display: flex; border-top: 1px solid rgba(196, 181, 253, .15); }
+.curva-regua i { flex: 1; padding-left: 2px; font: normal 500 .48rem/10px system-ui, sans-serif; color: rgba(196, 181, 253, .55); border-left: 1px solid rgba(196, 181, 253, .25); text-align: left; }
+.curva-nome { margin-top: 2px; }
+.curva-btn:hover { border-color: rgba(236, 72, 153, .5); }
+.curva-btn:focus-visible { outline: 2px solid #f9a8d4; outline-offset: 2px; }
+.curva-btn.ativa { color: #fff; border-color: #ec4899; background: linear-gradient(135deg, rgba(147, 51, 234, .35), rgba(219, 39, 119, .3)); box-shadow: 0 0 12px rgba(236, 72, 153, .3); }
+.curva-btn.ativa .curva-mini { box-shadow: 0 0 0 1px rgba(255, 176, 46, .6), 0 0 10px rgba(236, 72, 153, .35); }
+.curva-atual { margin-top: 14px; text-align: center; font: italic 500 .95rem "Cambria Math", "Times New Roman", serif; color: #9ca3af; }
+.curva-atual b { color: #f9a8d4; font-weight: 600; }
+.switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch i { position: absolute; inset: 0; border-radius: 999px; background: #475569; cursor: pointer; transition: background .2s; }
+.switch i::before { content: ""; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; border-radius: 50%; background: #fff; transition: transform .2s; }
+.switch input:checked + i { background: #a855f7; }
+.switch input:checked + i::before { transform: translateX(20px); }
+
+.btn-login { position: relative; }
+/* ---------- Botão Login no mesmo estilo do "Jogar": roxo/lilás, purpurina e brilho ---------- */
+/* a faixa de luz é uma camada do fundo (e não ::before), porque ::before/::after já são o balão
+   "Comece por aqui" do tutorial e não podem ser cortados por overflow:hidden */
+.btn-login.btn-brilho {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 20px; border-radius: 999px;
+  color: #fff; font-weight: 700; letter-spacing: .03em;
+  text-shadow: 0 0 8px rgba(255, 255, 255, .7), 0 1px 2px rgba(76, 29, 149, .6);
+  border: 1px solid rgba(225, 200, 255, .8);
+  background:
+    linear-gradient(100deg, transparent 42%, rgba(255, 255, 255, .7) 50%, transparent 58%),
+    radial-gradient(circle at 14% 30%, rgba(255,255,255,.9) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 32% 78%, rgba(255,255,255,.6) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 58% 22%, rgba(255,255,255,.75) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 76% 70%, rgba(255,255,255,.55) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 90% 35%, rgba(255,255,255,.85) 0 1px, transparent 1.6px),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 3px, transparent 3px 7px),
+    linear-gradient(110deg, #9333ea, #a855f7 30%, #d8b4fe 50%, #7e22ce 70%, #9333ea);
+  background-size: 250% 100%, auto, auto, auto, auto, auto, auto, 260% 100%;
+  background-repeat: no-repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat;
+  box-shadow: 0 0 10px rgba(147, 51, 234, .7), 0 0 24px rgba(168, 85, 247, .45), inset 0 1px 0 rgba(255, 255, 255, .45);
+  animation: loginFluxo 3.5s ease-in-out infinite, jogarPulso 1.8s ease-in-out infinite;
+  transition: transform .2s ease;
+}
+.btn-login.btn-brilho:hover, .btn-login.btn-brilho:focus-visible {
+  filter: none; transform: translateY(-1px) scale(1.08);
+  box-shadow: 0 0 14px rgba(147, 51, 234, .95), 0 0 36px rgba(168, 85, 247, .7), 0 0 60px rgba(192, 132, 252, .4), inset 0 1px 0 rgba(255, 255, 255, .5);
+}
+.btn-login.btn-brilho:focus-visible { outline: 2px solid #c084fc; outline-offset: 3px; }
+/* durante o passo 1 do tutorial: mantém o brilho e troca o pulso pelo amarelo */
+/* logado: mostra o nome do usuário; nomes longos terminam em "…" */
+.btn-login.btn-brilho.com-nome { display: block; max-width: 190px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+@keyframes loginFluxo {
+  /* 1ª camada = faixa de luz atravessando (100% → 0% = da esquerda para a direita); última = fundo metálico */
+  0%   { background-position: 100% 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0% 50%; }
+  55%  { background-position: 0% 0, 0 0, 0 0, 0 0, 0 0, 0 0, 7px 0, 100% 50%; }
+  100% { background-position: 0% 0, 0 0, 0 0, 0 0, 0 0, 0 0, 14px 0, 0% 50%; }
+}
+@keyframes cfgFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .menu a.nav-jogar, .menu a.nav-jogar::before, .btn-login.btn-brilho, .nav-onda, .nav-estrela { animation: none !important; }
+  .menu a.nav-link, .menu a.nav-link::after, .nav-ic, .admin-btn { transition: none; }
+  .grafico .onda-principal, .grafico .onda-sombra, .grafico-ponto { animation: none !important; }
+  .cfg-item, .member, .panel .close { transition: none; }
+}
+
+/* celular: tudo cabe na barra (logo, saldo de Lumes, Login, ⚙️ e ☰) */
+@media (max-width: 600px) {
+  .navbar .container { padding: 0 14px; gap: 8px; }
+  .nav-right { gap: 8px; }
+  .nav-right .saldo { padding: 6px 10px; font-size: .82rem; white-space: nowrap; }
+  .btn-login.btn-brilho { padding: 6px 14px; font-size: .9rem; }
+  .btn-login.btn-brilho.com-nome { max-width: 110px; }
+  .gear { width: 40px; height: 40px; }
+  .gear img { width: 24px; height: 24px; }
+}
+@media (max-width: 480px) {
+  .logo.logo-nav { font-size: 0; gap: 0; } /* só o ícone do π */
+}
+@media (max-width: 600px) {
+  /* telas com saldo de Lumes (Loja, Personalização): o logo fica só com o π para sobrar espaço */
+  .navbar:has(.saldo) .logo.logo-nav { font-size: 0; gap: 0; }
+}
