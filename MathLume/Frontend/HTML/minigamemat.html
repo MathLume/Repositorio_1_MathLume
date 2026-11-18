@@ -24,11 +24,11 @@
 </head>
 <body onload="musicaLobby()">
   <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
-  <audio id="contagem" src="../assets/efeitos_sonoros/contador.wav"></audio>
+  <audio id="contagem" src="../assets/efeitos_sonoros/contador.mp3"></audio>
   <audio id="lobby" src="../assets/efeitos_sonoros/temaLob.mp3"></audio>
   <audio id="temaGame" src = "../assets/efeitos_sonoros/temaGame.mp3"></audio>
-  <audio id="winGame" src="../assets/efeitos_sonoros/win.wav"></audio>
-  <audio id="gameOver" src="../assets/efeitos_sonoros/gameOver.wav"></audio>
+  <audio id="winGame" src="../assets/efeitos_sonoros/win.mp3"></audio>
+  <audio id="gameOver" src="../assets/efeitos_sonoros/gameOver.mp3"></audio>
   
   <main id="game" class="game-shell">
     <div class="stars" aria-hidden="true"></div>
@@ -74,7 +74,7 @@
       <button class="hud-exit" id="hudExit" type="button" aria-label="Voltar para a tela inicial" onclick="somBotao()"><svg class="ico" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span>Sair</span></button>
       <div class="hud-pill hud-score">⭐ <span id="score">0</span><span class="t-esp">&nbsp;pts</span></div>
       <div class="hud-pill hud-lives"><span class="t-esp t-nohal t-noflo t-nocid">❤️ </span><span class="t-hal t-flo t-cid" hidden></span><span id="lives">3</span></div>
-      <div class="hud-pill hud-combo" id="comboPill"><span class="t-esp t-nohal t-noflo t-nocid">🔥 Combo </span><span class="t-hal" hidden>🦇 Combo </span><span class="t-flo" hidden>🌿 Combo </span><span class="t-cid" hidden>⚡ Combo </span><span class="t-oce">🔥 ×</span><span id="combo">0</span></div>
+      <div class="hud-pill hud-combo" id="comboPill"><span class="t-esp t-nohal t-noflo t-nocid">🔥 Combo </span><span class="t-hal" hidden>🦇 Combo </span><span class="t-flo" hidden>🌿 Combo </span><span class="t-cid" hidden>🚨 Combo </span><span class="t-oce">🔥 ×</span><span id="combo">0</span></div>
       <div class="hud-pill hud-level"><span class="t-esp">Nível </span><span class="t-oce">Nv </span><span id="level">1</span></div>
       <div class="boost-row">
         <div class="hud-pill boost hidden" id="pillDobro">✨ ×2 <span id="dobroTempo">60</span>s</div>
@@ -108,7 +108,7 @@
         <small class="quem-joga" id="quemJoga"></small>
       </div>
       <div class="menu-actions">
-        <button class="primary-btn" id="startBtn" onclick="contagemR()"><span class="t-esp t-nohal t-noflo t-nocid">🚀 </span><span class="t-hal" hidden>🧹 </span><span class="t-flo" hidden>🌿 </span><span class="t-cid" hidden>⚡ </span><span class="t-oce">▶ </span><span class="t-esp">INICIAR</span><span class="t-oce">Jogar Agora</span></button>
+        <button class="primary-btn" id="startBtn" onclick="contagemR()"><span class="t-esp t-nohal t-noflo t-nocid">🚀 </span><span class="t-hal" hidden>🧹 </span><span class="t-flo" hidden>🌿 </span><span class="t-cid" hidden>🚑 </span><span class="t-oce">▶ </span><span class="t-esp">INICIAR</span><span class="t-oce">Jogar Agora</span></button>
         <div class="menu-summary" id="menuSummary"></div>
         <button class="secondary-btn" id="exitBtn" onclick="somBotao()";>🚪 <span class="t-esp">SAIR</span><span class="t-oce">Sair</span></button>
         <div class="exit-confirm hidden" id="exitConfirm"><span>Tem certeza que deseja sair?</span><div><button id="confirmExit">✓ Sim, sair</button><button id="cancelExit">✕ Cancelar</button></div></div>
@@ -173,7 +173,7 @@
     : FLO
     ? {passou:"🔥 Passou! -1 🌳", perdeu:"As chamas venceram desta vez. Tente novamente!", ganhou:n=>`${n} chamas extintas 🌿`, destruiu:n=>`Você extinguiu ${n} chamas`, fin:"⏳", icone:"🔥", win:"🌲", vai:"VAI!", errou:"❌ Errou! -1 🌳", ok:p=>`✅ Correto! +${p}`, combo:(c,p)=>`🌿 COMBO x${c}! +${p}`, nivel:l=>`🌳 NÍVEL ${l}! +1 🌳`, vida:"🌳", marca:"🌲", derrota:"GAME OVER", vitoria:"VOCÊ VENCEU!"}
     : CID
-    ? {passou:"💥 Atingida! -1 🛡️", perdeu:"Os slimes invadiram a cidade. Tente novamente!", ganhou:n=>`${n} slimes bloqueados ⚡`, destruiu:n=>`Você bloqueou ${n} slimes`, fin:"🎯", icone:"☣️", win:"🦸", vai:"VAI!", errou:"☣️ Errou! -1 🛡️", ok:p=>`🛡️ Bloqueado! +${p}`, combo:(c,p)=>`⚡ COMBO x${c}! +${p}`, nivel:l=>`🛸 NÍVEL ${l}! +1 🛡️`, vida:"🛡️", marca:"👾", derrota:"CIDADE INVADIDA", vitoria:"CIDADE SALVA!"}
+    ? {passou:"💥 Atingida! -1 ✚", perdeu:"Os slimes invadiram a cidade. Tente novamente!", ganhou:n=>`${n} slimes bloqueados ⚡`, destruiu:n=>`Você bloqueou ${n} slimes`, fin:"🎯", icone:"☣️", win:"🦸", vai:"VAI!", errou:"☣️ Errou! -1 ✚", ok:p=>`✚ Bloqueado! +${p}`, combo:(c,p)=>`🚨 COMBO x${c}! +${p}`, nivel:l=>`🚑 NÍVEL ${l}! +1 ✚`, vida:"✚", marca:"👾", derrota:"CIDADE INVADIDA", vitoria:"CIDADE SALVA!"}
     : {passou:"💥 Passou! -1 ❤️", perdeu:"Os meteoros venceram desta vez. Tente novamente!", ganhou:n=>`${n} meteoros destruídos ✅`, destruiu:n=>`Você destruiu ${n} meteoros`, fin:"⏳", icone:"💥", win:"🏆", vai:"VAI!", errou:"❌ Errou! -1 ❤️", ok:p=>`✅ Correto! +${p}`, combo:(c,p)=>`🔥 COMBO x${c}! +${p}`, nivel:l=>`⭐ NÍVEL ${l}! +1 ❤️`, derrota:"FIM DE JOGO", vitoria:"VOCÊ VENCEU!"};
   const config = {
     facil: {label:"Fácil",emoji:OCE?"🐙":HAL?"🍬":CID?"🌍":"🌱",color:OCE?"#34d399":FLO?"#4ade80":"#00ff88",minSpeed:14,maxSpeed:20,spawnMs:4000,desc:"Soma e subtração",count:12},
@@ -265,7 +265,7 @@
     liveMeteors.forEach(m=>{burst(m.el);m.el.remove();});spawned=Math.max(0,spawned-liveMeteors.size);liveMeteors.clear();
     updateHud();atualizarCenario();sound("levelup");showFeedback("🛟 Segunda chance! Você voltou com 2 ❤️","#63b3ed");
   }
-  function startGame(){clearInterval(spawnTimer);partidaDif=difficulty;resetStats();prepararPartida();hide(menu);hide(result);show(intro);show(hud);hide(field);gameActive=false;intro.classList.remove("open");hide($("fireVisual"));$("countdown").classList.remove("hidden");let count=3;$("countdown").textContent=count;
+  function startGame(){if(window.CidadeFX)CidadeFX.partida();clearInterval(spawnTimer);partidaDif=difficulty;resetStats();prepararPartida();hide(menu);hide(result);show(intro);show(hud);hide(field);gameActive=false;intro.classList.remove("open");hide($("fireVisual"));$("countdown").classList.remove("hidden");let count=3;$("countdown").textContent=count;
     setTimeout(()=>intro.classList.add("open"),400);
     const timer=setInterval(()=>{count--;if(count>0){$("countdown").textContent=count;$("countdown").animate([{transform:"scale(1.5)",opacity:0},{transform:"scale(1)",opacity:1}],{duration:350});}else{$("countdown").textContent=TXT.vai;sound("levelup");clearInterval(timer);setTimeout(()=>{hide($("countdown"));show($("fireVisual"));setTimeout(()=>{hide(intro);show(field);gameActive=true;iniciarBoosters();spawnMeteor();spawnTimer=setInterval(spawnMeteor,config[difficulty].spawnMs);$("answerInput").focus();},1800);},450);}},850);
   }
@@ -288,7 +288,7 @@
     else if(HAL){el.innerHTML=`<div class="meteor-core"><i class="pk-eye l"></i><i class="pk-eye r"></i><span class="meteor-question">${q}<br>= ?</span></div><div class="meteor-tail"></div>`;}
     else{el.innerHTML=`<div class="meteor-core"><span class="meteor-question">${q}<br>= ?</span></div><div class="meteor-tail"></div>`;}
     $("meteorsLayer").appendChild(el);const m={id,answer,el,x};liveMeteors.set(id,m);spawned++;
-    el.addEventListener("animationend",(ev)=>{if(ev.target!==el)return;if(!liveMeteors.has(id)||el.classList.contains("exploding"))return;liveMeteors.delete(id);el.remove();if(CID)cidLand(x);if(FLO)floBurn();loseLife(TXT.passou);checkWin();});
+    el.addEventListener("animationend",(ev)=>{if(ev.target!==el)return;if(!liveMeteors.has(id)||el.classList.contains("exploding"))return;liveMeteors.delete(id);el.remove();if(CID){cidLand(x);if(window.CidadeFX)CidadeFX.impacto();}if(FLO)floBurn();loseLife(TXT.passou);checkWin();});
   }
   function burst(el){
     const rect=el.getBoundingClientRect(),layer=$("explosionsLayer"),cx=rect.left+rect.width/2,cy=rect.top+rect.height/2,tipo=ML.equipado("explosoes").id;
@@ -314,8 +314,8 @@
   }
   function answerQuestion(e){e.preventDefault();if(!gameActive||gameOver||gameWon)return;const val=Number($("answerInput").value);if($("answerInput").value.trim()==="")return;$("answerInput").value="";
     const hit=[...liveMeteors.values()].find(m=>m.answer===val);
-    if(hit){liveMeteors.delete(hit.id);burst(hit.el);if(HAL)swarm("hal-bat","🦇",4+Math.floor(Math.random()*3));if(CID)swarm("cid-spark","✨",5+Math.floor(Math.random()*3));if(FLO)floRain();if(OCE||HAL||FLO||CID)hit.el.style.transform=getComputedStyle(hit.el).transform;hit.el.classList.add("exploding");flashInput("ok");flash("green");setTimeout(()=>hit.el.remove(),350);combo++;maxCombo=Math.max(maxCombo,combo);const mult=(boost.pontos&&Date.now()<dobroAte)?2:1,pts=(combo>=3?30:10)*mult;score+=pts;dano=Math.max(0,dano-.06);atualizarCenario();totalCorrect++;if(totalCorrect%5===0){level=Math.floor(totalCorrect/5)+1;lives=Math.min(lives+1,7);sound("levelup");showFeedback(TXT.nivel(level),"#f5d76e");}else{sound("correct");showFeedback(combo>=3?TXT.combo(combo,pts):TXT.ok(pts),combo>=3?"#ff9a00":"#00ff88");}updateHud();checkWin();}
-    else{combo=0;if(FLO)floBurn();loseLife(TXT.errou);sound("wrong");flashInput("bad");} $("answerInput").focus();
+    if(hit){if(window.CidadeFX)CidadeFX.acerto(combo);liveMeteors.delete(hit.id);burst(hit.el);if(HAL)swarm("hal-bat","🦇",4+Math.floor(Math.random()*3));if(CID)swarm("cid-spark","✨",5+Math.floor(Math.random()*3));if(FLO)floRain();if(OCE||HAL||FLO||CID)hit.el.style.transform=getComputedStyle(hit.el).transform;hit.el.classList.add("exploding");flashInput("ok");flash("green");setTimeout(()=>hit.el.remove(),350);combo++;maxCombo=Math.max(maxCombo,combo);const mult=(boost.pontos&&Date.now()<dobroAte)?2:1,pts=(combo>=3?30:10)*mult;score+=pts;dano=Math.max(0,dano-.06);atualizarCenario();totalCorrect++;if(totalCorrect%5===0){level=Math.floor(totalCorrect/5)+1;if(window.CidadeFX)CidadeFX.nivel(level);lives=Math.min(lives+1,7);sound("levelup");showFeedback(TXT.nivel(level),"#f5d76e");}else{sound("correct");showFeedback(combo>=3?TXT.combo(combo,pts):TXT.ok(pts),combo>=3?"#ff9a00":"#00ff88");}updateHud();checkWin();}
+    else{combo=0;if(window.CidadeFX)CidadeFX.erro();if(FLO)floBurn();loseLife(TXT.errou);sound("wrong");flashInput("bad");} $("answerInput").focus();
   }
   /* a cada acerto, um bando de ícones sobe do cenário (Halloween: morcegos · Cidade: faíscas) */
   function swarm(cls,ch,n){const layer=$("explosionsLayer");for(let i=0;i<n;i++){const b=document.createElement("span");b.className=cls;b.textContent=ch;const x=5+Math.random()*85,tx=5+Math.random()*85;b.style.setProperty("--x",x+"%");b.style.setProperty("--dx",((tx-x)*3)+"px");b.style.setProperty("--s",(18+Math.floor(Math.random()*10))+"px");b.style.setProperty("--d",(i*0.12)+"s");layer.appendChild(b);setTimeout(()=>b.remove(),2800);}}
@@ -336,7 +336,7 @@
   function loseLife(message){if(gameOver||gameWon)return;flash("red");lives=Math.max(0,lives-1);combo=0;dano=Math.min(1,dano+1/startLives);atualizarCenario();updateHud();showFeedback(message,"#ff4136");
     if(lives<=0){if(boost.chance&&!chanceUsada){usarSegundaChance();return;}finish(false);}else sound("land");}
   function checkWin(){if(mode==="finito"&&spawned>=config[difficulty].count&&liveMeteors.size===0&&!gameOver&&!gameWon)finish(true);}
-  function finish(won) {gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?TXT.win:TXT.icone;$("resultTitle").textContent=won?TXT.vitoria:TXT.derrota;$("resultSubtitle").textContent=won?`${TXT.fin} MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:TXT.perdeu;$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("rScore").textContent=score;$("rHits").textContent=totalCorrect;$("rLevel").textContent=level;$("rCombo").textContent=maxCombo;$("finalDetail").textContent=won?TXT.ganhou(config[difficulty].count):TXT.destruiu(totalCorrect);if(won)sound("levelup");salvarResultado(won); $("temaGame").pause();
+  function finish(won) {if(window.CidadeFX)CidadeFX.fim();gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?TXT.win:TXT.icone;$("resultTitle").textContent=won?TXT.vitoria:TXT.derrota;$("resultSubtitle").textContent=won?`${TXT.fin} MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:TXT.perdeu;$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("rScore").textContent=score;$("rHits").textContent=totalCorrect;$("rLevel").textContent=level;$("rCombo").textContent=maxCombo;$("finalDetail").textContent=won?TXT.ganhou(config[difficulty].count):TXT.destruiu(totalCorrect);if(won)sound("levelup");salvarResultado(won); $("temaGame").pause();
   if (won) {
       $("winGame").currentTime = 0;
       $("winGame").play();
@@ -378,5 +378,6 @@
 })();
   </script>
   <script src="../JS/sons.js"></script>
+  <script src="../JS/cidade.js"></script>
 </body>
 </html>
