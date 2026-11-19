@@ -177,12 +177,17 @@ rota('POST', '/api/pontuacoes', async (req) => {
   limitar('pont:' + u.id, 60, 60000);
   const b = await lerCorpo(req);
   const pontos = int(b.pontos), nivel = int(b.nivel), combo = int(b.comboMax), acertos = int(b.acertos);
+  // opcionais (tela de Carreira): respostas erradas e duração da partida em segundos
+  const erros = b.erros == null ? null : int(b.erros);
+  const duracao = b.duracaoSeg == null ? null : int(b.duracaoSeg);
+  if (erros !== null && !(Number.isInteger(erros) && erros >= 0 && erros <= 100000)) throw new ErroHttp(400, 'Dados da partida inválidos.');
+  if (duracao !== null && !(Number.isInteger(duracao) && duracao >= 0 && duracao <= 86400)) throw new ErroHttp(400, 'Dados da partida inválidos.');
   const modo = b.modo, dif = b.dificuldade;
   if (![pontos, nivel, combo, acertos].every((n) => Number.isInteger(n) && n >= 0)) throw new ErroHttp(400, 'Dados da partida inválidos.');
   if (!['finito', 'infinito'].includes(modo) || !['facil', 'medio', 'dificil'].includes(dif)) throw new ErroHttp(400, 'Modo ou dificuldade inválidos.');
   // Cada acerto vale no máximo 60 pts (30 de combo × 2 do booster). Barra números absurdos.
   if (pontos > acertos * 60 || pontos > 1000000 || nivel > 1000 || combo > acertos) throw new ErroHttp(400, 'Pontuação inconsistente.');
-  const r = await banco.adicionarPontuacao(u.id, { pontos, nivel: Math.max(1, nivel), combo_max: combo, acertos, modo, dificuldade: dif, venceu: !!b.venceu });
+  const r = await banco.adicionarPontuacao(u.id, { pontos, nivel: Math.max(1, nivel), combo_max: combo, acertos, modo, dificuldade: dif, venceu: !!b.venceu, erros, duracao_seg: duracao });
   return { status: 201, corpo: { ok: true, id: r.id, novoRecorde: pontos >= r.melhor && pontos > 0, melhor: r.melhor } };
 });
 
@@ -197,6 +202,16 @@ rota('GET', '/api/ranking', async (req, url) => {
     ranking: todos.slice(0, limite).map((r) => ({ ...r, voce: !!(u && r.id === u.id) })),
     eu, totalJogadores: todos.length, filtros: { dificuldade: dif, modo }
   };
+});
+
+// Tela de Carreira: histórico, totais e posição no ranking geral de quem está logado.
+rota('GET', '/api/me/carreira', async (req) => {
+  const u = await exigeLogin(req);
+  const [partidas, resumo, todos] = await Promise.all([
+    banco.partidasDoUsuario(u.id, 50), banco.resumoDoUsuario(u.id), banco.ranking(null, null)
+  ]);
+  const i = todos.findIndex((r) => r.id === u.id);
+  return { usuario: publico(u), resumo, partidas, posicao: i >= 0 ? i + 1 : null, totalJogadores: todos.length };
 });
 
 /* ----- administração ----- */

@@ -108,12 +108,13 @@ async function excluirUsuario(id) {
 async function adicionarPontuacao(usuarioId, p) {
   const r = await um(
     `WITH nova AS (
-       INSERT INTO pontuacoes (id, usuario_id, pontos, nivel, combo_max, acertos, modo, dificuldade, venceu)
-       VALUES ($1, $2::varchar, $3, $4, $5, $6, $7, $8, $9) RETURNING id, pontos
+       INSERT INTO pontuacoes (id, usuario_id, pontos, nivel, combo_max, acertos, modo, dificuldade, venceu, erros, duracao_seg)
+       VALUES ($1, $2::varchar, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, pontos
      )
      SELECT nova.id, GREATEST(nova.pontos, COALESCE((SELECT max(pontos) FROM pontuacoes WHERE usuario_id = $2::varchar), 0))::int AS melhor
      FROM nova`,
-    [novoId(), usuarioId, p.pontos, p.nivel, p.combo_max, p.acertos, p.modo, p.dificuldade, !!p.venceu]
+    [novoId(), usuarioId, p.pontos, p.nivel, p.combo_max, p.acertos, p.modo, p.dificuldade, !!p.venceu,
+     p.erros == null ? null : p.erros, p.duracao_seg == null ? null : p.duracao_seg]
   );
   return { id: r.id, melhor: r.melhor };
 }
@@ -136,6 +137,37 @@ function ranking(dificuldade, modo) {
       GROUP BY u.id, u.usuario
       ORDER BY pontos DESC, partidas ASC, lower(u.usuario) ASC`,
     [dificuldade || null, modo || null]
+  );
+}
+
+/* ---------- tela de Carreira ---------- */
+// Últimas partidas do jogador (mais nova primeiro). erros/duracao_seg vêm null nas partidas antigas.
+function partidasDoUsuario(usuarioId, limite) {
+  return q(
+    `SELECT id, pontos, nivel, combo_max AS combo, acertos, erros, duracao_seg, modo, dificuldade, venceu,
+            ${DATA('criado_em')} AS criado_em
+       FROM pontuacoes
+      WHERE usuario_id = $1
+      ORDER BY criado_em DESC
+      LIMIT $2`,
+    [usuarioId, limite]
+  );
+}
+// Totais de todas as partidas do jogador.
+function resumoDoUsuario(usuarioId) {
+  return um(
+    `SELECT count(*)::int                         AS partidas,
+            COALESCE(sum(pontos), 0)::int         AS pontos_total,
+            COALESCE(max(pontos), 0)::int         AS melhor,
+            COALESCE(max(nivel), 0)::int          AS nivel_max,
+            COALESCE(max(combo_max), 0)::int      AS combo_max,
+            COALESCE(sum(acertos), 0)::int        AS acertos,
+            sum(erros)::int                       AS erros,
+            sum(duracao_seg)::int                 AS duracao_seg,
+            count(*) FILTER (WHERE venceu)::int   AS vitorias
+       FROM pontuacoes
+      WHERE usuario_id = $1`,
+    [usuarioId]
   );
 }
 
@@ -257,6 +289,7 @@ async function redefinirSenhaAdmin(token, novaSenha) {
 }
 
 module.exports = {
+  partidasDoUsuario, resumoDoUsuario,
   iniciar,
   fechar,
   pool,

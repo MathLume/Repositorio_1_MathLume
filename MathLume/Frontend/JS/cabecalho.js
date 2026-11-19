@@ -7,7 +7,7 @@
      <nav class="navbar" id="cabecalho" data-pagina="ranking"></nav>
      <script src="../JS/cabecalho.js"></script>
    e, no fim do <body>, ../JS/sons.js e ../JS/curvatura.js.
-   data-pagina: inicio | ranking | loja | personalizacao | jogar | admin
+   data-pagina: inicio | ranking | carreira | loja | personalizacao | jogar | admin
    Elementos dentro do <nav> com data-manter (ex.: saldo de Lumes) são
    mantidos e vão para o lado direito da barra.
    ========================================================== */
@@ -32,6 +32,7 @@
   var LINKS = [
     { id: 'inicio', href: ehInicio ? '#inicio' : 'tela-princ.html', ic: 'icone-nav.svg', largo: true, txt: 'Início' },
     { id: 'ranking', href: 'TelaDeRank.html', ic: 'icone-ranking.svg', txt: 'Ranking' },
+    { id: 'carreira', href: 'TelaDeCarreira.html', ic: 'icone-carreira.svg', txt: 'Carreira' },
     { id: 'loja', href: 'loja.html', ic: 'icone-loja.svg', txt: 'Loja' },
     { id: 'jogar', href: 'minigamemat.html', jogar: true, txt: 'Jogar' },
     { id: 'personalizacao', href: 'personalizacao.html', ic: 'icone-personalizacao.svg', txt: 'Personalização' },
@@ -44,8 +45,9 @@
     var icone = l.emoji
       ? '<span class="nav-ic nav-ic-emoji" aria-hidden="true">' + l.emoji + '</span>'
       : '<img class="nav-ic' + (l.largo ? ' nav-ic-largo' : '') + '" src="' + IC + l.ic + '" alt="" aria-hidden="true">';
-    return '<a href="' + l.href + '" class="nav-link' + (ativo ? ' ativo' : '') + (l.soAdmin ? ' nav-admin' : '') + '"' +
-      (l.soAdmin ? ' id="navAdmin" hidden' : '') + (ativo ? ' aria-current="page"' : '') + '>' + icone + l.txt + '</a>';
+    // o texto fica num <span>: em telas médias só o ícone aparece (o title mostra o nome)
+    return '<a href="' + l.href + '" class="nav-link' + (ativo ? ' ativo' : '') + (l.soAdmin ? ' nav-admin' : '') + '" title="' + l.txt + '"' +
+      (l.soAdmin ? ' id="navAdmin" hidden' : '') + (ativo ? ' aria-current="page"' : '') + '>' + icone + '<span class="nav-txt">' + l.txt + '</span></a>';
   }).join('');
 
   var REGUA = ['π/2', 'π', '3π/2', '2π', '5π/2', '3π', '7π/2', '4π', '9π/2', '5π', '11π/2', '6π', '13π/2', '7π'];

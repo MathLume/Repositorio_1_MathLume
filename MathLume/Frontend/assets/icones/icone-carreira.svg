@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 20 472 472">
+  <!-- Carreira: medalha com estrela, mesmas cores dos outros ícones do cabeçalho -->
+  <defs>
+    <linearGradient id="fitaA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6ac1"/><stop offset="1" stop-color="#8a2be2"/></linearGradient>
+    <linearGradient id="fitaB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ff0ff"/><stop offset="1" stop-color="#5b3dff"/></linearGradient>
+    <radialGradient id="ouro" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#fff6c8"/><stop offset=".4" stop-color="#ffd24a"/><stop offset="1" stop-color="#f07a1d"/></radialGradient>
+    <linearGradient id="borda" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9f2e"/><stop offset="1" stop-color="#c24a12"/></linearGradient>
+  </defs>
+  <!-- fitas -->
+  <path d="M150 40 L250 40 L300 210 L210 240 Z" fill="url(#fitaA)"/>
+  <path d="M362 40 L262 40 L212 210 L302 240 Z" fill="url(#fitaB)"/>
+  <path d="M150 40 L250 40 L262 82 L162 82 Z" fill="#fff" opacity=".28"/>
+  <path d="M362 40 L262 40 L250 82 L350 82 Z" fill="#fff" opacity=".2"/>
+  <!-- medalha -->
+  <circle cx="262" cy="330" r="140" fill="url(#borda)"/>
+  <circle cx="256" cy="322" r="136" fill="url(#ouro)"/>
+  <circle cx="256" cy="322" r="102" fill="none" stroke="#c2581a" stroke-width="10" stroke-dasharray="2 22" stroke-linecap="round" opacity=".7"/>
+  <polygon points="256,246 279,293 331,300 293,336 302,388 256,363 210,388 219,336 181,300 233,293" fill="#3a1772"/>
+  <polygon points="256,282 266,303 289,306 272,322 276,345 256,334 236,345 240,322 223,306 246,303" fill="#ffe27a"/>
+  <ellipse cx="196" cy="252" rx="42" ry="20" fill="#fff" opacity=".55" transform="rotate(-35 196 252)"/>
+  <!-- brilhos -->
+  <path d="M448 150 Q448 186 484 186 Q448 186 448 222 Q448 186 412 186 Q448 186 448 150Z" fill="#7ff0ff"/>
+  <path d="M70 300 Q70 322 92 322 Q70 322 70 344 Q70 322 48 322 Q70 322 70 300Z" fill="#ff6ac1"/>
+</svg>

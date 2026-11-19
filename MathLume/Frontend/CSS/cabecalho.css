@@ -129,16 +129,32 @@ html { scroll-padding-top: 96px; }
 .navbar { border-bottom: 0; }
 .navbar ~ .page-head { padding-top: 132px; }
 
-@media (max-width: 1300px) and (min-width: 1101px) {
-  .logo.logo-nav { font-size: 1.6rem; }
-  .menu a.nav-link { padding: 7px 11px; }
+/* telas médias: a barra tem 6 links (7 com Admin) — vai compactando até virar o menu ☰ (<= 900px) */
+@media (max-width: 1640px) and (min-width: 901px) {
+  .logo.logo-nav { font-size: 1.5rem; gap: 8px; }
+  .logo-nav img { height: 34px; }
+  .menu { gap: 4px; }
+  .menu a.nav-link { padding: 7px 10px; font-size: .88rem; gap: 6px; }
+  .menu a.nav-jogar { padding: 7px 18px; }
 }
-@media (max-width: 1100px) and (min-width: 901px) {
+/* só os ícones dos links (o nome aparece ao passar o mouse); "Jogar" continua com texto.
+   Até 1180px sempre; até 1640px quando a barra está cheia (saldo de Lumes ou link Admin). */
+@media (max-width: 1180px) and (min-width: 901px) {
   .logo.logo-nav { font-size: 1.4rem; gap: 6px; }
   .logo-nav img { height: 30px; }
-  .menu { gap: 4px; }
-  .menu a.nav-link { padding: 7px 10px; font-size: .86rem; gap: 5px; }
+  .menu { gap: 2px; }
+  .menu a.nav-link { padding: 7px 9px; gap: 0; }
+  .menu a.nav-link .nav-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .menu a.nav-link .nav-ic { width: 26px; height: 26px; }
+  .menu a.nav-link .nav-ic.nav-ic-largo { width: 38px; }
   .menu a.nav-jogar { padding: 7px 16px; }
+}
+@media (max-width: 1640px) and (min-width: 1181px) {
+  .navbar:is(:has(.saldo), :has(#navAdmin:not([hidden]))) .menu { gap: 2px; }
+  .navbar:is(:has(.saldo), :has(#navAdmin:not([hidden]))) .menu a.nav-link { padding: 7px 10px; gap: 0; }
+  .navbar:is(:has(.saldo), :has(#navAdmin:not([hidden]))) .menu a.nav-link .nav-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .navbar:is(:has(.saldo), :has(#navAdmin:not([hidden]))) .menu a.nav-link .nav-ic { width: 26px; height: 26px; }
+  .navbar:is(:has(.saldo), :has(#navAdmin:not([hidden]))) .menu a.nav-link .nav-ic.nav-ic-largo { width: 38px; }
 }
 @media (max-width: 900px) {
   .menu { display: none; }
