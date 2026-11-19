@@ -34,13 +34,24 @@ button { font: inherit; }
 .slide { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 32px; opacity: 0; transform: translateX(60px); pointer-events: none; transition: opacity .4s ease, transform .4s ease; }
 .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
 .slide.left { transform: translateX(-60px); }
-.g1 { background: linear-gradient(135deg, #9333ea, #db2777); }
-.g2 { background: linear-gradient(135deg, #2563eb, #06b6d4); }
-.g3 { background: linear-gradient(135deg, #f97316, #ef4444); }
-.g4 { background: linear-gradient(135deg, #22c55e, #10b981); }
 .emoji { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; background: rgba(255, 255, 255, .2); border-radius: 16px; margin-bottom: 24px; }
 .slide h3 { font-size: 1.9rem; font-weight: 500; margin-bottom: 12px; }
 .slide p { color: rgba(255, 255, 255, .9); max-width: 360px; font-size: 1rem; margin: 0; }
+/* slides com imagem real do jogo */
+.slide-foto { padding: 0; justify-content: flex-end; background: #120a24; }
+.slide-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; transform: scale(1.04); transition: transform 5s ease; }
+.slide-foto.active img { transform: scale(1); }
+.slide-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 4, 24, 0) 45%, rgba(10, 4, 24, .78) 72%, rgba(10, 4, 24, .95) 100%); pointer-events: none; }
+.slide-texto { position: relative; z-index: 1; width: 100%; padding: 0 72px 40px; display: flex; flex-direction: column; align-items: center; }
+.slide-tag { display: inline-block; padding: 4px 12px; margin-bottom: 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; background: rgba(168, 85, 247, .3); border: 1px solid rgba(216, 180, 254, .45); backdrop-filter: blur(6px); }
+.slide-foto h3 { font-size: 1.5rem; margin-bottom: 6px; text-shadow: 0 2px 12px rgba(0, 0, 0, .6); }
+.slide-foto p { text-shadow: 0 1px 8px rgba(0, 0, 0, .6); }
+@media (max-width: 600px) {
+  .slide-texto { padding: 0 52px 40px; }
+  .slide-foto h3 { font-size: 1.3rem; }
+  .slide-foto p { font-size: .9rem; }
+}
+@media (prefers-reduced-motion: reduce) { .slide-foto img { transition: none; transform: none; } }
 .arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 30; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .4); color: #fff; font-size: 1.5rem; line-height: 1; cursor: pointer; transition: background .2s; }
 .arrow:hover { background: rgba(0, 0, 0, .65); }
 .arrow.prev { left: 12px; }

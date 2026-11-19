@@ -24,10 +24,19 @@
 
       <div class="carousel" id="carousel">
         <div class="carousel-viewport">
-          <div class="slide g1 active"><div class="emoji">🎯</div><h3>Aprendizado Gamificado</h3><p>Ganhe pontos, suba de nível e torne o estudo divertido.</p></div>
-          <div class="slide g2"><div class="emoji">🏆</div><h3>Ranking e Conquistas</h3><p>Compare seu desempenho e desbloqueie medalhas.</p></div>
-          <div class="slide g3"><div class="emoji">📚</div><h3>Trilhas Personalizadas</h3><p>Conteúdos de Matemática no seu ritmo.</p></div>
-          <div class="slide g4"><div class="emoji">⚡</div><h3>Prática Interativa</h3><p>Desafios em tempo real para testar o que você aprendeu.</p></div>
+          <!-- Slides com imagens reais do jogo (capturas em assets/slides/) -->
+          <div class="slide slide-foto active">
+            <img src="../assets/slides/slide-loja.jpg" alt="Loja do MathLume com os temas Espaço, Oceano, Halloween e Floresta" loading="eager">
+            <div class="slide-texto"><span class="slide-tag">🛍️ Loja</span><h3>Compre e personalize</h3><p>Troque o tema do jogo, os blocos de cálculo e as explosões com seus Lumes.</p></div>
+          </div>
+          <div class="slide slide-foto">
+            <img src="../assets/slides/slide-minigame.jpg" alt="Partida do mini-game: meteoros com contas caindo do céu" loading="lazy">
+            <div class="slide-texto"><span class="slide-tag">🎮 Mini game</span><h3>Jogue e se divirta</h3><p>Resolva as contas e destrua os meteoros antes que cheguem ao chão.</p></div>
+          </div>
+          <div class="slide slide-foto">
+            <img src="../assets/slides/slide-ranking.jpg" alt="Ranking do MathLume com o pódio dos melhores jogadores" loading="lazy">
+            <div class="slide-texto"><span class="slide-tag">🏆 Ranking</span><h3>Participe de competições com seus amigos</h3><p>Some pontos, suba no ranking e dispute o pódio.</p></div>
+          </div>
 
           <!-- Slide 5: tutorial de cadastro (some quando o usuário está logado) -->
           <div class="slide g5 slide-tutorial" id="slideTutorial" data-passo="0">
