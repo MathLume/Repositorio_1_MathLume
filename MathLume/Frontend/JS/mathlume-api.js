@@ -1,6 +1,6 @@
 /* ==========================================================
    MathLume — cliente da API (fala com o Backend)
-   Usado por: tela-princ, minigamemat, TelaDeRank e admin.
+   Usado por: tela-princ, minigamemat, TelaDeRank, TelaDeCarreira e admin.
    A sessão (token) fica no localStorage do navegador.
    ========================================================== */
 (function () {
@@ -91,6 +91,8 @@
     },
 
     salvarPontuacao: function (partida) { return chamar('POST', '/api/pontuacoes', partida); },
+    // Tela de Carreira: { usuario, resumo, partidas, posicao, totalJogadores } (precisa de login)
+    carreira: function () { return chamar('GET', '/api/me/carreira'); },
     ranking: function (filtros) {
       var p = [];
       filtros = filtros || {};

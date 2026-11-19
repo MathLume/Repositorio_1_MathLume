@@ -183,7 +183,7 @@
   let mode="infinito", difficulty=localStorage.getItem("mathlume_difficulty")||"medio";
   if(!config[difficulty]) difficulty="medio";
   let volume=Math.max(0,Math.min(100,Number(localStorage.getItem("mathlume_volume")??70)));
-  let score=0,lives=3,combo=0,maxCombo=0,level=1,totalCorrect=0,spawned=0,gameActive=false,gameOver=false,gameWon=false;
+  let erros=0,inicioPartida=0,score=0,lives=3,combo=0,maxCombo=0,level=1,totalCorrect=0,spawned=0,gameActive=false,gameOver=false,gameWon=false;
   let meteorId=0,spawnTimer=null,liveMeteors=new Map(),audioCtx=null,masterGain=null,feedbackTimer=null;
   const ML=window.MathLume,selecionados=new Set();let partidaDif="medio";
   let boost={vidas:false,pontos:false,chance:false},startLives=3,dano=0,chanceUsada=false,dobroAte=0,dobroTimer=null,cenItens=[];
@@ -208,7 +208,7 @@
   document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>selectDifficulty(b.dataset.difficulty)));
   document.querySelectorAll("[data-setting-difficulty]").forEach(b=>b.addEventListener("click",()=>selectDifficulty(b.dataset.settingDifficulty,true)));
   function updateHud(){$("score").textContent=score;if(OCE)$("lives").innerHTML=Array.from({length:Math.max(startLives,lives)},(_,i)=>`<i class="${i<lives?"on":"off"}">♥</i>`).join("");else if(HAL||FLO||CID)$("lives").textContent=lives>0?TXT.vida.repeat(lives):"💀";else $("lives").textContent=lives;$("combo").textContent=combo;if(OCE)$("comboPill").classList.toggle("hidden",combo<2);$("level").textContent=level;}
-  function resetStats(){floReset();cidReset();score=0;lives=3;combo=0;maxCombo=0;level=1;totalCorrect=0;spawned=0;meteorId=0;gameOver=false;gameWon=false;liveMeteors.clear();$("meteorsLayer").innerHTML="";$("explosionsLayer").innerHTML="";$("answerInput").value="";$("feedback").textContent="";updateHud();}
+  function resetStats(){floReset();cidReset();erros=0;inicioPartida=0;score=0;lives=3;combo=0;maxCombo=0;level=1;totalCorrect=0;spawned=0;meteorId=0;gameOver=false;gameWon=false;liveMeteors.clear();$("meteorsLayer").innerHTML="";$("explosionsLayer").innerHTML="";$("answerInput").value="";$("feedback").textContent="";updateHud();}
   /* ===== Personalização + boosters (dados vêm de mathlume-dados.js) ===== */
   const CENARIOS={
     cidade:{ceu:"linear-gradient(180deg,#0b1437 0%,#2e2a6b 50%,#d9622b 100%)",tipo:"predio",qtd:15,voa:["✈️","🛩️","✈️"]},
@@ -267,7 +267,7 @@
   }
   function startGame(){if(window.CidadeFX)CidadeFX.partida();clearInterval(spawnTimer);partidaDif=difficulty;resetStats();prepararPartida();hide(menu);hide(result);show(intro);show(hud);hide(field);gameActive=false;intro.classList.remove("open");hide($("fireVisual"));$("countdown").classList.remove("hidden");let count=3;$("countdown").textContent=count;
     setTimeout(()=>intro.classList.add("open"),400);
-    const timer=setInterval(()=>{count--;if(count>0){$("countdown").textContent=count;$("countdown").animate([{transform:"scale(1.5)",opacity:0},{transform:"scale(1)",opacity:1}],{duration:350});}else{$("countdown").textContent=TXT.vai;sound("levelup");clearInterval(timer);setTimeout(()=>{hide($("countdown"));show($("fireVisual"));setTimeout(()=>{hide(intro);show(field);gameActive=true;iniciarBoosters();spawnMeteor();spawnTimer=setInterval(spawnMeteor,config[difficulty].spawnMs);$("answerInput").focus();},1800);},450);}},850);
+    const timer=setInterval(()=>{count--;if(count>0){$("countdown").textContent=count;$("countdown").animate([{transform:"scale(1.5)",opacity:0},{transform:"scale(1)",opacity:1}],{duration:350});}else{$("countdown").textContent=TXT.vai;sound("levelup");clearInterval(timer);setTimeout(()=>{hide($("countdown"));show($("fireVisual"));setTimeout(()=>{hide(intro);show(field);gameActive=true;inicioPartida=Date.now();iniciarBoosters();spawnMeteor();spawnTimer=setInterval(spawnMeteor,config[difficulty].spawnMs);$("answerInput").focus();},1800);},450);}},850);
   }
   function generateQuestion(){const ops=difficulty==="facil"?["+","-"]:["+","-","×","÷"];const op=ops[Math.floor(Math.random()*ops.length)];let a,b,answer,q;const hard=difficulty==="dificil";
     if(op==="+"){a=1+Math.floor(Math.random()*(hard?50:20));b=1+Math.floor(Math.random()*(hard?50:20));answer=a+b;q=`${a} + ${b}`;}
@@ -315,7 +315,7 @@
   function answerQuestion(e){e.preventDefault();if(!gameActive||gameOver||gameWon)return;const val=Number($("answerInput").value);if($("answerInput").value.trim()==="")return;$("answerInput").value="";
     const hit=[...liveMeteors.values()].find(m=>m.answer===val);
     if(hit){if(window.CidadeFX)CidadeFX.acerto(combo);liveMeteors.delete(hit.id);burst(hit.el);if(HAL)swarm("hal-bat","🦇",4+Math.floor(Math.random()*3));if(CID)swarm("cid-spark","✨",5+Math.floor(Math.random()*3));if(FLO)floRain();if(OCE||HAL||FLO||CID)hit.el.style.transform=getComputedStyle(hit.el).transform;hit.el.classList.add("exploding");flashInput("ok");flash("green");setTimeout(()=>hit.el.remove(),350);combo++;maxCombo=Math.max(maxCombo,combo);const mult=(boost.pontos&&Date.now()<dobroAte)?2:1,pts=(combo>=3?30:10)*mult;score+=pts;dano=Math.max(0,dano-.06);atualizarCenario();totalCorrect++;if(totalCorrect%5===0){level=Math.floor(totalCorrect/5)+1;if(window.CidadeFX)CidadeFX.nivel(level);lives=Math.min(lives+1,7);sound("levelup");showFeedback(TXT.nivel(level),"#f5d76e");}else{sound("correct");showFeedback(combo>=3?TXT.combo(combo,pts):TXT.ok(pts),combo>=3?"#ff9a00":"#00ff88");}updateHud();checkWin();}
-    else{combo=0;if(window.CidadeFX)CidadeFX.erro();if(FLO)floBurn();loseLife(TXT.errou);sound("wrong");flashInput("bad");} $("answerInput").focus();
+    else{combo=0;erros++;if(window.CidadeFX)CidadeFX.erro();if(FLO)floBurn();loseLife(TXT.errou);sound("wrong");flashInput("bad");} $("answerInput").focus();
   }
   /* a cada acerto, um bando de ícones sobe do cenário (Halloween: morcegos · Cidade: faíscas) */
   function swarm(cls,ch,n){const layer=$("explosionsLayer");for(let i=0;i<n;i++){const b=document.createElement("span");b.className=cls;b.textContent=ch;const x=5+Math.random()*85,tx=5+Math.random()*85;b.style.setProperty("--x",x+"%");b.style.setProperty("--dx",((tx-x)*3)+"px");b.style.setProperty("--s",(18+Math.floor(Math.random()*10))+"px");b.style.setProperty("--d",(i*0.12)+"s");layer.appendChild(b);setTimeout(()=>b.remove(),2800);}}
@@ -352,7 +352,8 @@
     if(!API.logado()){st.innerHTML='🔒 <a href="tela-princ.html">Faça login</a> para salvar sua pontuação no ranking.';return;}
     if(score<=0){st.textContent="Faça pelo menos 1 acerto para entrar no ranking.";return;}
     st.textContent="💾 Salvando pontuação...";
-    API.salvarPontuacao({pontos:score,nivel:level,comboMax:maxCombo,acertos:totalCorrect,modo:mode,dificuldade:partidaDif,venceu:won})
+    const duracaoSeg=inicioPartida?Math.round((Date.now()-inicioPartida)/1000):null;
+    API.salvarPontuacao({pontos:score,nivel:level,comboMax:maxCombo,acertos:totalCorrect,erros:erros,duracaoSeg:duracaoSeg,modo:mode,dificuldade:partidaDif,venceu:won})
       .then(r=>{st.textContent=r.novoRecorde?"🏆 Novo recorde pessoal salvo no ranking!":"✅ Pontuação salva no ranking!";},
             e=>{st.textContent="⚠️ Não foi possível salvar: "+e.message;});
   }

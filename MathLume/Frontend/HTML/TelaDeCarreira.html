@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carreira — MathLume</title>
+  <link rel="stylesheet" href="../CSS/TelaDeCarreira.css">
+  <link rel="stylesheet" href="../CSS/cabecalho.css">
+</head>
+<body>
+  <audio id="botoes" src="../assets/efeitos_sonoros/botao.mp3"></audio>
+  <!-- cabeçalho igual em todas as telas: JS/cabecalho.js + CSS/cabecalho.css -->
+  <nav class="navbar" id="cabecalho" data-pagina="carreira"></nav>
+  <script src="../JS/cabecalho.js"></script>
+
+  <!-- ícones usados na tela (<use href="#i-...">) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></symbol>
+    <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-swords" viewBox="0 0 24 24"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
+  </svg>
+
+  <main class="career-shell">
+    <div class="stars" aria-hidden="true"></div>
+    <div class="career-fundo" aria-hidden="true"><span style="left:5%;top:14%;font-size:2.6rem;animation-delay:0s">π</span><span style="left:90%;top:10%;font-size:2.2rem;animation-delay:-3s">∑</span><span style="left:3%;top:52%;font-size:2.4rem;animation-delay:-6s">×</span><span style="left:93%;top:55%;font-size:2.6rem;animation-delay:-2s">√</span><span style="left:8%;top:84%;font-size:2.2rem;animation-delay:-8s">+</span><span style="left:88%;top:86%;font-size:2.6rem;animation-delay:-5s">÷</span><span style="left:80%;top:30%;font-size:2rem;animation-delay:-4s">∞</span><span style="left:16%;top:30%;font-size:1.8rem;animation-delay:-9s">−</span></div>
+
+    <section class="career-screen" aria-labelledby="tituloCarreira">
+      <header class="career-head">
+        <div class="career-brand"><span class="eyebrow">MATHLUME</span><h1 id="tituloCarreira">CARREIRA</h1></div>
+        <div class="career-acoes">
+          <a class="career-btn" href="TelaDeRank.html" onclick="somBotao()">🏆 RANKING<span class="so-largo">&nbsp;COMPLETO</span></a>
+          <a class="career-btn primario" href="minigamemat.html" onclick="somBotao()"><svg class="icon icon-12"><use href="#i-play"/></svg>JOGAR</a>
+        </div>
+      </header>
+
+      <div class="career">
+        <!-- Alternância das abas (radio + CSS) -->
+        <input class="view-input" type="radio" name="view" id="view-stats" checked>
+        <input class="view-input" type="radio" name="view" id="view-ranking">
+
+        <!-- ── cartão do jogador (preenchido pelo JS) ── -->
+        <div class="hero tier-bronze" id="hero">
+          <div class="hero-top">
+            <div class="hero-avatar-wrap">
+              <div class="avatar s56 you" id="heroAvatar">?</div>
+              <div class="tier-badge"><svg class="icon icon-14"><use id="heroTierIc" href="#i-shield"/></svg></div>
+            </div>
+            <div class="hero-info">
+              <h2 class="hero-name" id="heroNome">Carregando…</h2>
+              <div class="hero-meta"><span class="tier-chip" id="heroLiga">Bronze</span><span class="hero-rank" id="heroRank"></span></div>
+              <div class="liga-prog" id="ligaProg" hidden>
+                <div class="liga-barra"><i id="ligaBarra" style="width:0"></i></div>
+                <div class="liga-txt" id="ligaTxt"></div>
+              </div>
+            </div>
+            <div class="xp-badge" title="Sua melhor pontuação numa partida"><small>MELHOR</small><span><svg class="icon icon-14"><use href="#i-zap"/></svg><b id="heroMelhor">0</b> pts</span></div>
+          </div>
+          <div class="mini-stats">
+            <div class="mini c-purple"><span class="mini-icon"><svg class="icon icon-13"><use href="#i-target"/></svg></span><div><div class="mini-value" id="stPartidas">—</div><div class="mini-label">Partidas</div></div></div>
+            <div class="mini c-green"><span class="mini-icon"><svg class="icon icon-13"><use href="#i-check"/></svg></span><div><div class="mini-value" id="stAcertos">—</div><div class="mini-label">Acertos</div></div></div>
+            <div class="mini c-red"><span class="mini-icon"><svg class="icon icon-13"><use href="#i-x"/></svg></span><div><div class="mini-value" id="stErros">—</div><div class="mini-label">Erros</div></div></div>
+            <div class="mini c-blue"><span class="mini-icon"><svg class="icon icon-13"><use href="#i-clock"/></svg></span><div><div class="mini-value" id="stTempo">—</div><div class="mini-label">Tempo total</div></div></div>
+          </div>
+        </div>
+
+        <!-- ── abas ── -->
+        <div class="tabs">
+          <label class="tab" for="view-stats" onclick="somBotao()"><svg class="icon icon-14"><use href="#i-target"/></svg>Histórico</label>
+          <label class="tab" for="view-ranking" onclick="somBotao()"><svg class="icon icon-14"><use href="#i-users"/></svg>Ranking</label>
+        </div>
+
+        <!-- ── conteúdo ── -->
+        <div class="content">
+          <div class="view view-stats" id="listaHistorico" aria-live="polite"><div class="estado carregando">Carregando suas partidas…</div></div>
+          <div class="view view-ranking" id="listaRanking" aria-live="polite"><div class="estado carregando">Carregando o ranking…</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../JS/mathlume-api.js"></script>
+  <script>
+    (function () {
+      var API = window.MathLumeAPI;
+      var $ = function (id) { return document.getElementById(id); };
+
+      /* Ligas pela melhor pontuação numa partida (mude os valores aqui para ajustar). */
+      var LIGAS = [
+        { nome: 'Bronze', cls: 'tier-bronze', min: 0, ic: 'i-shield' },
+        { nome: 'Prata', cls: 'tier-prata', min: 300, ic: 'i-shield' },
+        { nome: 'Ouro', cls: 'tier-ouro', min: 700, ic: 'i-trophy' },
+        { nome: 'Platina', cls: 'tier-platina', min: 1200, ic: 'i-trophy' },
+        { nome: 'Diamante', cls: 'tier-diamante', min: 2000, ic: 'i-gem' }
+      ];
+      var DIF = { facil: '🌱 Fácil', medio: '🔥 Médio', dificil: '💀 Difícil' };
+      var MODO = { finito: '⏳ Finito', infinito: '♾️ Infinito' };
+
+      function esc(t) {
+        return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+      }
+      function fmt(n) { return Number(n || 0).toLocaleString('pt-BR'); }
+      function ligaDe(pontos) {
+        var l = LIGAS[0];
+        LIGAS.forEach(function (x) { if (pontos >= x.min) l = x; });
+        return l;
+      }
+      function tempo(seg) {
+        if (seg == null) return '—';
+        var h = Math.floor(seg / 3600), m = Math.floor(seg % 3600 / 60), s = seg % 60;
+        var mmss = (h ? String(m).padStart(2, '0') : m) + ':' + String(s).padStart(2, '0');
+        return h ? h + ':' + mmss : (m < 10 ? '0' + mmss : mmss);
+      }
+      // o banco devolve "AAAA-MM-DD HH:MM:SS" em UTC → mostra no horário de quem está vendo
+      function data(txt) {
+        var d = new Date(String(txt).replace(' ', 'T') + 'Z');
+        if (isNaN(d)) return '';
+        return d.toLocaleDateString('pt-BR') + ' · ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      }
+      function corAvatar(nome) {
+        var h = 0;
+        for (var i = 0; i < nome.length; i++) h = (h * 31 + nome.charCodeAt(i)) % 6;
+        return 'av-' + h;
+      }
+      function trocarLiga(el, liga) {
+        LIGAS.forEach(function (x) { el.classList.remove(x.cls); });
+        el.classList.add(liga.cls);
+      }
+      function estado(msg, extra) {
+        return '<div class="estado">' + msg + (extra || '') + '</div>';
+      }
+      var BTN_LOGIN = '<br><a class="career-btn primario" href="tela-princ.html">ENTRAR OU CRIAR CONTA</a>';
+      var BTN_JOGAR = '<br><a class="career-btn primario" href="minigamemat.html"><svg class="icon icon-12"><use href="#i-play"/></svg>JOGAR AGORA</a>';
+
+      /* ---------- cartão do jogador ---------- */
+      function desenharHero(d) {
+        var r = d.resumo, nome = d.usuario.usuario, liga = ligaDe(r.melhor);
+        trocarLiga($('hero'), liga);
+        $('heroTierIc').setAttribute('href', '#' + liga.ic);
+        $('heroAvatar').textContent = nome.charAt(0);
+        $('heroNome').textContent = nome;
+        $('heroLiga').textContent = liga.nome;
+        $('heroRank').textContent = d.posicao ? '#' + d.posicao + ' de ' + d.totalJogadores + ' no ranking' : 'Ainda fora do ranking';
+        $('heroMelhor').textContent = fmt(r.melhor);
+        $('stPartidas').textContent = fmt(r.partidas);
+        $('stAcertos').textContent = fmt(r.acertos);
+        $('stErros').textContent = r.erros == null ? '—' : fmt(r.erros);
+        $('stTempo').textContent = tempo(r.duracao_seg);
+
+        var i = LIGAS.indexOf(liga), prox = LIGAS[i + 1];
+        $('ligaProg').hidden = false;
+        if (prox) {
+          var p = Math.max(0, Math.min(100, (r.melhor - liga.min) / (prox.min - liga.min) * 100));
+          $('ligaBarra').style.width = p + '%';
+          $('ligaTxt').textContent = 'Faltam ' + fmt(prox.min - r.melhor) + ' pts numa partida para a liga ' + prox.nome;
+        } else {
+          $('ligaBarra').style.width = '100%';
+          $('ligaTxt').textContent = 'Liga máxima alcançada!';
+        }
+      }
+      function heroVisitante() {
+        $('heroAvatar').textContent = '?';
+        $('heroNome').textContent = 'Visitante';
+        $('heroRank').textContent = 'Faça login para ver a sua carreira';
+      }
+
+      /* ---------- histórico ---------- */
+      function desenharHistorico(d) {
+        var lista = d.partidas, total = d.resumo.partidas;
+        if (!lista.length) {
+          $('listaHistorico').innerHTML = estado('Você ainda não jogou nenhuma partida.<br>Jogue o mini-game e o seu histórico aparece aqui!', BTN_JOGAR);
+          return;
+        }
+        $('listaHistorico').innerHTML = lista.map(function (p, n) {
+          var badge;
+          if (p.erros != null && p.acertos + p.erros > 0) {
+            var pct = Math.round(p.acertos / (p.acertos + p.erros) * 100);
+            badge = '<div class="match-badge ' + (pct >= 80 ? 'hi' : pct >= 60 ? 'mid' : 'lo') + '">' + pct + '% acerto</div>';
+          } else {
+            badge = '<div class="match-badge neutro">Nível ' + p.nivel + '</div>';
+          }
+          return '<div class="match' + (p.venceu ? ' venceu' : '') + '" style="--i:' + Math.min(n, 12) + '">' +
+            '<div class="match-head">' +
+              '<div class="match-num">#' + (total - n) + '</div>' +
+              '<div class="match-title-wrap"><div class="match-title">' + (DIF[p.dificuldade] || p.dificuldade) + ' · ' + (MODO[p.modo] || p.modo) + (p.venceu ? ' 🏆' : '') + '</div>' +
+              '<div class="match-date">' + data(p.criado_em) + '</div></div>' + badge +
+            '</div>' +
+            '<div class="match-details">' +
+              detalhe('c-purple', 'i-trophy', 'Pontos', fmt(p.pontos)) +
+              detalhe('c-blue', 'i-clock', 'Tempo', tempo(p.duracao_seg)) +
+              detalhe('c-green', 'i-check', 'Acertos', fmt(p.acertos)) +
+              detalhe('c-red', 'i-x', 'Erros', p.erros == null ? '—' : fmt(p.erros)) +
+            '</div></div>';
+        }).join('');
+      }
+      function detalhe(cor, ic, rotulo, valor) {
+        return '<div class="detail ' + cor + '"><div class="detail-head"><svg class="icon icon-12"><use href="#' + ic + '"/></svg><span class="detail-label">' + rotulo + '</span></div><div class="detail-value">' + valor + '</div></div>';
+      }
+
+      /* ---------- ranking (melhor pontuação de cada jogador) ---------- */
+      function desenharRanking(d) {
+        var lista = d.ranking;
+        if (!lista.length) {
+          $('listaRanking').innerHTML = estado('Ainda não há pontuações no ranking.<br>Seja o primeiro!', BTN_JOGAR);
+          return;
+        }
+        function podio(r, n) {
+          if (!r) return '<div class="podium-card pos-' + n + ' vazio"><div class="avatar ' + (n === 1 ? 's56' : 's44') + ' av-0">—</div><div class="medal medal-' + n + '">' + n + '</div><span class="podium-name">—</span></div>';
+          return '<div class="podium-card pos-' + n + (r.voce ? ' voce' : '') + '">' +
+            (n === 1 ? '<div class="crown-float"><svg class="icon icon-18 crown-gold"><use href="#i-crown"/></svg></div>' : '') +
+            '<div class="avatar ' + (n === 1 ? 's56 ' : 's44 ') + (r.voce ? 'you' : corAvatar(r.usuario)) + '">' + esc(r.usuario.charAt(0)) + '</div>' +
+            '<div class="medal medal-' + n + '">' + n + '</div>' +
+            '<span class="podium-name" title="' + esc(r.usuario) + '">' + esc(r.usuario) + '</span>' +
+            '<span class="podium-score">' + fmt(r.pontos) + '</span><span class="podium-pts">pts</span></div>';
+        }
+        function linha(r, n) {
+          var liga = ligaDe(r.pontos);
+          return '<div class="rank-row' + (r.voce ? ' you' : '') + '" style="--i:' + n + '">' +
+            '<span class="rank-pos">' + r.posicao + '</span>' +
+            '<div class="avatar s32 ' + (r.voce ? 'you' : corAvatar(r.usuario)) + '">' + esc(r.usuario.charAt(0)) + '</div>' +
+            '<div class="rank-info"><div class="rank-name-line"><span class="rank-name">' + esc(r.usuario) + '</span>' + (r.voce ? '<span class="you-tag">VOCÊ</span>' : '') + '</div>' +
+            '<div class="rank-tier ' + liga.cls + '"><svg class="icon icon-14"><use href="#' + liga.ic + '"/></svg><span>' + liga.nome + '</span></div></div>' +
+            '<div class="rank-score-wrap"><div class="rank-score">' + fmt(r.pontos) + '</div><div class="rank-pts">pts</div></div></div>';
+        }
+        var resto = lista.slice(3, 10);
+        var html = '<div class="podium"><div class="podium-title"><svg class="icon icon-13 swords"><use href="#i-swords"/></svg><span>TOP 3</span></div>' +
+          '<div class="podium-row">' + podio(lista[1], 2) + podio(lista[0], 1) + podio(lista[2], 3) + '</div></div>';
+        html += '<div class="rank-list">' + resto.map(linha).join('');
+        // quem está logado e ficou fora do top 10 aparece no fim, separado
+        if (d.eu && d.eu.posicao > 10) html += '<div class="rank-sep">• • •</div>' + linha(Object.assign({}, d.eu, { voce: true }), resto.length);
+        if (!resto.length && !(d.eu && d.eu.posicao > 10)) html += estado('Só ' + lista.length + (lista.length === 1 ? ' jogador' : ' jogadores') + ' no ranking por enquanto.');
+        html += '<div class="rank-mais"><a href="TelaDeRank.html">Ver o ranking completo, com filtros por dificuldade e modo ›</a></div></div>';
+        $('listaRanking').innerHTML = html;
+      }
+
+      /* ---------- carregar ---------- */
+      function carregarRanking() {
+        API.ranking({ limite: 10 }).then(desenharRanking, function (e) {
+          $('listaRanking').innerHTML = estado('⚠️ ' + esc(e.message));
+        });
+      }
+      function carregarCarreira() {
+        if (!API.logado()) {
+          heroVisitante();
+          $('listaHistorico').innerHTML = estado('🔒 <b>Entre na sua conta</b> para ver o seu histórico de partidas, acertos, erros e tempo de jogo.', BTN_LOGIN);
+          return;
+        }
+        API.carreira().then(function (d) {
+          desenharHero(d);
+          desenharHistorico(d);
+        }, function (e) {
+          if (e.status === 401) { MathLumeCabecalho.mostrarUsuario(null); return carregarCarreira(); }
+          $('heroNome').textContent = (API.usuario() || {}).usuario || 'Jogador';
+          $('listaHistorico').innerHTML = estado('⚠️ ' + esc(e.message));
+        });
+      }
+
+      // TelaDeCarreira.html#ranking abre direto na aba Ranking
+      if (location.hash === '#ranking') $('view-ranking').checked = true;
+      if (API.logado()) $('heroNome').textContent = API.usuario().usuario;
+      API.restaurar().then(function (u) {
+        MathLumeCabecalho.mostrarUsuario(u);
+        carregarCarreira();
+        carregarRanking();
+      });
+    })();
+  </script>
+  <script src="../JS/sons.js"></script>
+  <script src="../JS/curvatura.js"></script>
+</body>
+</html>

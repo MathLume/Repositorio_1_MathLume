@@ -31,6 +31,9 @@ CREATE TABLE IF NOT EXISTS pontuacoes (
 );
 CREATE INDEX IF NOT EXISTS pontuacoes_usuario_idx ON pontuacoes (usuario_id);
 CREATE INDEX IF NOT EXISTS pontuacoes_filtro_idx  ON pontuacoes (dificuldade, modo);
+-- Tela de Carreira: erros e duração de cada partida (ficam vazios nas partidas antigas)
+ALTER TABLE pontuacoes ADD COLUMN IF NOT EXISTS erros       INTEGER CHECK (erros >= 0);
+ALTER TABLE pontuacoes ADD COLUMN IF NOT EXISTS duracao_seg INTEGER CHECK (duracao_seg >= 0);
 
 -- Logins abertos (guardamos só o SHA-256 do token, não o token).
 CREATE TABLE IF NOT EXISTS sessoes (
