@@ -202,8 +202,8 @@
       nome: 'Floresta',
       emoji: '🌲',
       preco: 250, // <- ajuste o preço (em Lumes) aqui
-      desc: 'Proteja a floresta das chamas: cada erro ou chama que passa incendeia uma árvore, e cada acerto faz chover e apaga o fogo.',
-      preview: 'linear-gradient(180deg,#0d1a0d 0%,#0f2a14 55%,#1f6a2a 100%)',
+      desc: 'Floresta viva ao entardecer, com ipês, pinheiros, árvores de outono, urso, abelhas, borboletas e sons da mata. Cada erro incendeia uma árvore; cada acerto faz chover e apaga o fogo.',
+      preview: 'linear-gradient(180deg,#1b2a5c 0%,#8a4a7e 38%,#f2a65e 62%,#2f6b2b 80%,#1f4a20 100%)',
       css: '../CSS/minigamemat-floresta.css'
     },
     {

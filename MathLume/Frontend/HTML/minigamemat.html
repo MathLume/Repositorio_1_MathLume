@@ -265,7 +265,7 @@
     liveMeteors.forEach(m=>{burst(m.el);m.el.remove();});spawned=Math.max(0,spawned-liveMeteors.size);liveMeteors.clear();
     updateHud();atualizarCenario();sound("levelup");showFeedback("🛟 Segunda chance! Você voltou com 2 ❤️","#63b3ed");
   }
-  function startGame(){if(window.CidadeFX)CidadeFX.partida();clearInterval(spawnTimer);partidaDif=difficulty;resetStats();prepararPartida();hide(menu);hide(result);show(intro);show(hud);hide(field);gameActive=false;intro.classList.remove("open");hide($("fireVisual"));$("countdown").classList.remove("hidden");let count=3;$("countdown").textContent=count;
+  function startGame(){if(window.CidadeFX)CidadeFX.partida();if(window.FlorestaFX)FlorestaFX.partida();clearInterval(spawnTimer);partidaDif=difficulty;resetStats();prepararPartida();hide(menu);hide(result);show(intro);show(hud);hide(field);gameActive=false;intro.classList.remove("open");hide($("fireVisual"));$("countdown").classList.remove("hidden");let count=3;$("countdown").textContent=count;
     setTimeout(()=>intro.classList.add("open"),400);
     const timer=setInterval(()=>{count--;if(count>0){$("countdown").textContent=count;$("countdown").animate([{transform:"scale(1.5)",opacity:0},{transform:"scale(1)",opacity:1}],{duration:350});}else{$("countdown").textContent=TXT.vai;sound("levelup");clearInterval(timer);setTimeout(()=>{hide($("countdown"));show($("fireVisual"));setTimeout(()=>{hide(intro);show(field);gameActive=true;inicioPartida=Date.now();iniciarBoosters();spawnMeteor();spawnTimer=setInterval(spawnMeteor,config[difficulty].spawnMs);$("answerInput").focus();},1800);},450);}},850);
   }
@@ -288,7 +288,7 @@
     else if(HAL){el.innerHTML=`<div class="meteor-core"><i class="pk-eye l"></i><i class="pk-eye r"></i><span class="meteor-question">${q}<br>= ?</span></div><div class="meteor-tail"></div>`;}
     else{el.innerHTML=`<div class="meteor-core"><span class="meteor-question">${q}<br>= ?</span></div><div class="meteor-tail"></div>`;}
     $("meteorsLayer").appendChild(el);const m={id,answer,el,x};liveMeteors.set(id,m);spawned++;
-    el.addEventListener("animationend",(ev)=>{if(ev.target!==el)return;if(!liveMeteors.has(id)||el.classList.contains("exploding"))return;liveMeteors.delete(id);el.remove();if(CID){cidLand(x);if(window.CidadeFX)CidadeFX.impacto();}if(FLO)floBurn();loseLife(TXT.passou);checkWin();});
+    el.addEventListener("animationend",(ev)=>{if(ev.target!==el)return;if(!liveMeteors.has(id)||el.classList.contains("exploding"))return;liveMeteors.delete(id);el.remove();if(CID){cidLand(x);if(window.CidadeFX)CidadeFX.impacto();}if(FLO){floBurn();if(window.FlorestaFX)FlorestaFX.impacto();}loseLife(TXT.passou);checkWin();});
   }
   function burst(el){
     const rect=el.getBoundingClientRect(),layer=$("explosionsLayer"),cx=rect.left+rect.width/2,cy=rect.top+rect.height/2,tipo=ML.equipado("explosoes").id;
@@ -314,8 +314,8 @@
   }
   function answerQuestion(e){e.preventDefault();if(!gameActive||gameOver||gameWon)return;const val=Number($("answerInput").value);if($("answerInput").value.trim()==="")return;$("answerInput").value="";
     const hit=[...liveMeteors.values()].find(m=>m.answer===val);
-    if(hit){if(window.CidadeFX)CidadeFX.acerto(combo);liveMeteors.delete(hit.id);burst(hit.el);if(HAL)swarm("hal-bat","🦇",4+Math.floor(Math.random()*3));if(CID)swarm("cid-spark","✨",5+Math.floor(Math.random()*3));if(FLO)floRain();if(OCE||HAL||FLO||CID)hit.el.style.transform=getComputedStyle(hit.el).transform;hit.el.classList.add("exploding");flashInput("ok");flash("green");setTimeout(()=>hit.el.remove(),350);combo++;maxCombo=Math.max(maxCombo,combo);const mult=(boost.pontos&&Date.now()<dobroAte)?2:1,pts=(combo>=3?30:10)*mult;score+=pts;dano=Math.max(0,dano-.06);atualizarCenario();totalCorrect++;if(totalCorrect%5===0){level=Math.floor(totalCorrect/5)+1;if(window.CidadeFX)CidadeFX.nivel(level);lives=Math.min(lives+1,7);sound("levelup");showFeedback(TXT.nivel(level),"#f5d76e");}else{sound("correct");showFeedback(combo>=3?TXT.combo(combo,pts):TXT.ok(pts),combo>=3?"#ff9a00":"#00ff88");}updateHud();checkWin();}
-    else{combo=0;erros++;if(window.CidadeFX)CidadeFX.erro();if(FLO)floBurn();loseLife(TXT.errou);sound("wrong");flashInput("bad");} $("answerInput").focus();
+    if(hit){if(window.CidadeFX)CidadeFX.acerto(combo);if(window.FlorestaFX)FlorestaFX.acerto(combo);liveMeteors.delete(hit.id);burst(hit.el);if(HAL)swarm("hal-bat","🦇",4+Math.floor(Math.random()*3));if(CID)swarm("cid-spark","✨",5+Math.floor(Math.random()*3));if(FLO)floRain();if(OCE||HAL||FLO||CID)hit.el.style.transform=getComputedStyle(hit.el).transform;hit.el.classList.add("exploding");flashInput("ok");flash("green");setTimeout(()=>hit.el.remove(),350);combo++;maxCombo=Math.max(maxCombo,combo);const mult=(boost.pontos&&Date.now()<dobroAte)?2:1,pts=(combo>=3?30:10)*mult;score+=pts;dano=Math.max(0,dano-.06);atualizarCenario();totalCorrect++;if(totalCorrect%5===0){level=Math.floor(totalCorrect/5)+1;if(window.CidadeFX)CidadeFX.nivel(level);if(window.FlorestaFX)FlorestaFX.nivel(level);lives=Math.min(lives+1,7);sound("levelup");showFeedback(TXT.nivel(level),"#f5d76e");}else{sound("correct");showFeedback(combo>=3?TXT.combo(combo,pts):TXT.ok(pts),combo>=3?"#ff9a00":"#00ff88");}updateHud();checkWin();}
+    else{combo=0;erros++;if(window.CidadeFX)CidadeFX.erro();if(window.FlorestaFX)FlorestaFX.erro();if(FLO)floBurn();loseLife(TXT.errou);sound("wrong");flashInput("bad");} $("answerInput").focus();
   }
   /* a cada acerto, um bando de ícones sobe do cenário (Halloween: morcegos · Cidade: faíscas) */
   function swarm(cls,ch,n){const layer=$("explosionsLayer");for(let i=0;i<n;i++){const b=document.createElement("span");b.className=cls;b.textContent=ch;const x=5+Math.random()*85,tx=5+Math.random()*85;b.style.setProperty("--x",x+"%");b.style.setProperty("--dx",((tx-x)*3)+"px");b.style.setProperty("--s",(18+Math.floor(Math.random()*10))+"px");b.style.setProperty("--d",(i*0.12)+"s");layer.appendChild(b);setTimeout(()=>b.remove(),2800);}}
@@ -336,7 +336,7 @@
   function loseLife(message){if(gameOver||gameWon)return;flash("red");lives=Math.max(0,lives-1);combo=0;dano=Math.min(1,dano+1/startLives);atualizarCenario();updateHud();showFeedback(message,"#ff4136");
     if(lives<=0){if(boost.chance&&!chanceUsada){usarSegundaChance();return;}finish(false);}else sound("land");}
   function checkWin(){if(mode==="finito"&&spawned>=config[difficulty].count&&liveMeteors.size===0&&!gameOver&&!gameWon)finish(true);}
-  function finish(won) {if(window.CidadeFX)CidadeFX.fim();gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?TXT.win:TXT.icone;$("resultTitle").textContent=won?TXT.vitoria:TXT.derrota;$("resultSubtitle").textContent=won?`${TXT.fin} MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:TXT.perdeu;$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("rScore").textContent=score;$("rHits").textContent=totalCorrect;$("rLevel").textContent=level;$("rCombo").textContent=maxCombo;$("finalDetail").textContent=won?TXT.ganhou(config[difficulty].count):TXT.destruiu(totalCorrect);if(won)sound("levelup");salvarResultado(won); $("temaGame").pause();
+  function finish(won) {if(window.CidadeFX)CidadeFX.fim();if(window.FlorestaFX)FlorestaFX.fim();gameActive=false;clearInterval(dobroTimer);hide($("pillDobro"));gameOver=!won;gameWon=won;clearInterval(spawnTimer);show(result);$("resultIcon").textContent=won?TXT.win:TXT.icone;$("resultTitle").textContent=won?TXT.vitoria:TXT.derrota;$("resultSubtitle").textContent=won?`${TXT.fin} MODO FINITO — ${config[difficulty].emoji} ${config[difficulty].label}`:TXT.perdeu;$("finalScore").textContent=score;$("finalLevel").textContent=level;$("finalCombo").textContent=maxCombo;$("rScore").textContent=score;$("rHits").textContent=totalCorrect;$("rLevel").textContent=level;$("rCombo").textContent=maxCombo;$("finalDetail").textContent=won?TXT.ganhou(config[difficulty].count):TXT.destruiu(totalCorrect);if(won)sound("levelup");salvarResultado(won); $("temaGame").pause();
   if (won) {
       $("winGame").currentTime = 0;
       $("winGame").play();
@@ -362,7 +362,7 @@
     const u=API.usuario();
     el.innerHTML=API.logado()&&u?`👤 Jogando como <b>${u.usuario.replace(/[<>&]/g,"")}</b> — sua pontuação vai para o ranking`:'👤 Visitante — <a href="tela-princ.html">faça login</a> para entrar no ranking';
   }
-  function toMenu(){clearInterval(spawnTimer);clearInterval(dobroTimer);hide($("pillDobro"));hide($("pillChance"));desenharBoosters();atualizarMarca();gameActive=false;hide(result);hide(field);hide(intro);hide(hud);show(menu);selectDifficulty(difficulty);$("exitConfirm").classList.add("hidden");}
+  function toMenu(){if(window.FlorestaFX)FlorestaFX.menu();clearInterval(spawnTimer);clearInterval(dobroTimer);hide($("pillDobro"));hide($("pillChance"));desenharBoosters();atualizarMarca();gameActive=false;hide(result);hide(field);hide(intro);hide(hud);show(menu);selectDifficulty(difficulty);$("exitConfirm").classList.add("hidden");}
   $("startBtn").addEventListener("click",startGame);$("hudExit").addEventListener("click",()=>{if(!intro.classList.contains("hidden"))return;toMenu();});$("leaveGame").addEventListener("click",()=>{if(!intro.classList.contains("hidden"))return;closeSettings();toMenu();});$("againBtn").addEventListener("click",startGame);$("menuBtn").addEventListener("click",toMenu);$("rankBtn").addEventListener("click",()=>{window.location.href="TelaDeRank.html";});$("answerForm").addEventListener("submit",answerQuestion);
   $("exitBtn").addEventListener("click",()=>show($("exitConfirm")));$("cancelExit").addEventListener("click",()=>hide($("exitConfirm")));$("confirmExit").addEventListener("click",()=>{window.location.href="tela-princ.html";});
   function openSettings(){$("leaveSection").classList.toggle("hidden",hud.classList.contains("hidden")||!intro.classList.contains("hidden"));show($("settingsBackdrop"));$("settingsPanel").classList.add("open");$("volumeRange").value=volume;$("volumeValue").textContent=volume;$("muteBtn").textContent=volume===0?"🔇":"🔊";selectDifficulty(difficulty);}
@@ -380,5 +380,6 @@
   </script>
   <script src="../JS/sons.js"></script>
   <script src="../JS/cidade.js"></script>
+  <script src="../JS/floresta.js"></script>
 </body>
 </html>
