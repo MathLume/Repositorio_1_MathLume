@@ -1,6 +1,8 @@
 name: Verificar Assignee, Branch e Datas (In Progress)
 
 on:
+  issues:
+    types: [opened, reopened, edited, assigned, unassigned, labeled, unlabeled]
   schedule:
     - cron: '*/15 * * * *' # a cada 15 minutos
   workflow_dispatch: # permite rodar manualmente pela aba Actions
@@ -8,6 +10,10 @@ on:
 permissions:
   issues: write
   contents: read
+
+concurrency:
+  group: check-in-progress
+  cancel-in-progress: false
 
 jobs:
   check-in-progress:
